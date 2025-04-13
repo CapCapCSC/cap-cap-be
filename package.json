@@ -1,4 +1,5 @@
 {
+<<<<<<< HEAD
   "scripts": {
     "start": "nodemon --inspect src/index.js"
   },
@@ -6,5 +7,30 @@
     "express": "^5.1.0",
     "mongoose": "^8.13.2",
     "nodemon": "^3.1.9"
+=======
+  "name": "cap-cap-be",
+  "version": "1.0.0",
+  "description": "BE for CapCap",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CapCapCSC/cap-cap-be.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/CapCapCSC/cap-cap-be/issues"
+  },
+  "homepage": "https://github.com/CapCapCSC/cap-cap-be#readme",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.5.0",
+    "express": "^5.1.0",
+    "mongoose": "^8.13.2"
+>>>>>>> edb70ed43c7ff5aff17fe3772d14bf5c4b7e1a9f
   }
 }
