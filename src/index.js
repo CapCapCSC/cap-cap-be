@@ -1,8 +1,7 @@
-try{
-const db = require('../config/db/')
+try {
+    const db = require('../config/db/');
 
-db.connect();
-}
-catch(error){
+    db.connect();
+} catch (error) {
     console.log(error);
 }
