@@ -1,7 +1,7 @@
 {
     "scripts": {
         "start": "nodemon --inspect src/index.js",
-        "pretty": "prettier --single-quote --tab-width 4 --trailing-comma all --write '../cap-cap-be/**/*.{js,json,scss}'"
+        "pretty": "prettier --single-quote --tab-width 4 --trailing-comma all --write '../cap-cap-be/**/*.{js,json,scss,md}'"
     },
     "dependencies": {
         "express": "^5.1.0",
