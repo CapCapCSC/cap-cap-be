@@ -6,7 +6,7 @@ const food = new schema(
         name: { type: String, required: true, unique: true },
         description: { type: String },
         imgUrl: { type: String },
-        relatedFoods: [{ type: schema.Types.ObjectId, ref: 'Food' }],
+        tags: [{ type: schema.Types.ObjectId, ref: 'FoodTags' }],
     },
     { timestamps: true },
 );
