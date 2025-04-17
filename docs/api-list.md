@@ -3,7 +3,137 @@
 Tài liệu liệt kê toàn bộ endpoint backend của hệ thống "Cạp Cạp", phân nhóm rõ ràng theo resource.  
 Tất cả API đều đi qua prefix `/api`.
 
+---
+
+## Authorization
+
+Một số endpoint yêu cầu xác thực (authentication) hoặc phân quyền (authorization).  
+Các quy tắc chung:
+
+- **[Auth]**: Yêu cầu người dùng đã đăng nhập (có access token hợp lệ).
+- **[Admin]**: Chỉ admin mới được phép thực hiện.
+- **[Public]**: Ai cũng có thể truy cập.
+
+### Ví dụ chú thích trong tài liệu:
+
+- `POST /api/foods` **[Auth][Admin]** – Chỉ admin mới được tạo món ăn mới.
+- `GET /api/foods` **[Public]** – Ai cũng có thể xem danh sách món ăn.
+- `POST /api/users/:id/badges` **[Auth][Admin]** – Chỉ admin mới gán badge cho user.
+- `POST /api/quizzes/:id/submit` **[Auth]** – Người dùng đã đăng nhập mới được nộp quiz.
+
+### Cách ghi chú trong từng API:
+
+### `POST /api/foods` Tạo food mới **[Auth][Admin]**
+
+### `GET /api/foods` Lấy danh sách tất cả các món ăn **[Public]**
+
+> **Lưu ý:**
+>
+> - Nếu không ghi chú, mặc định là **[Auth]** (yêu cầu đăng nhập).
+> - Các endpoint nhạy cảm (tạo, sửa, xóa) nên yêu cầu quyền admin.
+> - Các endpoint chỉ đọc (GET) thường có thể để public, tùy vào nghiệp vụ.
+
+---
+
 ## Authentication
+
+### `POST /api/auth/register` Đăng ký tài khoản mới
+
+**Request:**
+
+```json
+{
+    "username": "newuser",
+    "email": "newuser@gmail.com",
+    "password": "password"
+}
+```
+
+**Validation Rules:**
+
+- `username`: Required, string, max length 50.
+- `email`: Required, valid email format.
+- `password`: Required, string, min length 6.
+
+**Response:**
+
+```json
+{
+    "message": "Register successful",
+    "user": {
+        "_id": "...",
+        "username": "newuser",
+        "email": "newuser@gmail.com"
+    }
+}
+```
+
+### `POST /api/auth/login` Đăng nhập
+
+**Request:**
+
+```json
+{
+    "email": "newuser@gmail.com",
+    "password": "password"
+}
+```
+
+**Validation Rules:**
+
+- `email`: Required, valid email format.
+- `password`: Required, string.
+
+**Response:**
+
+```json
+{
+    "message": "Login successful",
+    "accessToken": "jwt-access-token",
+    "refreshToken": "jwt-refresh-token",
+    "user": {
+        "_id": "...",
+        "username": "newuser",
+        "email": "newuser@gmail.com"
+    }
+}
+```
+
+### `POST /api/auth/refresh-token` Làm mới access token
+
+**Request:**
+
+```json
+{
+    "refreshToken": "jwt-refresh-token"
+}
+```
+
+**Response:**
+
+```json
+{
+    "accessToken": "new-jwt-access-token"
+}
+```
+
+### `POST /api/auth/logout` Đăng xuất
+
+**Request:**
+
+```json
+{
+    "refreshToken": "jwt-refresh-token"
+}
+```
+
+**Response:**
+
+```json
+{
+    "message": "Logout successful"
+}
+```
 
 ---
 
@@ -109,22 +239,35 @@ Tất cả API đều đi qua prefix `/api`.
 
 ### `GET /api/foods/` Lấy danh sách tất cả các món ăn
 
+**Query Parameters:**
+
+- `page`: Optional, integer, default is 1.
+- `limit`: Optional, integer, default is 10.
+- `tags`: Optional, comma-separated tag IDs for filtering.
+
 **Response:**
 
 ```json
 {
-    {
-        "name": "food_01",
-        "description": "food_01 description",
-        "imgUrl": "https://example.com/food_01.jpg",
-        "tags": ["..."]
-    },
-    {
-        "name": "food_02",
-        "description": "food_02 description",
-        "imgUrl": "https://example.com/food_02.jpg",
-        "tags": ["..."]
-    },
+    "data": [
+        {
+            "name": "food_01",
+            "description": "food_01 description",
+            "imgUrl": "https://example.com/food_01.jpg",
+            "tags": ["..."]
+        },
+        {
+            "name": "food_02",
+            "description": "food_02 description",
+            "imgUrl": "https://example.com/food_02.jpg",
+            "tags": ["..."]
+        }
+    ],
+    "pagination": {
+        "page": 1,
+        "limit": 10,
+        "total": 20
+    }
 }
 ```
 
@@ -178,6 +321,94 @@ Tất cả API đều đi qua prefix `/api`.
     "message": "Food deleted"
 }
 ```
+
+---
+
+## Food Tags
+
+### `POST /api/foodtags` Tạo tag món ăn mới
+
+**Request:**
+
+```json
+{
+    "name": "food tag"
+}
+```
+
+**Response:**
+
+```json
+{
+    "message": "Food tag created",
+    "foodTag": {
+        "_id": "...",
+        "name": "food tag"
+    }
+}
+```
+
+### `GET /api/foodtags` Lấy danh sách tất cả tag món ăn
+
+**Response:**
+
+```json
+[
+    {
+        "_id": "...",
+        "name": "food tag 1"
+    },
+    {
+        "_id": "...",
+        "name": "food tag 2"
+    }
+]
+```
+
+### `GET /api/foodtags/:id` Lấy thông tin chi tiết một tag
+
+**Response:**
+
+```json
+{
+    "_id": "...",
+    "name": "food tag"
+}
+```
+
+### `PUT /api/foodtags/:id` Cập nhật thông tin tag
+
+**Request:**
+
+```json
+{
+    "name": "updated food tag"
+}
+```
+
+**Response:**
+
+```json
+{
+    "message": "Food tag updated",
+    "foodTag": {
+        "_id": "...",
+        "name": "updated food tag"
+    }
+}
+```
+
+### `DELETE /api/foodtags/:id` Xóa tag món ăn
+
+**Response:**
+
+```json
+{
+    "message": "Food tag deleted"
+}
+```
+
+---
 
 ## Restaurant
 
@@ -316,3 +547,670 @@ Tất cả API đều đi qua prefix `/api`.
     "message": "Restaurant deleted"
 }
 ```
+
+---
+
+## Questions
+
+### `POST /api/questions` Tạo câu hỏi mới
+
+**Request:**
+
+```json
+{
+    "content": "Món ăn nào có nguồn gốc từ Ý?",
+    "options": ["Pizza", "Sushi", "Taco", "Pho"],
+    "correctAnswer": ["Pizza"],
+    "relatedFood": "foodObjectId"
+}
+```
+
+**Response:**
+
+```json
+{
+    "message": "Question created",
+    "question": {
+        "_id": "...",
+        "content": "Món ăn nào có nguồn gốc từ Ý?",
+        "options": ["Pizza", "Sushi", "Taco", "Pho"],
+        "correctAnswer": ["Pizza"],
+        "relatedFood": "foodObjectId"
+    }
+}
+```
+
+### `GET /api/questions` Lấy danh sách tất cả câu hỏi
+
+**Response:**
+
+```json
+[
+    {
+        "_id": "...",
+        "content": "Món ăn nào có nguồn gốc từ Ý?",
+        "options": ["Pizza", "Sushi", "Taco", "Pho"],
+        "correctAnswer": ["Pizza"],
+        "relatedFood": {
+            "_id": "...",
+            "name": "Pizza"
+        }
+    }
+]
+```
+
+### `GET /api/questions/:id` Lấy thông tin chi tiết một câu hỏi
+
+**Response:**
+
+```json
+{
+    "_id": "...",
+    "content": "Món ăn nào có nguồn gốc từ Ý?",
+    "options": ["Pizza", "Sushi", "Taco", "Pho"],
+    "correctAnswer": ["Pizza"],
+    "relatedFood": {
+        "_id": "...",
+        "name": "Pizza"
+    }
+}
+```
+
+### `PUT /api/questions/:id` Cập nhật thông tin câu hỏi
+
+**Request:**
+
+```json
+{
+    "content": "Món ăn nào là đặc sản của Việt Nam?",
+    "options": ["Pizza", "Sushi", "Taco", "Pho"],
+    "correctAnswer": ["Pho"],
+    "relatedFood": "foodObjectId"
+}
+```
+
+**Response:**
+
+```json
+{
+    "message": "Question updated",
+    "question": {
+        "_id": "...",
+        "content": "Món ăn nào là đặc sản của Việt Nam?",
+        "options": ["Pizza", "Sushi", "Taco", "Pho"],
+        "correctAnswer": ["Pho"],
+        "relatedFood": "foodObjectId"
+    }
+}
+```
+
+### `DELETE /api/questions/:id` Xóa câu hỏi
+
+**Response:**
+
+```json
+{
+    "message": "Question deleted"
+}
+```
+
+---
+
+## Quiz
+
+### `POST /api/quizzes` Tạo quiz mới
+
+**Request:**
+
+```json
+{
+    "name": "Quiz Ẩm thực Ý",
+    "questions": ["questionObjectId1", "questionObjectId2"],
+    "dateAvailable": ["2025-04-20T00:00:00.000Z", "2025-04-21T00:00:00.000Z"]
+}
+```
+
+**Response:**
+
+```json
+{
+    "message": "Quiz created",
+    "quiz": {
+        "_id": "...",
+        "name": "Quiz Ẩm thực Ý",
+        "questions": ["questionObjectId1", "questionObjectId2"],
+        "dateCreated": "2025-04-17T10:00:00.000Z",
+        "dateAvailable": ["2025-04-20T00:00:00.000Z", "2025-04-21T00:00:00.000Z"]
+    }
+}
+```
+
+### `GET /api/quizzes` Lấy danh sách tất cả quiz
+
+**Response:**
+
+```json
+[
+    {
+        "_id": "...",
+        "name": "Quiz Ẩm thực Ý",
+        "questions": [
+            {
+                "_id": "questionObjectId1",
+                "content": "Món ăn nào có nguồn gốc từ Ý?"
+            }
+        ],
+        "dateCreated": "2025-04-17T10:00:00.000Z",
+        "dateAvailable": ["2025-04-20T00:00:00.000Z"]
+    }
+]
+```
+
+### `GET /api/quizzes/:id` Lấy thông tin chi tiết quiz
+
+**Response:**
+
+```json
+{
+    "_id": "...",
+    "name": "Quiz Ẩm thực Ý",
+    "questions": [
+        {
+            "_id": "questionObjectId1",
+            "content": "Món ăn nào có nguồn gốc từ Ý?",
+            "options": ["Pizza", "Sushi", "Taco", "Pho"],
+            "correctAnswer": ["Pizza"]
+        }
+    ],
+    "dateCreated": "2025-04-17T10:00:00.000Z",
+    "dateAvailable": ["2025-04-20T00:00:00.000Z"]
+}
+```
+
+### `PUT /api/quizzes/:id` Cập nhật thông tin quiz
+
+**Request:**
+
+```json
+{
+    "name": "Quiz Ẩm thực Việt Nam",
+    "questions": ["questionObjectId3"],
+    "dateAvailable": ["2025-05-01T00:00:00.000Z"]
+}
+```
+
+**Response:**
+
+```json
+{
+    "message": "Quiz updated",
+    "quiz": {
+        "_id": "...",
+        "name": "Quiz Ẩm thực Việt Nam",
+        "questions": ["questionObjectId3"],
+        "dateAvailable": ["2025-05-01T00:00:00.000Z"]
+    }
+}
+```
+
+### `DELETE /api/quizzes/:id` Xóa quiz
+
+**Response:**
+
+```json
+{
+    "message": "Quiz deleted"
+}
+```
+
+---
+
+## Badge
+
+### `POST /api/badges` Tạo badge mới
+
+**Request:**
+
+```json
+{
+    "name": "Chuyên gia ẩm thực",
+    "iconUrl": "https://example.com/badge.png"
+}
+```
+
+**Response:**
+
+```json
+{
+    "message": "Badge created",
+    "badge": {
+        "_id": "...",
+        "name": "Chuyên gia ẩm thực",
+        "iconUrl": "https://example.com/badge.png"
+    }
+}
+```
+
+### `GET /api/badges` Lấy danh sách tất cả badge
+
+**Response:**
+
+```json
+[
+    {
+        "_id": "...",
+        "name": "Chuyên gia ẩm thực",
+        "iconUrl": "https://example.com/badge.png"
+    },
+    {
+        "_id": "...",
+        "name": "Người mới",
+        "iconUrl": "https://example.com/badge2.png"
+    }
+]
+```
+
+### `GET /api/badges/:id` Lấy thông tin chi tiết badge
+
+**Response:**
+
+```json
+{
+    "_id": "...",
+    "name": "Chuyên gia ẩm thực",
+    "iconUrl": "https://example.com/badge.png"
+}
+```
+
+### `PUT /api/badges/:id` Cập nhật thông tin badge
+
+**Request:**
+
+```json
+{
+    "name": "Chuyên gia ẩm thực cấp cao",
+    "iconUrl": "https://example.com/badge-updated.png"
+}
+```
+
+**Response:**
+
+```json
+{
+    "message": "Badge updated",
+    "badge": {
+        "_id": "...",
+        "name": "Chuyên gia ẩm thực cấp cao",
+        "iconUrl": "https://example.com/badge-updated.png"
+    }
+}
+```
+
+### `DELETE /api/badges/:id` Xóa badge
+
+**Response:**
+
+```json
+{
+    "message": "Badge deleted"
+}
+```
+
+---
+
+## Voucher
+
+### `POST /api/vouchers` Tạo voucher mới
+
+**Request:**
+
+```json
+{
+    "name": "Giảm giá 10%",
+    "validUntil": "2025-12-31T23:59:59.000Z",
+    "applicableRestaurants": ["restaurantObjectId1", "restaurantObjectId2"]
+}
+```
+
+**Response:**
+
+```json
+{
+    "message": "Voucher created",
+    "voucher": {
+        "_id": "...",
+        "name": "Giảm giá 10%",
+        "validUntil": "2025-12-31T23:59:59.000Z",
+        "applicableRestaurants": ["restaurantObjectId1", "restaurantObjectId2"],
+        "used": false
+    }
+}
+```
+
+### `GET /api/vouchers` Lấy danh sách tất cả voucher
+
+**Response:**
+
+```json
+[
+    {
+        "_id": "...",
+        "name": "Giảm giá 10%",
+        "validUntil": "2025-12-31T23:59:59.000Z",
+        "applicableRestaurants": [
+            {
+                "_id": "restaurantObjectId1",
+                "name": "Nhà hàng A"
+            }
+        ],
+        "used": false
+    }
+]
+```
+
+### `GET /api/vouchers/:id` Lấy thông tin chi tiết voucher
+
+**Response:**
+
+```json
+{
+    "_id": "...",
+    "name": "Giảm giá 10%",
+    "validUntil": "2025-12-31T23:59:59.000Z",
+    "applicableRestaurants": [
+        {
+            "_id": "restaurantObjectId1",
+            "name": "Nhà hàng A"
+        }
+    ],
+    "used": false
+}
+```
+
+### `PUT /api/vouchers/:id` Cập nhật thông tin voucher
+
+**Request:**
+
+```json
+{
+    "name": "Giảm giá 20%",
+    "validUntil": "2026-01-01T23:59:59.000Z",
+    "applicableRestaurants": ["restaurantObjectId3"],
+    "used": true
+}
+```
+
+**Response:**
+
+```json
+{
+    "message": "Voucher updated",
+    "voucher": {
+        "_id": "...",
+        "name": "Giảm giá 20%",
+        "validUntil": "2026-01-01T23:59:59.000Z",
+        "applicableRestaurants": ["restaurantObjectId3"],
+        "used": true
+    }
+}
+```
+
+### `DELETE /api/vouchers/:id` Xóa voucher
+
+**Response:**
+
+```json
+{
+    "message": "Voucher deleted"
+}
+```
+
+---
+
+## Error Response
+
+Tất cả API khi gặp lỗi sẽ trả về response với cấu trúc sau:
+
+```json
+{
+    "error": "Error",
+    "message": "Description",
+    "status": 400
+}
+```
+
+**Validation Error Example (422 – Unprocessable Entity):**
+
+```json
+{
+    "error": "ValidationError",
+    "message": "Password must be at least 6 characters.",
+    "status": 422
+}
+```
+
+### Ví dụ lỗi thường gặp
+
+#### 400 – Bad Request
+
+```json
+{
+    "error": "BadRequest",
+    "message": "Email has existed.",
+    "status": 400
+}
+```
+
+#### 401 – Unauthorized
+
+```json
+{
+    "error": "Unauthorized",
+    "message": "You need to log in to perform this action.",
+    "status": 401
+}
+```
+
+#### 403 – Forbidden
+
+```json
+{
+    "error": "Forbidden",
+    "message": "You do not have permission to access this.",
+    "status": 403
+}
+```
+
+#### 404 – Not Found
+
+```json
+{
+    "error": "NotFound",
+    "message": "Nothing to be found.",
+    "status": 404
+}
+```
+
+#### 500 – Internal Server Error
+
+```json
+{
+    "error": "InternalServerError",
+    "message": "There are some internal server errors. Please try again later.",
+    "status": 500
+}
+```
+
+---
+
+## Pagination, Filtering, Searching
+
+Các API trả về danh sách (GET all) hỗ trợ các query parameters sau để phân trang, lọc và tìm kiếm:
+
+### Pagination
+
+- `page`: Số trang (bắt đầu từ 1). Mặc định: 1
+- `limit`: Số phần tử mỗi trang. Mặc định: 10
+
+**Ví dụ:**
+
+```
+GET /api/foods?page=2&limit=5
+```
+
+**Response:**
+
+```json
+{
+    "data": [
+        { "name": "food_06", ... },
+        { "name": "food_07", ... }
+    ],
+    "pagination": {
+        "page": 2,
+        "limit": 5,
+        "total": 20
+    }
+}
+```
+
+**Ví dụ:**
+
+```
+GET /api/foods?tags=661f3b...e1,661f3b...e2
+```
+
+### Filtering
+
+- Có thể lọc theo các trường cụ thể, ví dụ:
+    - `/api/foods?name=pizza`
+    - `/api/foods?tags=tagId1,tagId2` _(lọc các món ăn có chứa ít nhất một trong các tag này)_
+    - `/api/restaurants?name=Nhà hàng A`
+    - `/api/vouchers?used=false`
+
+### Searching
+
+- Có thể tìm kiếm toàn văn với tham số `search`:
+    - `/api/foods?search=pizza`
+    - `/api/restaurants?search=quán nướng`
+
+---
+
+> **Lưu ý:**
+>
+> - Các API trả về danh sách nên trả về cả thông tin phân trang (`pagination`) để client dễ xử lý.
+> - Các trường filter/search có thể thay đổi tùy resource, hãy ghi rõ trong tài liệu chi tiết nếu cần.
+
+---
+
+## Relationship/Action APIs
+
+### Gán badge cho user
+
+#### `POST /api/users/:id/badges` Gán badge cho user
+
+**Request:**
+
+```json
+{
+    "badgeId": "badgeObjectId"
+}
+```
+
+**Response:**
+
+```json
+{
+    "message": "Badge assigned to user",
+    "user": {
+        "_id": "...",
+        "badges": ["badgeObjectId", "..."]
+    }
+}
+```
+
+---
+
+### Gán voucher cho user
+
+#### `POST /api/users/:id/vouchers` Gán voucher cho user
+
+**Request:**
+
+```json
+{
+    "voucherId": "voucherObjectId"
+}
+```
+
+**Response:**
+
+```json
+{
+    "message": "Voucher assigned to user",
+    "user": {
+        "_id": "...",
+        "vouchers": ["voucherObjectId", "..."]
+    }
+}
+```
+
+### Tham gia quiz
+
+#### `POST /api/quizzes/:id/submit` Nộp kết quả quiz
+
+**Request:**
+
+```json
+{
+    "userId": "userObjectId",
+    "answers": [
+        { "questionId": "questionObjectId1", "answer": ["Pizza"] },
+        { "questionId": "questionObjectId2", "answer": ["Pho"] }
+    ]
+}
+```
+
+**Response:**
+
+```json
+{
+    "message": "Quiz submitted",
+    "result": {
+        "score": 8,
+        "total": 10,
+        "correctAnswers": [
+            { "questionId": "questionObjectId1", "isCorrect": true },
+            { "questionId": "questionObjectId2", "isCorrect": false }
+        ]
+    }
+}
+```
+
+---
+
+## Versioning
+
+All endpoints should include a version prefix for future-proofing. For example:
+
+- `/api/v1/auth/register`
+- `/api/v1/foods`
+
+---
+
+## Security Notes
+
+- All sensitive data (e.g., passwords) must be hashed before storage.
+- Access tokens should expire after a short duration (e.g., 15 minutes).
+- Refresh tokens should be securely stored and rotated periodically.
+
+---
+
+## Testing
+
+Developers can use the following tools to test the API:
+
+- **Postman**: Import the API collection for quick testing.
+- **Mock Server**: Use a mock server to simulate API responses without affecting production.
+
+---
