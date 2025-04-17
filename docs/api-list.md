@@ -666,7 +666,7 @@ Các quy tắc chung:
 {
     "name": "Quiz Ẩm thực Ý",
     "questions": ["questionObjectId1", "questionObjectId2"],
-    "dateAvailible": ["2025-04-20T00:00:00.000Z", "2025-04-21T00:00:00.000Z"]
+    "dateAvailable": ["2025-04-20T00:00:00.000Z", "2025-04-21T00:00:00.000Z"]
 }
 ```
 
@@ -680,7 +680,7 @@ Các quy tắc chung:
         "name": "Quiz Ẩm thực Ý",
         "questions": ["questionObjectId1", "questionObjectId2"],
         "dateCreated": "2025-04-17T10:00:00.000Z",
-        "dateAvailible": ["2025-04-20T00:00:00.000Z", "2025-04-21T00:00:00.000Z"]
+        "dateAvailable": ["2025-04-20T00:00:00.000Z", "2025-04-21T00:00:00.000Z"]
     }
 }
 ```
@@ -701,7 +701,7 @@ Các quy tắc chung:
             }
         ],
         "dateCreated": "2025-04-17T10:00:00.000Z",
-        "dateAvailible": ["2025-04-20T00:00:00.000Z"]
+        "dateAvailable": ["2025-04-20T00:00:00.000Z"]
     }
 ]
 ```
@@ -723,7 +723,7 @@ Các quy tắc chung:
         }
     ],
     "dateCreated": "2025-04-17T10:00:00.000Z",
-    "dateAvailible": ["2025-04-20T00:00:00.000Z"]
+    "dateAvailable": ["2025-04-20T00:00:00.000Z"]
 }
 ```
 
@@ -735,7 +735,7 @@ Các quy tắc chung:
 {
     "name": "Quiz Ẩm thực Việt Nam",
     "questions": ["questionObjectId3"],
-    "dateAvailible": ["2025-05-01T00:00:00.000Z"]
+    "dateAvailable": ["2025-05-01T00:00:00.000Z"]
 }
 ```
 
@@ -748,7 +748,7 @@ Các quy tắc chung:
         "_id": "...",
         "name": "Quiz Ẩm thực Việt Nam",
         "questions": ["questionObjectId3"],
-        "dateAvailible": ["2025-05-01T00:00:00.000Z"]
+        "dateAvailable": ["2025-05-01T00:00:00.000Z"]
     }
 }
 ```
