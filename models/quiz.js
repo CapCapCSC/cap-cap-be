@@ -6,7 +6,7 @@ const quiz = new schema(
         name: {type: String},
         questions: [{type: schema.Types.ObjectId, ref: 'Questions'}],
         dateCreated: {type: Date, default: Date.now},
-        dateAvailible: [{type: Date}],
+        dateAvailable: [{type: Date}],
     },
     { timestamps: true },
 );
