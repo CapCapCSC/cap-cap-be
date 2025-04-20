@@ -26,7 +26,7 @@ exports.getRandom3 = async (filters) => {
     }
 
     const restaurants = await Restaurant.aggregate([
-        { $match: { matchStage } },
+        { $match: matchStage },
         { $sample: { size: 3 } }
     ]);
     if (!restaurants || restaurants.length === 0) {
