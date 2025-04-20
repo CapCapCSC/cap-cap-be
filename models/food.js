@@ -7,7 +7,7 @@ const food = new schema(
         description: { type: String },
         ingredients: [{ type: String, default: [] }],
         imgUrl: { type: String },
-        tags: [{ type: schema.Types.ObjectId, ref: 'FoodTags' }],
+        tags: [{ type: schema.Types.ObjectId, ref: 'FoodTag' }],
     },
     { timestamps: true },
 );

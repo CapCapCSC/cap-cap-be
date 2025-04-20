@@ -10,10 +10,10 @@ exports.createQuiz = async (req, res) => {
     }
 };
 
-exports.getAllQuizs = async (req, res) => {
+exports.getAllQuizzes = async (req, res) => {
     try {
-        const Quizs = await QuizService.getAll(req.query);
-        res.status(200).json(Quizs);
+        const Quizzes = await QuizService.getAll(req.query);
+        res.status(200).json(Quizzes);
     } catch (error) {
         res.status(500).json({ error: 'InternalServerError', message: error.message });
     }
