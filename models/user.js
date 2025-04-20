@@ -8,6 +8,7 @@ const user = new schema(
         password: { type: String, required: true },
         badges: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Badge' }],
         vouchers: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Voucher' }],
+        role: { type: String, enum: ['user', 'admin'] },
         createdAt: { type: Date, default: Date.now },
     },
     { timestamps: true },

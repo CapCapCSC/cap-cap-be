@@ -14,6 +14,7 @@ const restaurant = new schema(
         name: { type: String, required: true },
         menu: [menuSchema],
         imageUrl: { type: String },
+        district: { type: String },
         locationUrl: { type: String },
     },
     { timestamps: true },

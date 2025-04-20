@@ -1,4 +1,4 @@
-const FoodTag = require('../models/foodtags');
+const FoodTag = require('../models/foodtag');
 
 exports.create = async (data) => {
     return await FoodTag.create(data);

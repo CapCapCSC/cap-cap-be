@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const schema = mongoose.Schema;
 
-const questions = new schema(
+const question = new schema(
     {
         content: { type: String, required: true },
         correctAnswer: [{ type: String, required: true }],
@@ -11,4 +11,4 @@ const questions = new schema(
     { timestamps: true },
 );
 
-module.exports = mongoose.model('Questions', questions);
+module.exports = mongoose.model('Question', question);

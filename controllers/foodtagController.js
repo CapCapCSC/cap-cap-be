@@ -1,4 +1,4 @@
-const foodTagService = require('../services/foodtagsService');
+const foodTagService = require('../services/foodtagService');
 
 exports.createFoodTag = async (req, res) => {
     try {

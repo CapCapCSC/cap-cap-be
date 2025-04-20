@@ -1,5 +1,5 @@
 const express = require('express');
-const foodTagController = require('../controllers/foodtagsController');
+const foodTagController = require('../controllers/foodtagController');
 
 const router = express.Router();
 
