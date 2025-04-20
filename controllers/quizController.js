@@ -1,10 +1,9 @@
 const QuizService = require('../services/quizService');
 
-// ...existing code...
 exports.createQuiz = async (req, res) => {
     try {
-        const Quiz = await QuizService.create(req.body);
-        res.status(201).json({ message: 'Quiz created', Quiz });
+        const quiz = await QuizService.create(req.body);
+        res.status(201).json({ message: 'Quiz created', quiz });
     } catch (error) {
         res.status(500).json({ error: 'InternalServerError', message: error.message });
     }
@@ -12,8 +11,8 @@ exports.createQuiz = async (req, res) => {
 
 exports.getAllQuizzes = async (req, res) => {
     try {
-        const Quizzes = await QuizService.getAll(req.query);
-        res.status(200).json(Quizzes);
+        const quizzes = await QuizService.getAll(req.query);
+        res.status(200).json(quizzes);
     } catch (error) {
         res.status(500).json({ error: 'InternalServerError', message: error.message });
     }
@@ -21,9 +20,9 @@ exports.getAllQuizzes = async (req, res) => {
 
 exports.getQuizById = async (req, res) => {
     try {
-        const Quiz = await QuizService.getById(req.params.id);
-        if (!Quiz) return res.status(404).json({ error: 'NotFound', message: 'Quiz not found' });
-        res.status(200).json(Quiz);
+        const quiz = await QuizService.getById(req.params.id);
+        if (!quiz) return res.status(404).json({ error: 'NotFound', message: 'Quiz not found' });
+        res.status(200).json(quiz);
     } catch (error) {
         res.status(500).json({ error: 'InternalServerError', message: error.message });
     }
@@ -31,9 +30,9 @@ exports.getQuizById = async (req, res) => {
 
 exports.updateQuiz = async (req, res) => {
     try {
-        const Quiz = await QuizService.update(req.params.id, req.body);
-        if (!Quiz) return res.status(404).json({ error: 'NotFound', message: 'Quiz not found' });
-        res.status(200).json({ message: 'Quiz updated', Quiz });
+        const quiz = await QuizService.update(req.params.id, req.body);
+        if (!quiz) return res.status(404).json({ error: 'NotFound', message: 'Quiz not found' });
+        res.status(200).json({ message: 'Quiz updated', quiz });
     } catch (error) {
         res.status(500).json({ error: 'InternalServerError', message: error.message });
     }
@@ -48,4 +47,3 @@ exports.deleteQuiz = async (req, res) => {
         res.status(500).json({ error: 'InternalServerError', message: error.message });
     }
 };
-// ...existing code...

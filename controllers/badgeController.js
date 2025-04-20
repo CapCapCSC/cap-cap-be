@@ -1,6 +1,5 @@
 const BadgeService = require('../services/badgeService');
 
-// ...existing code...
 exports.createBadge = async (req, res) => {
     try {
         const badge = await BadgeService.create(req.body);
@@ -48,4 +47,3 @@ exports.deleteBadge = async (req, res) => {
         res.status(500).json({ error: 'InternalServerError', message: error.message });
     }
 };
-// ...existing code...
