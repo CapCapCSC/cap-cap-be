@@ -12,6 +12,7 @@ const voucher = new schema(
                 required: true,
             },
         ],
+        discountValue: { type: Number, required: true },
         used: { type: Boolean, default: false },
     },
     { timestamps: true },
