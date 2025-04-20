@@ -23,7 +23,7 @@ exports.updateVoucher = async (req, res) => {
     try {
         const voucher = await VoucherService.update(req.params.id, req.body);
         if (!voucher) return res.status(404).json({ error: 'NotFound', message: 'Voucher not found' });
-        res.status(200).json({ message: 'Voucher updated', Voucher });
+        res.status(200).json({ message: 'Voucher updated', voucher });
     } catch (error) {
         res.status(500).json({ error: 'InternalServerError', message: error.message });
     }
