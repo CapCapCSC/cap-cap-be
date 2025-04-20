@@ -1,10 +1,18 @@
 const VoucherService = require('../services/voucherService');
 
-// ...existing code...
 exports.createVoucher = async (req, res) => {
     try {
-        const Voucher = await VoucherService.create(req.body);
-        res.status(201).json({ message: 'Voucher created', Voucher });
+        const voucher = await VoucherService.create(req.body);
+        res.status(201).json({ message: 'Voucher created', voucher });
+    } catch (error) {
+        res.status(500).json({ error: 'InternalServerError', message: error.message });
+    }
+};
+
+exports.getAllVouchers = async (req, res) => {
+    try {
+        const vouchers = await VoucherService.getAll(req.query);
+        res.status(200).json(vouchers);
     } catch (error) {
         res.status(500).json({ error: 'InternalServerError', message: error.message });
     }
@@ -12,9 +20,9 @@ exports.createVoucher = async (req, res) => {
 
 exports.getVoucherById = async (req, res) => {
     try {
-        const Voucher = await VoucherService.getById(req.params.id);
-        if (!Voucher) return res.status(404).json({ error: 'NotFound', message: 'Voucher not found' });
-        res.status(200).json(Voucher);
+        const voucher = await VoucherService.getById(req.params.id);
+        if (!voucher) return res.status(404).json({ error: 'NotFound', message: 'Voucher not found' });
+        res.status(200).json(voucher);
     } catch (error) {
         res.status(500).json({ error: 'InternalServerError', message: error.message });
     }
@@ -22,9 +30,9 @@ exports.getVoucherById = async (req, res) => {
 
 exports.updateVoucher = async (req, res) => {
     try {
-        const Voucher = await VoucherService.update(req.params.id, req.body);
-        if (!Voucher) return res.status(404).json({ error: 'NotFound', message: 'Voucher not found' });
-        res.status(200).json({ message: 'Voucher updated', Voucher });
+        const voucher = await VoucherService.update(req.params.id, req.body);
+        if (!voucher) return res.status(404).json({ error: 'NotFound', message: 'Voucher not found' });
+        res.status(200).json({ message: 'Voucher updated', voucher });
     } catch (error) {
         res.status(500).json({ error: 'InternalServerError', message: error.message });
     }
@@ -39,4 +47,3 @@ exports.deleteVoucher = async (req, res) => {
         res.status(500).json({ error: 'InternalServerError', message: error.message });
     }
 };
-// ...existing code...

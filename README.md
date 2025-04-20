@@ -1,3 +1,102 @@
 # cap-cap-be
 
 BE for CapCap
+
+## Overview
+
+CapCap is a backend system designed to manage resources for a food-related application. It provides APIs for user authentication, food management, restaurant management, quizzes, badges, and vouchers.
+
+## Features
+
+- User authentication and authorization
+- CRUD operations for foods, restaurants, quizzes, badges, and vouchers
+- Pagination, filtering, and searching for list endpoints
+- Relationship APIs (e.g., assigning badges/vouchers to users)
+- Error handling with consistent response structure
+
+## Prerequisites
+
+- Node.js (>= 14.x)
+- MongoDB (>= 4.x)
+- npm (>= 6.x) or yarn
+
+## Installation
+
+1. Clone the repository:
+
+    ```bash
+    git clone https://github.com/your-repo/cap-cap-be.git
+    cd cap-cap-be
+    ```
+
+2. Install dependencies:
+
+    ```bash
+    npm install
+    # or
+    yarn install
+    ```
+
+3. Create a `.env` file in the root directory and configure the following environment variables:
+
+    ```
+    PORT=3000
+    MONGO_URI=mongodb://localhost:27017/capcap
+    JWT_SECRET=your_jwt_secret
+    ```
+
+4. Start the development server:
+    ```bash
+    npm run dev
+    # or
+    yarn dev
+    ```
+
+## API Documentation
+
+Refer to the [API List](./docs/api-list.md) for detailed documentation of all available endpoints.
+
+## Scripts
+
+- `npm run dev`: Start the development server
+- `npm start`: Start the production server
+- `npm run lint`: Run the linter
+- `npm test`: Run tests
+
+## Folder Structure
+
+```
+cap-cap-be/
+├── src/
+│   ├── controllers/   # API controllers
+│   ├── models/        # Mongoose models
+│   ├── routes/        # API routes
+│   ├── middlewares/   # Custom middlewares
+│   ├── utils/         # Utility functions
+│   └── app.js         # Express app setup
+├── docs/              # Documentation
+├── tests/             # Test cases
+├── .env.example       # Example environment variables
+└── README.md          # Project README
+```
+
+## Contributing
+
+1. Fork the repository.
+2. Create a new branch:
+    ```bash
+    git checkout -b feature/your-feature-name
+    ```
+3. Commit your changes:
+    ```bash
+    git commit -m "Add your message here"
+    ```
+4. Push to your branch:
+    ```bash
+    git push origin feature/your-feature-name
+    ```
+5. Create a pull request.
+
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](./LICENSE) file for details.

@@ -1,6 +1,5 @@
 const FoodService = require('../services/foodService');
 
-// ...existing code...
 exports.createFood = async (req, res) => {
     try {
         const food = await FoodService.create(req.body);
@@ -48,4 +47,3 @@ exports.deleteFood = async (req, res) => {
         res.status(500).json({ error: 'InternalServerError', message: error.message });
     }
 };
-// ...existing code...

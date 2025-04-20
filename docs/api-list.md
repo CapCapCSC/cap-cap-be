@@ -147,7 +147,8 @@ Các quy tắc chung:
 {
     "username": "username",
     "email": "user@gmail.com",
-    "password": "password"
+    "password": "password",
+    "role": "user"
 }
 ```
 
@@ -159,7 +160,8 @@ Các quy tắc chung:
     "user": {
         "_id": "...",
         "username": "username",
-        "email": "user@gmail.com"
+        "email": "user@gmail.com",
+        "role": "user"
     }
 }
 ```
@@ -183,8 +185,8 @@ Các quy tắc chung:
 
 ```json
 {
-    "username": "new_username",
-    "email": "new_email@gmail.com"
+    "username": "username",
+    "email": "user@gmail.com"
 }
 ```
 
@@ -221,10 +223,13 @@ Các quy tắc chung:
 
 ```json
 {
+    {
     "name": "food name",
     "description": "food description",
+    "ingredients": ["ingredient 1", "ingredient 2"],
     "imgUrl": "https://example.com/food.jpg",
-    "tags": ["..."]
+    "tags": ["foodTagId1", "foodTagId2"]
+}
 }
 ```
 
@@ -233,7 +238,7 @@ Các quy tắc chung:
 ```json
 {
     "message": "Food created",
-    "food": { "_id": "...", "name": "food" }
+    "food": { "_id": "...", "name": "food", "ingredients": ["ingredient 1"] }
 }
 ```
 
@@ -251,16 +256,18 @@ Các quy tắc chung:
 {
     "data": [
         {
-            "name": "food_01",
-            "description": "food_01 description",
-            "imgUrl": "https://example.com/food_01.jpg",
-            "tags": ["..."]
+            "name": "food name 1",
+            "description": "food description 1",
+            "ingredients": ["ingredient 1", "ingredient 2"],
+            "imgUrl": "https://example.com/food1.jpg",
+            "tags": ["foodTagId1", "foodTagId2"]
         },
         {
-            "name": "food_02",
-            "description": "food_02 description",
-            "imgUrl": "https://example.com/food_02.jpg",
-            "tags": ["..."]
+            "name": "food name 2",
+            "description": "food description 2",
+            "ingredients": ["ingredient 1", "ingredient 2"],
+            "imgUrl": "https://example.com/food2.jpg",
+            "tags": ["foodTagId1", "foodTagId2"]
         }
     ],
     "pagination": {
@@ -277,10 +284,11 @@ Các quy tắc chung:
 
 ```json
 {
-    "name": "food",
+    "name": "food name",
     "description": "food description",
+    "ingredients": ["ingredient 1", "ingredient 2"],
     "imgUrl": "https://example.com/food.jpg",
-    "tags": ["..."]
+    "tags": ["foodTagId1", "foodTagId2"]
 }
 ```
 
@@ -290,10 +298,11 @@ Các quy tắc chung:
 
 ```json
 {
-    "name": "Updated Food Name",
-    "description": "Updated description",
-    "imgUrl": "https://example.com/updated.jpg",
-    "tags": ["..."]
+    "name": "food name",
+    "description": "food description",
+    "ingredients": ["ingredient 1", "ingredient 2"],
+    "imgUrl": "https://example.com/food.jpg",
+    "tags": ["foodTagId1", "foodTagId2"]
 }
 ```
 
@@ -304,10 +313,11 @@ Các quy tắc chung:
     "message": "Food updated",
     "food": {
         "_id": "...",
-        "name": "Updated Food Name",
-        "description": "Updated description",
-        "imgUrl": "https://example.com/updated.jpg",
-        "tags": ["..."]
+        "name": "food name",
+        "description": "food description",
+        "ingredients": ["ingredient 1", "ingredient 2"],
+        "imgUrl": "https://example.com/food.jpg",
+        "tags": ["foodTagId1", "foodTagId2"]
     }
 }
 ```
@@ -324,7 +334,7 @@ Các quy tắc chung:
 
 ---
 
-## Food Tags
+## Food Tag
 
 ### `POST /api/foodtags` Tạo tag món ăn mới
 
@@ -332,7 +342,8 @@ Các quy tắc chung:
 
 ```json
 {
-    "name": "food tag"
+    "name": "food tag",
+    "color": "#008000"
 }
 ```
 
@@ -343,7 +354,8 @@ Các quy tắc chung:
     "message": "Food tag created",
     "foodTag": {
         "_id": "...",
-        "name": "food tag"
+        "name": "food tag",
+        "color": "#008000"
     }
 }
 ```
@@ -356,11 +368,13 @@ Các quy tắc chung:
 [
     {
         "_id": "...",
-        "name": "food tag 1"
+        "name": "food tag",
+        "color": "#008000"
     },
     {
         "_id": "...",
-        "name": "food tag 2"
+        "name": "food tag",
+        "color": "#000080"
     }
 ]
 ```
@@ -372,7 +386,8 @@ Các quy tắc chung:
 ```json
 {
     "_id": "...",
-    "name": "food tag"
+    "name": "food tag",
+    "color": "#008000"
 }
 ```
 
@@ -382,7 +397,8 @@ Các quy tắc chung:
 
 ```json
 {
-    "name": "updated food tag"
+    "name": "food tag",
+    "color": "#008000"
 }
 ```
 
@@ -393,7 +409,8 @@ Các quy tắc chung:
     "message": "Food tag updated",
     "foodTag": {
         "_id": "...",
-        "name": "updated food tag"
+        "name": "food tag",
+        "color": "#008000"
     }
 }
 ```
@@ -420,6 +437,7 @@ Các quy tắc chung:
 {
     "name": "restaurant name",
     "imageUrl": "https://example.com/restaurant.jpg",
+    "district": "Quận 1",
     "locationUrl": "https://maps.example.com/restaurant",
     "menu": [
         {
@@ -439,10 +457,18 @@ Các quy tắc chung:
         "_id": "...",
         "name": "restaurant name",
         "imageUrl": "https://example.com/restaurant.jpg",
+        "district": "Quận 1",
         "locationUrl": "https://maps.example.com/restaurant",
         "menu": [
             {
-                "food": "foodObjectId",
+                "food": {
+                    "_id": "...",
+                    "name": "food name",
+                    "description": "food description",
+                    "ingredients": ["ingredient 1", "ingredient 2"],
+                    "imgUrl": "https://example.com/food.jpg",
+                    "tags": ["foodTagId1", "foodTagId2"]
+                },
                 "price": 50000
             }
         ]
@@ -460,6 +486,7 @@ Các quy tắc chung:
         "_id": "...",
         "name": "name",
         "imageUrl": "https://example.com/restaurant.jpg",
+        "district": "Quận 1",
         "locationUrl": "https://maps.example.com/restaurant",
         "menu": [
             {
@@ -467,7 +494,9 @@ Các quy tắc chung:
                     "_id": "...",
                     "name": "food name",
                     "description": "food description",
-                    "imgUrl": "https://example.com/food.jpg"
+                    "ingredients": ["ingredient 1", "ingredient 2"],
+                    "imgUrl": "https://example.com/food.jpg",
+                    "tags": ["foodTagId1", "foodTagId2"]
                 },
                 "price": 50000
             }
@@ -475,6 +504,53 @@ Các quy tắc chung:
     }
 ]
 ```
+
+### `GET /api/restaurants/random` Lấy ngẫu nhiên 3 nhà hàng theo district **[Public]**
+
+**Query Parameters:**
+
+- `district`: Required, tên quận/huyện cần lấy nhà hàng.
+
+**Ví dụ:**
+
+```
+GET /api/restaurants/random?district=Quận 1
+```
+
+**Response:**
+
+```json
+{
+    "data": [
+        {
+            "_id": "restaurantId1",
+            "name": "Nhà hàng A",
+            "imageUrl": "https://example.com/restaurantA.jpg",
+            "district": "Quận 1",
+            "locationUrl": "https://maps.example.com/restaurantA",
+            "menu": [
+                {
+                    "food": {
+                        "_id": "foodId1",
+                        "name": "Phở bò",
+                        "description": "Phở bò là món ăn truyền thống...",
+                        "ingredients": ["Bánh phở", "Thịt bò", "Hành lá"],
+                        "imgUrl": "https://example.com/phobo.jpg",
+                        "tags": ["661f3b555555555555555555"]
+                    },
+                    "price": 50000
+                }
+            ]
+        }
+        // ... 2 nhà hàng khác ...
+    ]
+}
+```
+
+**Ghi chú:**
+
+- Nếu district không có đủ 3 nhà hàng, trả về tối đa số lượng hiện có.
+- Nếu không có nhà hàng nào ở district đó, trả về `data: []`.
 
 ### `GET /api/restaurants/:id` Lấy thông tin chi tiết nhà hàng
 
@@ -485,6 +561,7 @@ Các quy tắc chung:
     "_id": "...",
     "name": "restaurant name",
     "imageUrl": "https://example.com/restaurant.jpg",
+    "district": "Quận 1",
     "locationUrl": "https://maps.example.com/restaurant",
     "menu": [
         {
@@ -492,7 +569,9 @@ Các quy tắc chung:
                 "_id": "...",
                 "name": "food name",
                 "description": "food description",
-                "imgUrl": "https://example.com/food.jpg"
+                "ingredients": ["ingredient 1", "ingredient 2"],
+                "imgUrl": "https://example.com/food.jpg",
+                "tags": ["foodTagId1", "foodTagId2"]
             },
             "price": 50000
         }
@@ -508,10 +587,18 @@ Các quy tắc chung:
 {
     "name": "Updated restaurant name",
     "imageUrl": "https://example.com/updated.jpg",
+    "district": "Quận 1",
     "locationUrl": "https://maps.example.com/updated",
     "menu": [
         {
-            "food": "foodObjectId",
+            "food": {
+                "_id": "...",
+                "name": "food name",
+                "description": "food description",
+                "ingredients": ["ingredient 1", "ingredient 2"],
+                "imgUrl": "https://example.com/food.jpg",
+                "tags": ["foodTagId1", "foodTagId2"]
+            },
             "price": 60000
         }
     ]
@@ -527,10 +614,18 @@ Các quy tắc chung:
         "_id": "...",
         "name": "Updated restaurant name",
         "imageUrl": "https://example.com/updated.jpg",
+        "district": "Quận 1",
         "locationUrl": "https://maps.example.com/updated",
         "menu": [
             {
-                "food": "foodObjectId",
+                "food": {
+                    "_id": "...",
+                    "name": "food name",
+                    "description": "food description",
+                    "ingredients": ["ingredient 1", "ingredient 2"],
+                    "imgUrl": "https://example.com/food.jpg",
+                    "tags": ["foodTagId1", "foodTagId2"]
+                },
                 "price": 60000
             }
         ]
@@ -558,9 +653,9 @@ Các quy tắc chung:
 
 ```json
 {
-    "content": "Món ăn nào có nguồn gốc từ Ý?",
-    "options": ["Pizza", "Sushi", "Taco", "Pho"],
-    "correctAnswer": ["Pizza"],
+    "content": "Phở bò là đặc sản của vùng nào?",
+    "correctAnswer": ["Miền Bắc"],
+    "incorrectAnswer": ["Miền Nam", "Miền Trung"],
     "relatedFood": "foodObjectId"
 }
 ```
@@ -572,9 +667,9 @@ Các quy tắc chung:
     "message": "Question created",
     "question": {
         "_id": "...",
-        "content": "Món ăn nào có nguồn gốc từ Ý?",
-        "options": ["Pizza", "Sushi", "Taco", "Pho"],
-        "correctAnswer": ["Pizza"],
+        "content": "Phở bò là đặc sản của vùng nào?",
+        "correctAnswer": ["Miền Bắc"],
+        "incorrectAnswer": ["Miền Nam", "Miền Trung"],
         "relatedFood": "foodObjectId"
     }
 }
@@ -588,13 +683,10 @@ Các quy tắc chung:
 [
     {
         "_id": "...",
-        "content": "Món ăn nào có nguồn gốc từ Ý?",
-        "options": ["Pizza", "Sushi", "Taco", "Pho"],
-        "correctAnswer": ["Pizza"],
-        "relatedFood": {
-            "_id": "...",
-            "name": "Pizza"
-        }
+        "content": "Phở bò là đặc sản của vùng nào?",
+        "correctAnswer": ["Miền Bắc"],
+        "incorrectAnswer": ["Miền Nam", "Miền Trung"],
+        "relatedFood": "foodObjectId"
     }
 ]
 ```
@@ -606,13 +698,10 @@ Các quy tắc chung:
 ```json
 {
     "_id": "...",
-    "content": "Món ăn nào có nguồn gốc từ Ý?",
-    "options": ["Pizza", "Sushi", "Taco", "Pho"],
-    "correctAnswer": ["Pizza"],
-    "relatedFood": {
-        "_id": "...",
-        "name": "Pizza"
-    }
+    "content": "Phở bò là đặc sản của vùng nào?",
+    "correctAnswer": ["Miền Bắc"],
+    "incorrectAnswer": ["Miền Nam", "Miền Trung"],
+    "relatedFood": "foodObjectId"
 }
 ```
 
@@ -622,9 +711,9 @@ Các quy tắc chung:
 
 ```json
 {
-    "content": "Món ăn nào là đặc sản của Việt Nam?",
-    "options": ["Pizza", "Sushi", "Taco", "Pho"],
-    "correctAnswer": ["Pho"],
+    "content": "Phở bò là đặc sản của vùng nào?",
+    "correctAnswer": ["Miền Bắc"],
+    "incorrectAnswer": ["Miền Nam", "Miền Trung"],
     "relatedFood": "foodObjectId"
 }
 ```
@@ -636,9 +725,9 @@ Các quy tắc chung:
     "message": "Question updated",
     "question": {
         "_id": "...",
-        "content": "Món ăn nào là đặc sản của Việt Nam?",
-        "options": ["Pizza", "Sushi", "Taco", "Pho"],
-        "correctAnswer": ["Pho"],
+        "content": "Phở bò là đặc sản của vùng nào?",
+        "correctAnswer": ["Miền Bắc"],
+        "incorrectAnswer": ["Miền Nam", "Miền Trung"],
         "relatedFood": "foodObjectId"
     }
 }
@@ -664,9 +753,11 @@ Các quy tắc chung:
 
 ```json
 {
-    "name": "Quiz Ẩm thực Ý",
+    "name": "Quiz Ẩm thực Việt Nam",
+    "description": "Kiểm tra kiến thức về các món ăn Việt.",
+    "imageUrl": "https://example.com/quiz.jpg",
     "questions": ["questionObjectId1", "questionObjectId2"],
-    "dateAvailable": ["2025-04-20T00:00:00.000Z", "2025-04-21T00:00:00.000Z"]
+    "validUntil": "2025-12-31T23:59:59.000Z"
 }
 ```
 
@@ -677,10 +768,11 @@ Các quy tắc chung:
     "message": "Quiz created",
     "quiz": {
         "_id": "...",
-        "name": "Quiz Ẩm thực Ý",
+        "name": "Quiz Ẩm thực Việt Nam",
+        "description": "Kiểm tra kiến thức về các món ăn Việt.",
+        "imageUrl": "https://example.com/quiz.jpg",
         "questions": ["questionObjectId1", "questionObjectId2"],
-        "dateCreated": "2025-04-17T10:00:00.000Z",
-        "dateAvailable": ["2025-04-20T00:00:00.000Z", "2025-04-21T00:00:00.000Z"]
+        "validUntil": "2025-12-31T23:59:59.000Z"
     }
 }
 ```
@@ -693,15 +785,11 @@ Các quy tắc chung:
 [
     {
         "_id": "...",
-        "name": "Quiz Ẩm thực Ý",
-        "questions": [
-            {
-                "_id": "questionObjectId1",
-                "content": "Món ăn nào có nguồn gốc từ Ý?"
-            }
-        ],
-        "dateCreated": "2025-04-17T10:00:00.000Z",
-        "dateAvailable": ["2025-04-20T00:00:00.000Z"]
+        "name": "Quiz Ẩm thực Việt Nam",
+        "description": "Kiểm tra kiến thức về các món ăn Việt.",
+        "imageUrl": "https://example.com/quiz.jpg",
+        "questions": ["questionObjectId1", "questionObjectId2"],
+        "validUntil": "2025-12-31T23:59:59.000Z"
     }
 ]
 ```
@@ -713,17 +801,11 @@ Các quy tắc chung:
 ```json
 {
     "_id": "...",
-    "name": "Quiz Ẩm thực Ý",
-    "questions": [
-        {
-            "_id": "questionObjectId1",
-            "content": "Món ăn nào có nguồn gốc từ Ý?",
-            "options": ["Pizza", "Sushi", "Taco", "Pho"],
-            "correctAnswer": ["Pizza"]
-        }
-    ],
-    "dateCreated": "2025-04-17T10:00:00.000Z",
-    "dateAvailable": ["2025-04-20T00:00:00.000Z"]
+    "name": "Quiz Ẩm thực Việt Nam",
+    "description": "Kiểm tra kiến thức về các món ăn Việt.",
+    "imageUrl": "https://example.com/quiz.jpg",
+    "questions": ["questionObjectId1", "questionObjectId2"],
+    "validUntil": "2025-12-31T23:59:59.000Z"
 }
 ```
 
@@ -734,8 +816,10 @@ Các quy tắc chung:
 ```json
 {
     "name": "Quiz Ẩm thực Việt Nam",
-    "questions": ["questionObjectId3"],
-    "dateAvailable": ["2025-05-01T00:00:00.000Z"]
+    "description": "Kiểm tra kiến thức về các món ăn Việt.",
+    "imageUrl": "https://example.com/quiz.jpg",
+    "questions": ["questionObjectId1", "questionObjectId2"],
+    "validUntil": "2025-12-31T23:59:59.000Z"
 }
 ```
 
@@ -747,8 +831,10 @@ Các quy tắc chung:
     "quiz": {
         "_id": "...",
         "name": "Quiz Ẩm thực Việt Nam",
-        "questions": ["questionObjectId3"],
-        "dateAvailable": ["2025-05-01T00:00:00.000Z"]
+        "description": "Kiểm tra kiến thức về các món ăn Việt.",
+        "imageUrl": "https://example.com/quiz.jpg",
+        "questions": ["questionObjectId1", "questionObjectId2"],
+        "validUntil": "2025-12-31T23:59:59.000Z"
     }
 }
 ```
@@ -868,7 +954,8 @@ Các quy tắc chung:
 {
     "name": "Giảm giá 10%",
     "validUntil": "2025-12-31T23:59:59.000Z",
-    "applicableRestaurants": ["restaurantObjectId1", "restaurantObjectId2"]
+    "applicableRestaurants": ["restaurantObjectId1", "restaurantObjectId2"],
+    "discountValue": 10
 }
 ```
 
@@ -882,6 +969,7 @@ Các quy tắc chung:
         "name": "Giảm giá 10%",
         "validUntil": "2025-12-31T23:59:59.000Z",
         "applicableRestaurants": ["restaurantObjectId1", "restaurantObjectId2"],
+        "discountValue": 10,
         "used": false
     }
 }
@@ -903,6 +991,7 @@ Các quy tắc chung:
                 "name": "Nhà hàng A"
             }
         ],
+        "discountValue": 10,
         "used": false
     }
 ]
@@ -923,6 +1012,7 @@ Các quy tắc chung:
             "name": "Nhà hàng A"
         }
     ],
+    "discountValue": 10,
     "used": false
 }
 ```
@@ -936,6 +1026,7 @@ Các quy tắc chung:
     "name": "Giảm giá 20%",
     "validUntil": "2026-01-01T23:59:59.000Z",
     "applicableRestaurants": ["restaurantObjectId3"],
+    "discountValue": 20,
     "used": true
 }
 ```
@@ -950,6 +1041,7 @@ Các quy tắc chung:
         "name": "Giảm giá 20%",
         "validUntil": "2026-01-01T23:59:59.000Z",
         "applicableRestaurants": ["restaurantObjectId3"],
+        "discountValue": 20,
         "used": true
     }
 }
