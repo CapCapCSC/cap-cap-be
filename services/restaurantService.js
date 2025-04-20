@@ -18,9 +18,15 @@ exports.getById = async (id) => {
     return await Restaurant.findById(id);
 };
 
-exports.getRandom3 = async (district) => {
+exports.getRandom3 = async (filters) => {
+    const matchStage = {};
+
+    if (filters.district) {
+        matchStage.district = filters.district;
+    }
+
     const restaurants = await Restaurant.aggregate([
-        { $match: { district } },
+        { $match: { matchStage } },
         { $sample: { size: 3 } }
     ]);
     if (!restaurants || restaurants.length === 0) {
