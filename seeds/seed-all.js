@@ -9,7 +9,7 @@ const seeder = new Seeder({
 const collections = [
     {
         name: 'foodtags',
-        documents: require(path.join(__dirname, './seed-data/FoodTags.json')),
+        documents: require(path.join(__dirname, './seed-data/FoodTag.json')),
     },
     {
         name: 'food',
