@@ -1,7 +1,6 @@
 const express = require('express');
-const foodTagController = require('../controllers/foodtagController');
-
 const router = express.Router();
+const foodTagController = require('../controllers/foodtagController');
 
 router.post('/', foodTagController.createFoodTag); // POST /api/foodtags
 router.get('/', foodTagController.getAllFoodTags); // GET /api/foodtags

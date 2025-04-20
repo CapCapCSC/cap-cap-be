@@ -1,4 +1,4 @@
-const User = require('../models/user'); // Assuming a Mongoose model
+const User = require('../models/user');
 
 exports.create = async (data) => {
     return await User.create(data);
