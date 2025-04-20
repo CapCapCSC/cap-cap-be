@@ -30,7 +30,7 @@ exports.getRestaurantById = async (req, res) => {
 
 exports.getRandom3Restaurants = async (req, res) => {
     try {
-        const district = req.query.district;
+        const district = req.params.district;
         if (!district) {
             return res.status(400).json({ error: 'BadRequest', message: 'District is required' });
         }
