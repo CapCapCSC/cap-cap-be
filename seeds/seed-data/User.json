@@ -1,0 +1,22 @@
+[
+    {
+        "_id": "661f7c111111111111111111",
+        "username": "admin_user",
+        "email": "admin@example.com",
+        "password": "hashed_password_admin",
+        "badges": [],
+        "vouchers": [],
+        "role": "admin",
+        "createdAt": "2023-01-01T00:00:00Z"
+    },
+    {
+        "_id": "661f7c222222222222222222",
+        "username": "user1",
+        "email": "user1@example.com",
+        "password": "hashed_password_user1",
+        "badges": [],
+        "vouchers": [],
+        "role": "user",
+        "createdAt": "2023-01-02T00:00:00Z"
+    }
+]

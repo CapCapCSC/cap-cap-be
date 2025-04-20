@@ -9,6 +9,15 @@ exports.createVoucher = async (req, res) => {
     }
 };
 
+exports.getAllVouchers = async (req, res) => {
+    try {
+        const vouchers = await VoucherService.getAll(req.query);
+        res.status(200).json(vouchers);
+    } catch (error) {
+        res.status(500).json({ error: 'InternalServerError', message: error.message });
+    }
+};
+
 exports.getVoucherById = async (req, res) => {
     try {
         const voucher = await VoucherService.getById(req.params.id);

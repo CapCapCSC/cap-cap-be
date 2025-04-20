@@ -8,6 +8,7 @@ exports.getAll = async (query) => {
     const { page = 1, limit = 10, tags } = query;
     const filter = tags ? { tags: { $in: tags.split(',') } } : {};
     const foods = await Food.find(filter)
+        .populate('tags')
         .skip((page - 1) * limit)
         .limit(parseInt(limit));
     const total = await Food.countDocuments(filter);
@@ -15,7 +16,7 @@ exports.getAll = async (query) => {
 };
 
 exports.getById = async (id) => {
-    return await Food.findById(id);
+    return await Food.findById(id).populate('tags');
 };
 
 exports.update = async (id, data) => {
