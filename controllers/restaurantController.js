@@ -28,6 +28,19 @@ exports.getRestaurantById = async (req, res) => {
     }
 };
 
+exports.getRandom3Restaurants = async (req, res) => {
+    try {
+        const district = req.query.district;
+        if (!district) {
+            return res.status(400).json({ error: 'BadRequest', message: 'District is required' });
+        }
+        const restaurants = await RestaurantService.getRandom3(district);
+        res.status(200).json(restaurants);
+    } catch (error) {
+        res.status(500).json({ error: 'InternalServerError', message: error.message });
+    }
+};
+
 exports.updateRestaurant = async (req, res) => {
     try {
         const restaurant = await RestaurantService.update(req.params.id, req.body);
