@@ -1,6 +1,6 @@
 [
     {
-        "id": "661f3b111111111111111111",
+        "_id": "661f3b111111111111111111",
         "name": "Phở bò",
         "description": "Phở bò là món ăn truyền thống nổi tiếng của miền Bắc Việt Nam, được xem là biểu tượng của ẩm thực Việt. Nước dùng phở được ninh từ xương bò, kết hợp với các loại gia vị như quế, hồi, thảo quả, tạo nên hương vị thơm ngọt đặc trưng. Bánh phở mềm, thịt bò thái mỏng, ăn kèm với hành lá, rau thơm, chanh, ớt và nước mắm. Phở bò thường được dùng vào bữa sáng, nhưng cũng có thể thưởng thức vào bất kỳ thời điểm nào trong ngày.",
         "ingredients": ["Bánh phở", "Thịt bò", "Hành lá", "Quế", "Hồi", "Thảo quả"],
@@ -8,7 +8,7 @@
         "tags": ["661f3b555555555555555555", "661f3b777777777777777777"]
     },
     {
-        "id": "661f3b222222222222222222",
+        "_id": "661f3b222222222222222222",
         "name": "Bún chả",
         "description": "Bún chả là đặc sản nổi tiếng của Hà Nội, gồm bún tươi, thịt lợn nướng trên than hoa và nước mắm pha chua ngọt. Thịt được ướp gia vị rồi nướng cháy cạnh, ăn kèm với các loại rau sống như xà lách, tía tô, kinh giới. Nước chấm bún chả thường có thêm đu đủ xanh thái lát mỏng, tạo vị giòn và thanh mát. Món ăn này từng được Tổng thống Mỹ Obama thưởng thức khi đến Việt Nam.",
         "ingredients": ["Bún", "Thịt lợn", "Rau sống", "Nước mắm", "Đu đủ xanh"],
@@ -16,7 +16,7 @@
         "tags": ["661f3b777777777777777777"]
     },
     {
-        "id": "661f3b333333333333333333",
+        "_id": "661f3b333333333333333333",
         "name": "Bánh mì",
         "description": "Bánh mì Việt Nam là sự kết hợp độc đáo giữa văn hóa ẩm thực Pháp và Việt. Ổ bánh mì giòn rụm, bên trong là nhân đa dạng như thịt nguội, chả lụa, pate, trứng, thịt nướng, kèm theo dưa leo, đồ chua, rau mùi và nước sốt đặc biệt. Bánh mì được bán khắp nơi, từ các xe đẩy vỉa hè đến nhà hàng sang trọng, và được xem là món ăn nhanh tiện lợi, giàu dinh dưỡng.",
         "ingredients": ["Bánh mì", "Thịt nguội", "Chả lụa", "Pate", "Dưa leo", "Đồ chua"],
@@ -24,7 +24,7 @@
         "tags": ["661f3b222222222222222222"]
     },
     {
-        "id": "661f3b444444444444444444",
+        "_id": "661f3b444444444444444444",
         "name": "Cơm tấm",
         "description": "Cơm tấm là món ăn đặc trưng của Sài Gòn (Thành phố Hồ Chí Minh), nổi bật với hạt cơm tấm nhỏ, mềm dẻo. Món ăn thường gồm sườn nướng, bì, chả trứng, trứng ốp la, ăn kèm dưa leo, cà chua, đồ chua và nước mắm pha chua ngọt. Sườn được ướp đậm đà, nướng thơm lừng, tạo nên hương vị khó quên cho thực khách.",
         "ingredients": ["Cơm tấm", "Sườn nướng", "Bì", "Chả trứng", "Nước mắm"],
@@ -32,7 +32,7 @@
         "tags": ["661f3b222222222222222222"]
     },
     {
-        "id": "661f3b555555555555555555",
+        "_id": "661f3b555555555555555555",
         "name": "Gỏi cuốn",
         "description": "Gỏi cuốn là món ăn nhẹ, thanh mát, phổ biến ở miền Nam Việt Nam. Bánh tráng cuốn bên ngoài, bên trong là tôm, thịt luộc, bún, rau sống và hẹ. Gỏi cuốn thường được chấm với nước mắm chua ngọt hoặc tương đậu phộng, mang lại vị ngon hài hòa, ít dầu mỡ, thích hợp cho những ngày hè nóng bức.",
         "ingredients": ["Bánh tráng", "Tôm", "Thịt luộc", "Rau sống", "Bún"],
@@ -40,7 +40,7 @@
         "tags": ["661f3b111111111111111111"]
     },
     {
-        "id": "661f3b666666666666666666",
+        "_id": "661f3b666666666666666666",
         "name": "Bánh xèo",
         "description": "Bánh xèo là món ăn dân dã, phổ biến ở miền Trung và miền Nam (đặc biệt là miền Tây, hay vùng ĐBSCL). Bánh được làm từ bột gạo, nước cốt dừa, nghệ, đổ mỏng trên chảo nóng cho giòn, nhân gồm tôm, thịt, giá đỗ. Khi ăn, bánh xèo được cuốn với rau sống, bánh tráng và chấm nước mắm chua ngọt. Món ăn này hấp dẫn bởi vị giòn rụm và hương thơm đặc trưng.",
         "ingredients": ["Bột gạo", "Nước cốt dừa", "Tôm", "Thịt", "Giá đỗ"],
@@ -48,7 +48,7 @@
         "tags": ["661f3b222222222222222222", "661f3b666666666666666666"]
     },
     {
-        "id": "661f3b777777777777777777",
+        "_id": "661f3b777777777777777777",
         "name": "Chè ba màu",
         "description": "Chè ba màu là món tráng miệng nổi tiếng, gồm ba lớp màu sắc: đậu xanh, đậu đỏ, thạch lá dứa, ăn kèm nước cốt dừa và đá bào. Món chè này không chỉ đẹp mắt mà còn có vị ngọt thanh, béo ngậy, giúp giải nhiệt hiệu quả trong những ngày hè oi bức.",
         "ingredients": ["Đậu xanh", "Đậu đỏ", "Thạch lá dứa", "Nước cốt dừa", "Đá bào"],
@@ -56,7 +56,7 @@
         "tags": ["661f3b444444444444444444"]
     },
     {
-        "id": "661f3b888888888888888888",
+        "_id": "661f3b888888888888888888",
         "name": "Bánh cuốn",
         "description": "Bánh cuốn là món ăn sáng quen thuộc của người Việt, đặc biệt ở miền Bắc. Bánh được làm từ bột gạo hấp mỏng, cuộn nhân thịt băm, mộc nhĩ, hành phi. Khi ăn, bánh cuốn được cắt nhỏ, rắc thêm hành phi, ăn kèm chả lụa, giá đỗ và nước mắm pha chua ngọt.",
         "ingredients": ["Bột gạo", "Thịt băm", "Mộc nhĩ", "Hành phi"],
@@ -64,7 +64,7 @@
         "tags": ["661f3b777777777777777777"]
     },
     {
-        "id": "661f3b999999999999999999",
+        "_id": "661f3b999999999999999999",
         "name": "Bún bò Huế",
         "description": "Bún bò Huế là đặc sản nổi tiếng của miền Trung, nổi bật với nước dùng cay, thơm mùi sả, màu đỏ đặc trưng từ ớt và dầu điều. Sợi bún to, thịt bò, giò heo, chả cua, ăn kèm rau sống, giá đỗ, chanh, ớt. Món ăn này mang đậm hương vị và tinh thần của xứ Huế.",
         "ingredients": ["Bún", "Thịt bò", "Giò heo", "Sả", "Ớt"],
@@ -72,7 +72,7 @@
         "tags": ["661f3b555555555555555555", "661f3b666666666666666666"]
     },
     {
-        "id": "661f3baaaaaaaaaaaaaaaa",
+        "_id": "661f3baaaaaaaaaaaaaaaa",
         "name": "Đậu hũ sốt cà",
         "description": "Đậu hũ sốt cà là món chay phổ biến, dễ làm, giàu dinh dưỡng. Đậu hũ được chiên vàng, sốt với cà chua, hành lá, tiêu, tạo vị chua ngọt hài hòa. Món ăn này thường xuất hiện trong các bữa cơm gia đình, đặc biệt vào ngày chay hoặc dành cho người ăn kiêng.",
         "ingredients": ["Đậu hũ", "Cà chua", "Hành lá", "Tiêu"],
@@ -80,7 +80,7 @@
         "tags": ["661f3b111111111111111111"]
     },
     {
-        "id": "661f3bbbbbbbbbbbbbbbbbb",
+        "_id": "661f3bbbbbbbbbbbbbbbbbb",
         "name": "Bánh tráng trộn",
         "description": "Bánh tráng trộn là món ăn vặt nổi tiếng của giới trẻ, đặc biệt ở miền Nam. Bánh tráng cắt sợi, trộn cùng xoài xanh, bò khô, trứng cút, rau răm, đậu phộng, nước sốt me và sa tế. Món ăn này có vị chua, cay, mặn, ngọt hòa quyện, rất hấp dẫn và dễ gây nghiện.",
         "ingredients": ["Bánh tráng", "Xoài xanh", "Bò khô", "Trứng cút", "Rau răm", "Nước sốt me"],
@@ -88,7 +88,7 @@
         "tags": ["661f3b333333333333333333"]
     },
     {
-        "id": "661f3bcccccccccccccccccc",
+        "_id": "661f3bcccccccccccccccccc",
         "name": "Bánh bèo",
         "description": "Bánh bèo là đặc sản của Huế, gồm những chiếc bánh nhỏ làm từ bột gạo, hấp chín, bên trên rắc tôm chấy, hành phi, tóp mỡ. Khi ăn, bánh bèo được chan nước mắm pha ngọt, tạo nên vị ngon đặc trưng, mềm mịn và thơm béo.",
         "ingredients": ["Bột gạo", "Tôm chấy", "Hành phi", "Tóp mỡ", "Nước mắm"],
@@ -96,7 +96,7 @@
         "tags": ["661f3b666666666666666666"]
     },
     {
-        "id": "661f3bdddddddddddddddddd",
+        "_id": "661f3bdddddddddddddddddd",
         "name": "Bánh đa cua",
         "description": "Bánh đa cua là món nước đặc trưng của Hải Phòng, gồm bánh đa đỏ, nước dùng nấu từ cua đồng, cà chua, hành phi, ăn kèm chả lá lốt, giò, rau muống, giá đỗ. Món ăn này nổi bật với vị ngọt thanh, béo ngậy và màu sắc hấp dẫn.",
         "ingredients": ["Bánh đa đỏ", "Cua đồng", "Cà chua", "Hành phi", "Rau muống"],
@@ -104,7 +104,7 @@
         "tags": ["661f3b555555555555555555", "661f3b777777777777777777"]
     },
     {
-        "id": "661f3beeeeeeeeeeeeeeeeee",
+        "_id": "661f3beeeeeeeeeeeeeeeeee",
         "name": "Bún riêu",
         "description": "Bún riêu là món bún nước phổ biến, nước dùng nấu từ cua đồng, cà chua, đậu hũ, riêu cua, ăn kèm bún tươi, rau sống, giá đỗ. Món ăn này có vị chua nhẹ từ cà chua, thơm mùi cua đồng, rất thích hợp cho bữa sáng hoặc trưa.",
         "ingredients": ["Bún", "Cua đồng", "Cà chua", "Đậu hũ", "Rau sống"],
@@ -112,7 +112,7 @@
         "tags": ["661f3b555555555555555555"]
     },
     {
-        "id": "661f3bffffffffffffffff",
+        "_id": "661f3bffffffffffffffff",
         "name": "Bún mắm",
         "description": "Bún mắm là đặc sản miền Tây Nam Bộ, nổi bật với nước lèo nấu từ mắm cá linh, cá sặc, kết hợp tôm, mực, thịt heo quay, cà tím, rau sống. Món ăn này có vị đậm đà, thơm nồng đặc trưng của mắm, rất được ưa chuộng ở miền Tây.",
         "ingredients": ["Bún", "Mắm cá linh", "Tôm", "Mực", "Thịt heo quay"],
@@ -120,7 +120,7 @@
         "tags": ["661f3b555555555555555555", "661f3b666666666666666666"]
     },
     {
-        "id": "661f3b000000000000000000",
+        "_id": "661f3b000000000000000000",
         "name": "Bánh khọt",
         "description": "Bánh khọt là món ăn vặt nổi tiếng của miền Nam, bánh nhỏ chiên giòn, nhân tôm, ăn kèm rau sống, dưa leo, nước mắm chua ngọt. Bánh khọt có lớp vỏ giòn rụm, nhân tôm ngọt, tạo nên hương vị hấp dẫn khó quên.",
         "ingredients": ["Bột gạo", "Tôm", "Rau sống", "Dưa leo", "Nước mắm"],
@@ -128,7 +128,7 @@
         "tags": ["661f3b222222222222222222", "661f3b666666666666666666"]
     },
     {
-        "id": "661f3b111111111111111112",
+        "_id": "661f3b111111111111111112",
         "name": "Bánh tét",
         "description": "Bánh tét là món bánh truyền thống không thể thiếu trong dịp Tết của người miền Nam. Bánh được làm từ gạo nếp, nhân đậu xanh, thịt mỡ, gói trong lá chuối, luộc chín. Khi ăn, bánh tét có vị dẻo của nếp, béo của thịt, bùi của đậu xanh.",
         "ingredients": ["Gạo nếp", "Đậu xanh", "Thịt mỡ", "Lá chuối"],
@@ -136,7 +136,7 @@
         "tags": ["661f3b666666666666666666"]
     },
     {
-        "id": "661f3b222222222222222223",
+        "_id": "661f3b222222222222222223",
         "name": "Bánh chưng",
         "description": "Bánh chưng là món bánh truyền thống của người Việt trong dịp Tết Nguyên Đán, đặc biệt ở miền Bắc. Bánh được làm từ gạo nếp, đậu xanh, thịt lợn, gói trong lá dong, luộc chín. Bánh chưng tượng trưng cho đất, mang ý nghĩa sum vầy, no đủ.",
         "ingredients": ["Gạo nếp", "Đậu xanh", "Thịt lợn", "Lá dong"],
@@ -144,7 +144,7 @@
         "tags": ["661f3b777777777777777777"]
     },
     {
-        "id": "661f3b333333333333333334",
+        "_id": "661f3b333333333333333334",
         "name": "Nem rán",
         "description": "Nem rán (chả giò) là món ăn truyền thống, phổ biến trong các dịp lễ, Tết. Nem được làm từ thịt lợn băm, mộc nhĩ, miến, cà rốt, cuốn trong bánh đa nem, chiên vàng giòn. Khi ăn, nem rán được chấm với nước mắm chua ngọt, ăn kèm rau sống.",
         "ingredients": ["Thịt lợn băm", "Mộc nhĩ", "Miến", "Cà rốt", "Bánh đa nem"],
@@ -152,7 +152,7 @@
         "tags": ["661f3b222222222222222222", "661f3b777777777777777777"]
     },
     {
-        "id": "661f3b444444444444444445",
+        "_id": "661f3b444444444444444445",
         "name": "Bánh bột lọc",
         "description": "Bánh bột lọc là đặc sản miền Trung, bánh nhỏ trong suốt, nhân tôm thịt, gói trong lá chuối, hấp chín. Khi ăn, bánh bột lọc có vị dai của bột, ngọt của tôm thịt, chấm nước mắm cay ngọt rất hấp dẫn.",
         "ingredients": ["Bột năng", "Tôm", "Thịt", "Lá chuối", "Nước mắm"],
@@ -160,7 +160,7 @@
         "tags": ["661f3b666666666666666666"]
     },
     {
-        "id": "661f3b555555555555555556",
+        "_id": "661f3b555555555555555556",
         "name": "Bánh gai",
         "description": "Bánh gai là món bánh ngọt truyền thống của miền Bắc, làm từ bột nếp trộn lá gai, nhân đậu xanh, dừa, mỡ lợn, gói trong lá chuối, hấp chín. Bánh gai có màu đen đặc trưng, vị ngọt bùi, thơm mùi lá gai.",
         "ingredients": ["Bột nếp", "Lá gai", "Đậu xanh", "Dừa", "Mỡ lợn"],
@@ -168,7 +168,7 @@
         "tags": ["661f3b444444444444444444"]
     },
     {
-        "id": "661f3b666666666666666667",
+        "_id": "661f3b666666666666666667",
         "name": "Chè trôi nước",
         "description": "Chè trôi nước là món tráng miệng truyền thống, gồm những viên bột nếp nhân đậu xanh, nấu với nước đường, gừng, ăn kèm nước cốt dừa. Món chè này thường xuất hiện trong dịp Tết Hàn Thực, tượng trưng cho sự đoàn viên.",
         "ingredients": ["Bột nếp", "Đậu xanh", "Nước đường", "Gừng", "Nước cốt dừa"],
@@ -176,7 +176,7 @@
         "tags": ["661f3b444444444444444444"]
     },
     {
-        "id": "661f3b777777777777777778",
+        "_id": "661f3b777777777777777778",
         "name": "Bánh cam",
         "description": "Bánh cam là món ăn vặt phổ biến ở miền Nam, bánh tròn nhỏ, vỏ ngoài chiên giòn, nhân đậu xanh ngọt, phủ mè trắng. Khi ăn, bánh cam có vị ngọt bùi, giòn rụm, rất hấp dẫn.",
         "ingredients": ["Bột nếp", "Đậu xanh", "Mè trắng", "Đường"],
@@ -184,7 +184,7 @@
         "tags": ["661f3b333333333333333333"]
     },
     {
-        "id": "661f3b888888888888888889",
+        "_id": "661f3b888888888888888889",
         "name": "Bánh da lợn",
         "description": "Bánh da lợn là món bánh ngọt nhiều lớp, mềm dẻo, làm từ bột năng, nước cốt dừa, lá dứa, đậu xanh. Bánh có màu xanh, vàng xen kẽ, vị ngọt thanh, thơm mùi lá dứa và nước cốt dừa.",
         "ingredients": ["Bột năng", "Nước cốt dừa", "Lá dứa", "Đậu xanh"],
@@ -192,7 +192,7 @@
         "tags": ["661f3b444444444444444444"]
     },
     {
-        "id": "661f3b999999999999999990",
+        "_id": "661f3b999999999999999990",
         "name": "Bánh ít trần",
         "description": "Bánh ít trần là đặc sản miền Trung, bánh dẻo làm từ bột nếp, nhân tôm thịt, hấp chín, ăn kèm hành phi, mỡ hành và nước mắm chua ngọt. Bánh có vị dẻo của bột, ngọt mặn của nhân, rất hấp dẫn.",
         "ingredients": ["Bột nếp", "Tôm", "Thịt", "Hành phi", "Mỡ hành"],
@@ -200,7 +200,7 @@
         "tags": ["661f3b666666666666666666"]
     },
     {
-        "id": "661f3baaaaaaaaaaaaaaab",
+        "_id": "661f3baaaaaaaaaaaaaaab",
         "name": "Bánh khoai mì nướng",
         "description": "Bánh khoai mì nướng là món bánh ngọt dân dã, làm từ khoai mì (sắn), dừa nạo, nước cốt dừa, đường, nướng vàng thơm. Bánh có vị ngọt bùi, béo ngậy, thường được dùng làm món ăn vặt hoặc tráng miệng.",
         "ingredients": ["Khoai mì", "Dừa nạo", "Nước cốt dừa", "Đường"],
