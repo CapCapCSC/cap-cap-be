@@ -7,11 +7,11 @@ exports.create = async (data) => {
 exports.getAll = async (query) => {
     const { page = 1, limit = 10, tags } = query;
     const filter = tags ? { tags: { $in: tags.split(',') } } : {};
-    const Questions = await Question.find(filter)
+    const questions = await Question.find(filter)
         .skip((page - 1) * limit)
         .limit(parseInt(limit));
     const total = await Question.countDocuments(filter);
-    return { data: Questions, pagination: { page, limit, total } };
+    return { data: questions, pagination: { page, limit, total } };
 };
 
 exports.getById = async (id) => {

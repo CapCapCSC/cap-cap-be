@@ -7,11 +7,11 @@ exports.create = async (data) => {
 exports.getAll = async (query) => {
     const { page = 1, limit = 10, tags } = query;
     const filter = tags ? { tags: { $in: tags.split(',') } } : {};
-    const Restaurants = await Restaurant.find(filter)
+    const restaurants = await Restaurant.find(filter)
         .skip((page - 1) * limit)
         .limit(parseInt(limit));
     const total = await Restaurant.countDocuments(filter);
-    return { data: Restaurants, pagination: { page, limit, total } };
+    return { data: restaurants, pagination: { page, limit, total } };
 };
 
 exports.getById = async (id) => {
