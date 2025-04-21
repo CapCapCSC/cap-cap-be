@@ -15,7 +15,7 @@ exports.getAll = async (query) => {
 };
 
 exports.getById = async (id) => {
-    return await Quiz.findById(id);
+    return await Quiz.findById(id).populate('questions');
 };
 
 exports.update = async (id, data) => {
@@ -25,4 +25,23 @@ exports.update = async (id, data) => {
 exports.delete = async (id) => {
     const result = await Quiz.findByIdAndDelete(id);
     return !!result;
+};
+
+exports.submitQuiz = async (id, userId, answers) => {
+    const quiz = await Quiz.findById(id).populate('questions');
+    if (!quiz) return null;
+
+    let score = 0;
+    const total = quiz.questions.length;
+
+    const correctAnswers = quiz.questions.map((question) => {
+        const userAnswer = answers.find((answer) => answer.questionId === question._id.toString());
+        const isCorrect = userAnswer && question.correctAnswer === userAnswer.answer;
+        if (isCorrect) score++;
+        return {
+            questionId: question._id,
+            isCorrect,
+        };
+    });
+    return { score, total, correctAnswers };
 };

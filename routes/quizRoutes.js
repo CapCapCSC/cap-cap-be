@@ -8,4 +8,6 @@ router.get('/:id', quizController.getQuizById); // Read one
 router.put('/:id', quizController.updateQuiz); // Update
 router.delete('/:id', quizController.deleteQuiz); // Delete
 
+router.post('/:id/submit', quizController.submitQuiz); // Submit quiz
+
 module.exports = router;
