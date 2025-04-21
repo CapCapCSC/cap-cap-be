@@ -37,7 +37,7 @@ Các quy tắc chung:
 
 ## Authentication
 
-### `POST /api/auth/register` Đăng ký tài khoản mới
+### `POST /api/auth/register` Đăng ký tài khoản mới **[Public]**
 
 **Request:**
 
@@ -68,7 +68,7 @@ Các quy tắc chung:
 }
 ```
 
-### `POST /api/auth/login` Đăng nhập
+### `POST /api/auth/login` Đăng nhập **[Public]**
 
 **Request:**
 
@@ -99,7 +99,7 @@ Các quy tắc chung:
 }
 ```
 
-### `POST /api/auth/refresh-token` Làm mới access token
+### `POST /api/auth/refresh-token` Làm mới access token **[Auth]**
 
 **Request:**
 
@@ -117,7 +117,7 @@ Các quy tắc chung:
 }
 ```
 
-### `POST /api/auth/logout` Đăng xuất
+### `POST /api/auth/logout` Đăng xuất **[Auth]**
 
 **Request:**
 
@@ -139,7 +139,7 @@ Các quy tắc chung:
 
 ## User
 
-### `POST /api/users` Tạo user mới
+### `POST /api/users` Tạo user mới **[Auth][Admin]**
 
 **Request:**
 
@@ -166,7 +166,7 @@ Các quy tắc chung:
 }
 ```
 
-### `GET /api/users/:id` Lấy thông tin user + voucher, badge
+### `GET /api/users/:id` Lấy thông tin user + voucher, badge **[Auth]**
 
 **Response:**
 
@@ -179,7 +179,7 @@ Các quy tắc chung:
 }
 ```
 
-### `PUT /api/users/:id` Cập nhật thông tin user
+### `PUT /api/users/:id` Cập nhật thông tin user **[Auth]**
 
 **Request:**
 
@@ -203,7 +203,7 @@ Các quy tắc chung:
 }
 ```
 
-### `DELETE /api/users/:id` Xóa user
+### `DELETE /api/users/:id` Xóa user **[Auth][Admin]**
 
 **Response:**
 
@@ -217,7 +217,7 @@ Các quy tắc chung:
 
 ## Food
 
-### `POST /api/foods` Tạo food mới
+### `POST /api/foods` Tạo food mới **[Auth][Admin]**
 
 **Request:**
 
@@ -242,7 +242,7 @@ Các quy tắc chung:
 }
 ```
 
-### `GET /api/foods/` Lấy danh sách tất cả các món ăn
+### `GET /api/foods/` Lấy danh sách tất cả các món ăn **[Public]**
 
 **Query Parameters:**
 
@@ -278,7 +278,7 @@ Các quy tắc chung:
 }
 ```
 
-### `GET /api/foods/:id` Lấy thông tin chi tiết của một món ăn
+### `GET /api/foods/:id` Lấy thông tin chi tiết của một món ăn **[Public]**
 
 **Response:**
 
@@ -292,7 +292,7 @@ Các quy tắc chung:
 }
 ```
 
-### `PUT /api/foods/:id` Cập nhật thông tin món ăn
+### `PUT /api/foods/:id` Cập nhật thông tin món ăn **[Auth][Admin]**
 
 **Request:**
 
@@ -322,7 +322,7 @@ Các quy tắc chung:
 }
 ```
 
-### `DELETE /api/foods/:id` Xóa món ăn
+### `DELETE /api/foods/:id` Xóa món ăn **[Auth][Admin]**
 
 **Response:**
 
@@ -336,7 +336,7 @@ Các quy tắc chung:
 
 ## Food Tag
 
-### `POST /api/foodtags` Tạo tag món ăn mới
+### `POST /api/foodtags` Tạo tag món ăn mới **[Auth][Admin]**
 
 **Request:**
 
@@ -360,7 +360,7 @@ Các quy tắc chung:
 }
 ```
 
-### `GET /api/foodtags` Lấy danh sách tất cả tag món ăn
+### `GET /api/foodtags` Lấy danh sách tất cả tag món ăn **[Public]**
 
 **Response:**
 
@@ -379,7 +379,7 @@ Các quy tắc chung:
 ]
 ```
 
-### `GET /api/foodtags/:id` Lấy thông tin chi tiết một tag
+### `GET /api/foodtags/:id` Lấy thông tin chi tiết một tag **[Public]**
 
 **Response:**
 
@@ -391,7 +391,7 @@ Các quy tắc chung:
 }
 ```
 
-### `PUT /api/foodtags/:id` Cập nhật thông tin tag
+### `PUT /api/foodtags/:id` Cập nhật thông tin tag **[Auth][Admin]**
 
 **Request:**
 
@@ -415,7 +415,7 @@ Các quy tắc chung:
 }
 ```
 
-### `DELETE /api/foodtags/:id` Xóa tag món ăn
+### `DELETE /api/foodtags/:id` Xóa tag món ăn **[Auth][Admin]**
 
 **Response:**
 
@@ -429,7 +429,7 @@ Các quy tắc chung:
 
 ## Restaurant
 
-### `POST /api/restaurants` Tạo nhà hàng mới
+### `POST /api/restaurants` Tạo nhà hàng mới **[Auth][Admin]**
 
 **Request:**
 
@@ -476,7 +476,7 @@ Các quy tắc chung:
 }
 ```
 
-### `GET /api/restaurants` Lấy danh sách tất cả nhà hàng
+### `GET /api/restaurants` Lấy danh sách tất cả nhà hàng **[Public]**
 
 **Response:**
 
@@ -552,7 +552,7 @@ GET /api/restaurants/random?district=Quận 1
 - Nếu district không có đủ 3 nhà hàng, trả về tối đa số lượng hiện có.
 - Nếu không có nhà hàng nào ở district đó, trả về `data: []`.
 
-### `GET /api/restaurants/:id` Lấy thông tin chi tiết nhà hàng
+### `GET /api/restaurants/:id` Lấy thông tin chi tiết nhà hàng **[Public]**
 
 **Response:**
 
@@ -579,7 +579,7 @@ GET /api/restaurants/random?district=Quận 1
 }
 ```
 
-### `PUT /api/restaurants/:id` Cập nhật thông tin nhà hàng
+### `PUT /api/restaurants/:id` Cập nhật thông tin nhà hàng **[Auth][Admin]**
 
 **Request:**
 
@@ -633,7 +633,7 @@ GET /api/restaurants/random?district=Quận 1
 }
 ```
 
-### `DELETE /api/restaurants/:id` Xóa nhà hàng
+### `DELETE /api/restaurants/:id` Xóa nhà hàng **[Auth][Admin]**
 
 **Response:**
 
@@ -647,7 +647,7 @@ GET /api/restaurants/random?district=Quận 1
 
 ## Questions
 
-### `POST /api/questions` Tạo câu hỏi mới
+### `POST /api/questions` Tạo câu hỏi mới **[Auth][Admin]**
 
 **Request:**
 
@@ -675,7 +675,7 @@ GET /api/restaurants/random?district=Quận 1
 }
 ```
 
-### `GET /api/questions` Lấy danh sách tất cả câu hỏi
+### `GET /api/questions` Lấy danh sách tất cả câu hỏi **[Public]**
 
 **Response:**
 
@@ -691,7 +691,7 @@ GET /api/restaurants/random?district=Quận 1
 ]
 ```
 
-### `GET /api/questions/:id` Lấy thông tin chi tiết một câu hỏi
+### `GET /api/questions/:id` Lấy thông tin chi tiết một câu hỏi **[Public]**
 
 **Response:**
 
@@ -705,7 +705,7 @@ GET /api/restaurants/random?district=Quận 1
 }
 ```
 
-### `PUT /api/questions/:id` Cập nhật thông tin câu hỏi
+### `PUT /api/questions/:id` Cập nhật thông tin câu hỏi **[Auth][Admin]**
 
 **Request:**
 
@@ -733,7 +733,7 @@ GET /api/restaurants/random?district=Quận 1
 }
 ```
 
-### `DELETE /api/questions/:id` Xóa câu hỏi
+### `DELETE /api/questions/:id` Xóa câu hỏi **[Auth][Admin]**
 
 **Response:**
 
@@ -747,7 +747,7 @@ GET /api/restaurants/random?district=Quận 1
 
 ## Quiz
 
-### `POST /api/quizzes` Tạo quiz mới
+### `POST /api/quizzes` Tạo quiz mới **[Auth][Admin]**
 
 **Request:**
 
@@ -777,7 +777,7 @@ GET /api/restaurants/random?district=Quận 1
 }
 ```
 
-### `GET /api/quizzes` Lấy danh sách tất cả quiz
+### `GET /api/quizzes` Lấy danh sách tất cả quiz **[Public]**
 
 **Response:**
 
@@ -794,7 +794,7 @@ GET /api/restaurants/random?district=Quận 1
 ]
 ```
 
-### `GET /api/quizzes/:id` Lấy thông tin chi tiết quiz
+### `GET /api/quizzes/:id` Lấy thông tin chi tiết quiz **[Public]**
 
 **Response:**
 
@@ -809,7 +809,7 @@ GET /api/restaurants/random?district=Quận 1
 }
 ```
 
-### `PUT /api/quizzes/:id` Cập nhật thông tin quiz
+### `PUT /api/quizzes/:id` Cập nhật thông tin quiz **[Auth][Admin]**
 
 **Request:**
 
@@ -839,7 +839,7 @@ GET /api/restaurants/random?district=Quận 1
 }
 ```
 
-### `DELETE /api/quizzes/:id` Xóa quiz
+### `DELETE /api/quizzes/:id` Xóa quiz **[Auth][Admin]**
 
 **Response:**
 
@@ -853,7 +853,7 @@ GET /api/restaurants/random?district=Quận 1
 
 ## Badge
 
-### `POST /api/badges` Tạo badge mới
+### `POST /api/badges` Tạo badge mới **[Auth][Admin]**
 
 **Request:**
 
@@ -877,7 +877,7 @@ GET /api/restaurants/random?district=Quận 1
 }
 ```
 
-### `GET /api/badges` Lấy danh sách tất cả badge
+### `GET /api/badges` Lấy danh sách tất cả badge **[Public]**
 
 **Response:**
 
@@ -896,7 +896,7 @@ GET /api/restaurants/random?district=Quận 1
 ]
 ```
 
-### `GET /api/badges/:id` Lấy thông tin chi tiết badge
+### `GET /api/badges/:id` Lấy thông tin chi tiết badge **[Public]**
 
 **Response:**
 
@@ -908,7 +908,7 @@ GET /api/restaurants/random?district=Quận 1
 }
 ```
 
-### `PUT /api/badges/:id` Cập nhật thông tin badge
+### `PUT /api/badges/:id` Cập nhật thông tin badge **[Auth][Admin]**
 
 **Request:**
 
@@ -932,7 +932,7 @@ GET /api/restaurants/random?district=Quận 1
 }
 ```
 
-### `DELETE /api/badges/:id` Xóa badge
+### `DELETE /api/badges/:id` Xóa badge **[Auth][Admin]**
 
 **Response:**
 
@@ -946,7 +946,7 @@ GET /api/restaurants/random?district=Quận 1
 
 ## Voucher
 
-### `POST /api/vouchers` Tạo voucher mới
+### `POST /api/vouchers` Tạo voucher mới **[Auth][Admin]**
 
 **Request:**
 
@@ -975,7 +975,7 @@ GET /api/restaurants/random?district=Quận 1
 }
 ```
 
-### `GET /api/vouchers` Lấy danh sách tất cả voucher
+### `GET /api/vouchers` Lấy danh sách tất cả voucher **[Public]**
 
 **Response:**
 
@@ -997,7 +997,7 @@ GET /api/restaurants/random?district=Quận 1
 ]
 ```
 
-### `GET /api/vouchers/:id` Lấy thông tin chi tiết voucher
+### `GET /api/vouchers/:id` Lấy thông tin chi tiết voucher **[Public]**
 
 **Response:**
 
@@ -1017,7 +1017,7 @@ GET /api/restaurants/random?district=Quận 1
 }
 ```
 
-### `PUT /api/vouchers/:id` Cập nhật thông tin voucher
+### `PUT /api/vouchers/:id` Cập nhật thông tin voucher **[Auth][Admin]**
 
 **Request:**
 
@@ -1047,7 +1047,7 @@ GET /api/restaurants/random?district=Quận 1
 }
 ```
 
-### `DELETE /api/vouchers/:id` Xóa voucher
+### `DELETE /api/vouchers/:id` Xóa voucher **[Auth][Admin]**
 
 **Response:**
 
@@ -1199,7 +1199,7 @@ GET /api/foods?tags=661f3b...e1,661f3b...e2
 
 ### Gán badge cho user
 
-#### `POST /api/users/:id/badges` Gán badge cho user
+#### `POST /api/users/:id/badges` Gán badge cho user **[Auth][Admin]**
 
 **Request:**
 
@@ -1225,7 +1225,7 @@ GET /api/foods?tags=661f3b...e1,661f3b...e2
 
 ### Gán voucher cho user
 
-#### `POST /api/users/:id/vouchers` Gán voucher cho user
+#### `POST /api/users/:id/vouchers` Gán voucher cho user **[Auth][Admin]**
 
 **Request:**
 
@@ -1249,7 +1249,7 @@ GET /api/foods?tags=661f3b...e1,661f3b...e2
 
 ### Tham gia quiz
 
-#### `POST /api/quizzes/:id/submit` Nộp kết quả quiz
+#### `POST /api/quizzes/:id/submit` Nộp kết quả quiz **[Auth]**
 
 **Request:**
 
