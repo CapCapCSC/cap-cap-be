@@ -675,7 +675,7 @@ GET /api/restaurants/random?district=Quận 1
 }
 ```
 
-### `GET /api/questions` Lấy danh sách tất cả câu hỏi **[Public]**
+### `GET /api/questions` Lấy danh sách tất cả câu hỏi **[Auth][Admin]**
 
 **Response:**
 
@@ -691,7 +691,7 @@ GET /api/restaurants/random?district=Quận 1
 ]
 ```
 
-### `GET /api/questions/:id` Lấy thông tin chi tiết một câu hỏi **[Public]**
+### `GET /api/questions/:id` Lấy thông tin chi tiết một câu hỏi **[Auth][Admin]**
 
 **Response:**
 
