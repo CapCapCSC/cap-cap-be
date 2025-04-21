@@ -260,14 +260,14 @@ Các quy tắc chung:
             "description": "food description 1",
             "ingredients": ["ingredient 1", "ingredient 2"],
             "imgUrl": "https://example.com/food1.jpg",
-            "tags": ["foodTagId1", "foodTagId2"]
+            "tags": ["foodTag1", "foodTag2"]
         },
         {
             "name": "food name 2",
             "description": "food description 2",
             "ingredients": ["ingredient 1", "ingredient 2"],
             "imgUrl": "https://example.com/food2.jpg",
-            "tags": ["foodTagId1", "foodTagId2"]
+            "tags": ["foodTag1", "foodTag2"]
         }
     ],
     "pagination": {
@@ -288,7 +288,7 @@ Các quy tắc chung:
     "description": "food description",
     "ingredients": ["ingredient 1", "ingredient 2"],
     "imgUrl": "https://example.com/food.jpg",
-    "tags": ["foodTagId1", "foodTagId2"]
+    "tags": ["foodTag1", "foodTag2"]
 }
 ```
 

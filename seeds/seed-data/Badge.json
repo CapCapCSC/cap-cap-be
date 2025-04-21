@@ -1,0 +1,17 @@
+[
+    {
+        "_id": "661f3b44-4444-4444-4444-444444444445",
+        "name": "Beginner",
+        "iconUrl": "https://example.com/icons/beginner.png"
+    },
+    {
+        "_id": "661f3b44-4444-4444-4444-444444444446",
+        "name": "Intermediate",
+        "iconUrl": "https://example.com/icons/intermediate.png"
+    },
+    {
+        "_id": "661f3b44-4444-4444-4444-444444444447",
+        "name": "Expert",
+        "iconUrl": "https://example.com/icons/expert.png"
+    }
+]

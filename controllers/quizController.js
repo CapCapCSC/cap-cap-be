@@ -47,3 +47,16 @@ exports.deleteQuiz = async (req, res) => {
         res.status(500).json({ error: 'InternalServerError', message: error.message });
     }
 };
+
+exports.submitQuiz = async (req, res) => {
+    try{
+        const { id } = req.params;
+        const { userId, answers } = req.body;
+        const result = await QuizService.submitQuiz(id, userId, answers);
+        if (!result) return res.status(404).json({ error: 'NotFound', message: 'Quiz not found' });
+        res.status(200).json({message: 'Quiz submitted', result});
+    }
+    catch(error){
+        res.status(500).json({ error: 'InternalServerError', message: error.message });
+    }
+}
