@@ -39,3 +39,28 @@ exports.deleteUser = async (req, res) => {
     }
 };
 
+exports.addBadge = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { badgeId } = req.body;
+        
+        const user = await UserService.addBadge(id, badgeId);
+        if (!user) return res.status(404).json({ error: 'NotFound', message: 'User not found' });
+        res.status(200).json({ message: 'Badge added to user', user });
+    } catch (error) {
+        res.status(500).json({ error: 'InternalServerError', message: error.message });
+    }
+}
+
+exports.addVoucher = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { voucherId } = req.body;
+        
+        const user = await UserService.addVoucher(id, voucherId);
+        if (!user) return res.status(404).json({ error: 'NotFound', message: 'User not found' });
+        res.status(200).json({ message: 'Voucher added to user', user });
+    } catch (error) {
+        res.status(500).json({ error: 'InternalServerError', message: error.message });
+    }
+}

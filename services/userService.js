@@ -16,3 +16,21 @@ exports.delete = async (id) => {
     const result = await User.findByIdAndDelete(id);
     return !!result;
 };
+
+exports.addBadge = async (userId, badgeId) => {
+    const user = await User.findByIdAndUpdate(
+        userId, 
+        { $addToSet: { badges: badgeId } }, 
+        { new: true }
+    ).populate('badges');
+    return user;
+};
+
+exports.addVoucher = async (userId, voucherId) => {
+    const user = await User.findByIdAndUpdate(
+        userId, 
+        { $addToSet: { vouchers: voucherId } }, 
+        { new: true }
+    ).populate('vouchers');
+    return user;
+};
