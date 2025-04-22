@@ -5,7 +5,7 @@
         "description": "Kiểm tra kiến thức về các món ăn đặc trưng của miền Bắc Việt Nam.",
         "imageUrl": "https://example.com/quiz-north.jpg",
         "questions": ["661f5b111111111111111111", "661f5b222222222222222222", "661f5b333333333333333333"],
-        "val_idUntil": "2025-12-31T23:59:59.000Z"
+        "validUntil": "2025-12-31T23:59:59.000Z"
     },
     {
         "_id": "661f6b222222222222222222",
@@ -13,7 +13,7 @@
         "description": "Khám phá các món ăn đặc sản của miền Trung Việt Nam.",
         "imageUrl": "https://example.com/quiz-central.jpg",
         "questions": ["661f5b444444444444444444", "661f5b666666666666666666", "661f5bcccccccccccccccccc"],
-        "val_idUntil": "2025-12-31T23:59:59.000Z"
+        "validUntil": "2025-12-31T23:59:59.000Z"
     },
     {
         "_id": "661f6b333333333333333333",
@@ -21,7 +21,7 @@
         "description": "Tìm hiểu về các món ăn nổi tiếng của miền Nam Việt Nam.",
         "imageUrl": "https://example.com/quiz-south.jpg",
         "questions": ["661f5b555555555555555555", "661f5b777777777777777777", "661f5b888888888888888888"],
-        "val_idUntil": "2025-12-31T23:59:59.000Z"
+        "validUntil": "2025-12-31T23:59:59.000Z"
     },
     {
         "_id": "661f6b444444444444444444",
@@ -35,6 +35,6 @@
             "661f5b000000000000000000",
             "661f5b222222222222222223"
         ],
-        "val_idUntil": "2025-12-31T23:59:59.000Z"
+        "validUntil": "2025-12-31T23:59:59.000Z"
     }
 ]
