@@ -28,6 +28,7 @@ exports.register = async (req, res) => {
             },
         });
     } catch (error) {
+        console.error('Login error:', error);
         res.status(500).json({ error: 'InternalServerError', message: error.message, status: 500 });
     }
 };
@@ -38,7 +39,7 @@ exports.login = async (req, res) => {
         const user = await User.findOne({ email });
 
         if (!user) {
-            return res.status(401).json({ error: 'Unauthorized', message: 'Invalid email or password', status: 401 });
+            return res.status(401).json({ error: 'Unauthorized', message: 'Invalid email', status: 401 });
         }
 
         const isMatch = await bcrypt.compare(password, user.password);
