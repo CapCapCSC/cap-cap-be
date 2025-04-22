@@ -10,6 +10,7 @@
         "dotenv": "^16.5.0",
         "express": "^5.1.0",
         "express-validator": "^7.2.1",
+        "joi": "^17.13.3",
         "jsonwebtoken": "^9.0.2",
         "mongo-seeding": "^4.0.1",
         "mongoose": "^8.13.2",
@@ -20,5 +21,6 @@
     "devDependencies": {
         "jest": "^29.7.0",
         "supertest": "^7.1.0"
+
     }
 }
