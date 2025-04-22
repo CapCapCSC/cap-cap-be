@@ -3,6 +3,8 @@ const router = express.Router();
 const quizController = require('../controllers/quizController');
 const authMiddleware = require('../middlewares/authMiddleware');
 const adminMiddleware = require('../middlewares/adminMiddleware');
+const validator = require('../middlewares/validationSchemas');
+const validate = require('../middlewares/validate');
 
 //PUBLIC
 router.get('/', quizController.getAllQuizzes); // Read all
@@ -12,8 +14,8 @@ router.get('/:id', quizController.getQuizById); // Read one
 router.post('/:id/submit', authMiddleware, quizController.submitQuiz); // Submit quiz
 
 //ADMIN
+router.post('/', authMiddleware, adminMiddleware, validate(validator.createQuizSchema), quizController.createQuiz); // Create
 router.put('/:id', authMiddleware, adminMiddleware, quizController.updateQuiz); // Update
-router.post('/', authMiddleware, adminMiddleware, quizController.createQuiz); // Create
 router.delete('/:id', authMiddleware, adminMiddleware, quizController.deleteQuiz); // Delete
 
 module.exports = router;
