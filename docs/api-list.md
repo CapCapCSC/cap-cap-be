@@ -1326,14 +1326,7 @@ GET /api/foods?tags=661f3b...e1,661f3b...e2
         { "questionId": "questionObjectId1", "answer": ["Pizza"] },
         { "questionId": "questionObjectId2", "answer": ["Pho"] }
     ],
-    "quizResult": {
-        "_id": "quizResultObjectId",
-        "userId": "userObjectId",
-        "quizId": "quizObjectId",
-        "startedAt": "DateCreated",
-        "submittedAt": "",
-        "score": "", 
-    }
+    "quizResultId": "quizResultObjectId"
 }
 ```
 

@@ -63,8 +63,8 @@ exports.startQuiz = async (req, res) => {
 exports.submitQuiz = async (req, res) => {
     try {
         const { id } = req.params;
-        const { userId, answers, quizResult } = req.body;
-        const result = await QuizService.submitQuiz(id, userId, answers, quizResult);
+        const { userId, answers, quizResultId } = req.body;
+        const result = await QuizService.submitQuiz(id, userId, answers, quizResultId);
         if (!result) return res.status(404).json({ error: 'NotFound', message: 'Quiz not found' });
         res.status(200).json({ message: 'Quiz submitted', result });
     } catch (error) {
