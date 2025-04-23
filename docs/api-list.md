@@ -1288,6 +1288,33 @@ GET /api/foods?tags=661f3b...e1,661f3b...e2
 
 ### Tham gia quiz
 
+#### `POST /api/quizzes/:id/start` Bắt đầu làm quiz **[Auth]**
+
+**Request:**
+
+```json
+{
+    "userId": "userObjectId",
+}
+```
+
+**Response:**
+
+```json
+{
+    "message": "Quiz started",
+    "quiz": "quizObjectId",
+    "quizResult": {
+        "_id": "quizResultObjectId",
+        "userId": "userObjectId",
+        "quizId": "quizObjectId",
+        "startedAt": "DateCreated",
+        "submittedAt": "",
+        "score": "", 
+    }
+}
+```
+
 #### `POST /api/quizzes/:id/submit` Nộp kết quả quiz **[Auth]**
 
 **Request:**
@@ -1298,7 +1325,15 @@ GET /api/foods?tags=661f3b...e1,661f3b...e2
     "answers": [
         { "questionId": "questionObjectId1", "answer": ["Pizza"] },
         { "questionId": "questionObjectId2", "answer": ["Pho"] }
-    ]
+    ],
+    "quizResult": {
+        "_id": "quizResultObjectId",
+        "userId": "userObjectId",
+        "quizId": "quizObjectId",
+        "startedAt": "DateCreated",
+        "submittedAt": "",
+        "score": "", 
+    }
 }
 ```
 
@@ -1307,6 +1342,7 @@ GET /api/foods?tags=661f3b...e1,661f3b...e2
 ```json
 {
     "message": "Quiz submitted",
+    "userId": "userObjectId",
     "result": {
         "score": 8,
         "total": 10,
@@ -1314,6 +1350,14 @@ GET /api/foods?tags=661f3b...e1,661f3b...e2
             { "questionId": "questionObjectId1", "isCorrect": true },
             { "questionId": "questionObjectId2", "isCorrect": false }
         ]
+    },
+    "quizResult": {
+        "_id": "quizResultObjectId",
+        "userId": "userObjectId",
+        "quizId": "quizObjectId",
+        "startedAt": "DateCreated",
+        "submittedAt": "DateSubmitted",
+        "score": "score", 
     }
 }
 ```

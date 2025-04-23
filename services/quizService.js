@@ -1,4 +1,5 @@
 const Quiz = require('../models/quiz');
+const QuizResultService = require('../models/quizResultService');
 
 exports.create = async (data) => {
     return await Quiz.create(data);
@@ -27,7 +28,18 @@ exports.delete = async (id) => {
     return !!result;
 };
 
-exports.submitQuiz = async (id, userId, answers) => {
+exports.startQuiz = async (id, userId) => {
+    const quiz = await Quiz.findById(id).populate('questions');
+    if (!quiz) return null;
+    const quizResult = await QuizResultService.create({
+        userId,
+        quizId: id,
+        startedAt: new Date(),
+    });
+    return { quiz, quizResult };
+};
+
+exports.submitQuiz = async (id, userId, answers, quizResultId) => {
     const quiz = await Quiz.findById(id).populate('questions');
     if (!quiz) return null;
 
@@ -43,5 +55,13 @@ exports.submitQuiz = async (id, userId, answers) => {
             isCorrect,
         };
     });
-    return { score, total, correctAnswers };
+
+    const percentageScore = total > 0 ? Math.floor((score / total) * 100) : 0;
+
+    const quizResult = await QuizResultService.updateWhenSubmitted(
+        quizResultId,
+        { score: percentageScore, submittedAt: new Date() },
+    );
+
+    return { userId, score, total, correctAnswers, quizResult };
 };
