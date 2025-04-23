@@ -18,6 +18,27 @@ exports.getAllFoods = async (req, res) => {
     }
 };
 
+exports.getRandomFood = async (req, res) => {
+    try {
+        const foods = await FoodService.getAll();
+        if (foods.length === 0) return res.status(404).json({ error: 'NotFound', message: 'No foods available' });
+
+        const randomFood = foods[Math.floor(Math.random() * foods.length)];
+
+        const restaurants = await RestaurantService.getAll();
+        const relatedRestaurants = restaurants.filter((restaurant) =>
+            restaurant.menu.some((item) => item.food.toString() === randomFood._id.toString()),
+        );
+
+        res.status(200).json({
+            food: randomFood,
+            restaurants: relatedRestaurants,
+        });
+    } catch (error) {
+        res.status(500).json({ error: 'InternalServerError', message: error.message });
+    }
+};
+
 exports.getFoodById = async (req, res) => {
     try {
         const food = await FoodService.getById(req.params.id);

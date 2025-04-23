@@ -9,6 +9,7 @@ const validate = require('../middlewares/validate');
 //PUBLIC
 router.get('/', foodController.getAllFoods); // Read all
 router.get('/:id', foodController.getFoodById); // Read one
+router.get('/random', foodController.getRandomFood); // GET /api/foods/random
 
 //ADMIN
 router.post('/', authMiddleware, adminMiddleware, validate(validator.createFoodSchema), foodController.createFood); // Create
