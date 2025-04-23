@@ -11,7 +11,7 @@ CapCap is a backend system designed to manage resources for a food-related appli
 - User authentication and authorization
 - CRUD operations for foods, restaurants, quizzes, badges, and vouchers
 - Interactive quizzes with scoring and rewards
-- Interactive map with restaurant details and cultural stories
+- Interactive map with restaurant details using manual Google Maps links
 - "What to eat today?" feature for random food suggestions
 - Participation in competitions with ranking and rewards
 - Member registration and profile management, including loyalty points and voucher storage
