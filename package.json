@@ -21,7 +21,8 @@
     "scripts": {
         "start": "nodemon --inspect src/index.js",
         "pretty": "prettier --single-quote --tab-width 4 --trailing-comma all --write '../cap-cap-be/**/*.{js,json,scss,md}'",
-        "test": "jest"
+        "test": "jest",
+        "dev": "nodemon src/index.js"
     },
     "dependencies": {
         "bcryptjs": "^3.0.2",
