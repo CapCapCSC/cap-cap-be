@@ -5,60 +5,109 @@ const { generateAccessToken, generateRefreshToken } = require('../utils/token');
 
 exports.register = async (req, res) => {
     try {
-        const { username, email, password, role } = req.body;
+        const { username, email, password } = req.body;
+
         const existingUser = await User.findOne({ email });
         if (existingUser) {
-            return res.status(400).json({ error: 'BadRequest', message: 'Email already exists', status: 400 });
+            return res.status(400).json({
+                error: 'Bad Request',
+                message: 'Email already exists',
+            });
         }
-        const hashedPassword = await bcrypt.hash(password, 10);
-        const user = await User.create({
-            username,
-            email,
-            password: hashedPassword,
-            role: role || 'user',
-        });
 
-        res.status(201).json({
-            message: 'User registered successfully',
-            user: {
-                id: user._id,
-                username: user.username,
-                email: user.email,
-                role: user.role,
-            },
-        });
+        if (!password || typeof password !== 'string') {
+            return res.status(400).json({
+                error: 'Bad Request',
+                message: 'Invalid password format',
+            });
+        }
+
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(password, salt);
+
+        try {
+            const user = await User.create({
+                username,
+                email,
+                password: hashedPassword,
+                role: 'user',
+            });
+
+            res.status(201).json({
+                message: 'User registered successfully',
+                user: {
+                    id: user._id,
+                    username: user.username,
+                    email: user.email,
+                    role: user.role,
+                },
+            });
+        } catch (createError) {
+            if (createError.code === 11000) {
+                return res.status(400).json({
+                    error: 'Bad Request',
+                    message: 'Email already exists',
+                });
+            }
+            throw createError;
+        }
     } catch (error) {
-        res.status(500).json({ error: 'InternalServerError', message: error.message, status: 500 });
+        if (error.code === 11000) {
+            return res.status(400).json({
+                error: 'Bad Request',
+                message: 'Email already exists',
+            });
+        }
+        res.status(500).json({
+            error: 'Internal Server Error',
+            message: error.message,
+        });
     }
 };
 
 exports.login = async (req, res) => {
     try {
         const { email, password } = req.body;
-        const user = await User.findOne({ email });
+
+        const user = await User.findOne({ email }).select('+password').collation({ locale: 'en', strength: 2 }).exec();
 
         if (!user) {
-            return res.status(401).json({ error: 'Unauthorized', message: 'Invalid email or password', status: 401 });
+            console.log('User not found');
+            return res.status(401).json({
+                error: 'Unauthorized',
+                message: 'Invalid email or password',
+            });
         }
 
         const isMatch = await bcrypt.compare(password, user.password);
-        if (!isMatch) {
-            return res.status(401).json({ error: 'Unauthorized', message: 'Invalid email or password', status: 401 });
-        }
-        const payload = { id: user._id, username: user.username, email: user.email, role: user.role };
-        const accessToken = generateAccessToken(payload);
-        const refreshToken = generateRefreshToken(payload);
+        console.log('Password comparison:', {
+            input: password,
+            stored: user.password,
+            match: isMatch,
+        });
 
-        user.refreshToken = refreshToken;
-        await user.save();
+        if (!isMatch) {
+            console.log('Password mismatch');
+            return res.status(401).json({
+                error: 'Unauthorized',
+                message: 'Invalid email or password',
+            });
+        }
+
+        const accessToken = jwt.sign({ userId: user._id, role: user.role }, process.env.ACCESS_TOKEN_SECRET, {
+            expiresIn: '15m',
+        });
+
         res.status(200).json({
-            message: 'Login successful',
             accessToken,
-            refreshToken,
-            user: payload,
+            userId: user._id,
+            role: user.role,
         });
     } catch (error) {
-        res.status(500).json({ error: 'InternalServerError', message: error.message, status: 500 });
+        res.status(500).json({
+            error: 'Internal Server Error',
+            message: error.message,
+        });
     }
 };
 

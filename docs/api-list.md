@@ -278,6 +278,45 @@ Các quy tắc chung:
 }
 ```
 
+### `GET /api/foods/random` Lấy thông tin ngẫu nhiên một món ăn **[Public]**
+
+**Response:**
+
+```json
+{
+    "food": {
+        "name": "food name 1",
+        "description": "food description 1",
+        "ingredients": ["ingredient 1", "ingredient 2"],
+        "imgUrl": "https://example.com/food1.jpg",
+        "tags": ["foodTag1", "foodTag2"]
+    },
+    "restaurants": [
+        {
+            "_id": "restaurantId1",
+            "name": "Nhà hàng A",
+            "imageUrl": "https://example.com/restaurantA.jpg",
+            "district": "Quận 1",
+            "locationUrl": "https://maps.example.com/restaurantA",
+            "menu": [
+                {
+                    "food": {
+                        "_id": "foodId1",
+                        "name": "Phở bò",
+                        "description": "Phở bò là món ăn truyền thống...",
+                        "ingredients": ["Bánh phở", "Thịt bò", "Hành lá"],
+                        "imgUrl": "https://example.com/phobo.jpg",
+                        "tags": ["661f3b555555555555555555"]
+                    },
+                    "price": 50000
+                }
+            ]
+        }
+        // ... 2 nhà hàng khác ...
+    ]
+}
+```
+
 ### `GET /api/foods/:id` Lấy thông tin chi tiết của một món ăn **[Public]**
 
 **Response:**
@@ -675,7 +714,7 @@ GET /api/restaurants/random?district=Quận 1
 }
 ```
 
-### `GET /api/questions` Lấy danh sách tất cả câu hỏi **[Public]**
+### `GET /api/questions` Lấy danh sách tất cả câu hỏi **[Auth][Admin]**
 
 **Response:**
 
@@ -691,7 +730,7 @@ GET /api/restaurants/random?district=Quận 1
 ]
 ```
 
-### `GET /api/questions/:id` Lấy thông tin chi tiết một câu hỏi **[Public]**
+### `GET /api/questions/:id` Lấy thông tin chi tiết một câu hỏi **[Auth][Admin]**
 
 **Response:**
 

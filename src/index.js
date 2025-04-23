@@ -15,19 +15,33 @@ try {
     app.use(cors());
     app.use(bodyParser.json());
 
+    // Routes
+    app.use('/api/vouchers', require('../routes/voucherRoutes'));
+    app.use('/api/users', require('../routes/userRoutes'));
+    app.use('/api/restaurants', require('../routes/restaurantRoutes'));
+    app.use('/api/quizzes', require('../routes/quizRoutes'));
+    app.use('/api/questions', require('../routes/questionRoutes'));
+    app.use('/api/foodtags', require('../routes/foodtagRoutes'));
+    app.use('/api/foods', require('../routes/foodRoutes'));
+    app.use('/api/badges', require('../routes/badgeRoutes'));
+
     app.get('/api/', (req, res) => {
         res.json({ message: 'API is running!' });
     });
 
-    // Xử lý lỗi 404
+    // Handle 404 errors
     app.use((req, res, next) => {
         res.status(404).json({ error: 'NotFound', message: 'Endpoint not found', status: 404 });
     });
 
-    // Xử lý lỗi server
+    // Handle server errors
     app.use((err, req, res, next) => {
         console.error(err.stack);
-        res.status(500).json({ error: 'InternalServerError', message: 'Đã xảy ra lỗi hệ thống.', status: 500 });
+        res.status(500).json({
+            error: 'InternalServerError',
+            message: 'An internal server error occurred.',
+            status: 500,
+        });
     });
 
     app.listen(PORT, () => {

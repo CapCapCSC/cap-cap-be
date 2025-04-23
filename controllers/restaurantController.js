@@ -1,4 +1,5 @@
 const RestaurantService = require('../services/restaurantService');
+const { createGoogleMapsLink } = require('../utils/googleMaps');
 
 exports.createRestaurant = async (req, res) => {
     try {
@@ -22,6 +23,9 @@ exports.getRestaurantById = async (req, res) => {
     try {
         const restaurant = await RestaurantService.getById(req.params.id);
         if (!restaurant) return res.status(404).json({ error: 'NotFound', message: 'Restaurant not found' });
+
+        restaurant.locationUrl = createGoogleMapsLink(restaurant.district);
+
         res.status(200).json(restaurant);
     } catch (error) {
         res.status(500).json({ error: 'InternalServerError', message: error.message });
