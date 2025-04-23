@@ -41,9 +41,13 @@ CapCap is a backend system designed to manage resources for a food-related appli
 
     ```
     PORT=3000
-    MONGO_URI=mongodb://localhost:27017/capcap
-    JWT_SECRET=your_jwt_secret
+    MONGODB_URI=mongodb+srv://<username>:<password>@<cluster-url>/
+    MONGODB_URI_TEST=mongodb+srv://<username>:<password>@<cluster-url>/capcap_test
+    JWT_SECRET=<your_jwt_secret>
+    ACCESS_TOKEN_SECRET=<your_access_token_secret>
     ```
+
+    Replace `<username>`, `<password>`, `<cluster-url>`, `<your_jwt_secret>`, and `<your_access_token_secret>` with your actual credentials.
 
 4. Start the development server:
     ```bash
@@ -58,9 +62,9 @@ Refer to the [API List](./docs/api-list.md) for detailed documentation of all av
 
 ## Scripts
 
-- `npm run dev`: Start the development server
+- `npm run dev`: Start the development server with debugging enabled
 - `npm start`: Start the production server
-- `npm run lint`: Run the linter
+- `npm run pretty`: Format codebase using Prettier
 - `npm test`: Run tests
 
 ## Folder Structure
