@@ -12,8 +12,13 @@ beforeAll(async () => {
 }, 30000);
 
 beforeEach(async () => {
-    console.log('Clearing test-related users...');
     await User.deleteMany({ email: { $regex: /testuser_/ } });
+});
+
+afterEach(async () => {
+    await User.deleteMany({
+        email: { $regex: /testuser_/, $options: 'i' },
+    });
 });
 
 afterAll(async () => {
@@ -91,7 +96,6 @@ describe('User Service', () => {
             password: 'password123',
         });
         expect(user).not.toBeNull();
-        console.log('Created user:', user);
         const updated = await userService.update(user._id, { username: 'updateduser' });
         expect(updated.username).toBe('updateduser');
     });

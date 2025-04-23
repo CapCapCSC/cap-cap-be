@@ -1,4 +1,23 @@
 {
+    "name": "cap-cap-be",
+    "version": "1.0.0",
+    "description": "BE for CapCap",
+    "homepage": "https://github.com/CapCapCSC/cap-cap-be#readme",
+    "bugs": {
+        "url": "https://github.com/CapCapCSC/cap-cap-be/issues"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/CapCapCSC/cap-cap-be.git"
+    },
+    "license": "ISC",
+    "author": "",
+    "type": "commonjs",
+    "main": "jest.config.js",
+    "directories": {
+        "doc": "docs",
+        "test": "tests"
+    },
     "scripts": {
         "start": "nodemon --inspect src/index.js",
         "pretty": "prettier --single-quote --tab-width 4 --trailing-comma all --write '../cap-cap-be/**/*.{js,json,scss,md}'",
@@ -21,6 +40,5 @@
     "devDependencies": {
         "jest": "^29.7.0",
         "supertest": "^7.1.0"
-
     }
 }

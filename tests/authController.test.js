@@ -1,10 +1,13 @@
 const request = require('supertest');
 const express = require('express');
 const bodyParser = require('body-parser');
-const authRoutes = require('../routes/authRoutes');
 const mongoose = require('mongoose');
-const User = require('../models/user');
+const bcrypt = require('bcryptjs');
 const { v4: uuidv4 } = require('uuid');
+
+const authRoutes = require('../routes/authRoutes');
+const User = require('../models/user');
+
 require('dotenv').config();
 
 const app = express();
@@ -16,8 +19,13 @@ beforeAll(async () => {
 }, 30000);
 
 beforeEach(async () => {
-    console.log('Clearing test-related users...');
     await User.deleteMany({ email: { $regex: /testuser_/ } });
+});
+
+afterEach(async () => {
+    await User.deleteMany({
+        email: { $regex: /testuser_/, $options: 'i' },
+    });
 });
 
 afterAll(async () => {
@@ -39,38 +47,36 @@ describe('Auth Controller', () => {
     it('should not register with existing email', async () => {
         const email = `testuser_${uuidv4()}@example.com`;
 
-        const firstRes = await request(app).post('/api/auth/register').send({
+        await request(app).post('/api/auth/register').send({
             username: 'testuser',
             email,
             password: 'password123',
         });
-        expect(firstRes.statusCode).toBe(201);
 
         const secondRes = await request(app).post('/api/auth/register').send({
             username: 'testuser2',
             email,
             password: 'password123',
         });
+
         expect(secondRes.statusCode).toBe(400);
     });
 
     it('should login with correct credentials', async () => {
-        const randomEmail = `testuser_${uuidv4()}@example.com`;
+        const email = `testuser_${uuidv4()}@example.com`;
+        const password = 'password123';
 
         const registerRes = await request(app).post('/api/auth/register').send({
             username: 'testuser',
-            email: randomEmail,
-            password: 'password123',
+            email,
+            password,
         });
-        console.log('Register response:', registerRes.body);
         expect(registerRes.statusCode).toBe(201);
 
-        console.log('Attempting login with:', { email: randomEmail, password: 'password123' }); // Debug log
         const res = await request(app).post('/api/auth/login').send({
-            email: randomEmail,
-            password: 'password123',
+            email,
+            password,
         });
-        console.log('Login response:', res.body); // Debug log
         expect(res.statusCode).toBe(200);
         expect(res.body.accessToken).toBeDefined();
     });
@@ -87,5 +93,19 @@ describe('Auth Controller', () => {
             password: 'wrongpassword',
         });
         expect(res.statusCode).toBe(401);
+    });
+});
+
+describe('Password Hashing', () => {
+    it('should hash and compare correctly', async () => {
+        const password = 'password123';
+        const salt = await bcrypt.genSalt(10);
+        const hash = await bcrypt.hash(password, salt);
+
+        const match = await bcrypt.compare(password, hash);
+        expect(match).toBe(true);
+
+        const wrongMatch = await bcrypt.compare('wrongpassword', hash);
+        expect(wrongMatch).toBe(false);
     });
 });
