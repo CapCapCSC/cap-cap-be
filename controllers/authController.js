@@ -2,153 +2,172 @@ const User = require('../models/user');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { generateAccessToken, generateRefreshToken } = require('../utils/token');
+const logger = require('../utils/logger');
+const AppError = require('../utils/AppError');
 
-exports.register = async (req, res) => {
+exports.register = async (req, res, next) => {
     try {
         const { username, email, password } = req.body;
 
+        logger.info('Registration attempt', { 
+            email,
+            username 
+        });
+
         const existingUser = await User.findOne({ email });
         if (existingUser) {
-            return res.status(400).json({
-                error: 'Bad Request',
-                message: 'Email already exists',
-            });
+            logger.warn('Registration failed - Email exists', { email });
+            throw new AppError('Email already exists', 400, 'ValidationError');
         }
 
         if (!password || typeof password !== 'string') {
-            return res.status(400).json({
-                error: 'Bad Request',
-                message: 'Invalid password format',
-            });
+            logger.warn('Registration failed - Invalid password format', { email });
+            throw new AppError('Invalid password format', 400, 'ValidationError');
         }
 
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
 
-        try {
-            const user = await User.create({
-                username,
-                email,
-                password: hashedPassword,
-                role: 'user',
-            });
-
-            res.status(201).json({
-                message: 'User registered successfully',
-                user: {
-                    id: user._id,
-                    username: user.username,
-                    email: user.email,
-                    role: user.role,
-                },
-            });
-        } catch (createError) {
-            if (createError.code === 11000) {
-                return res.status(400).json({
-                    error: 'Bad Request',
-                    message: 'Email already exists',
-                });
-            }
-            throw createError;
-        }
-    } catch (error) {
-        if (error.code === 11000) {
-            return res.status(400).json({
-                error: 'Bad Request',
-                message: 'Email already exists',
-            });
-        }
-        res.status(500).json({
-            error: 'Internal Server Error',
-            message: error.message,
+        const user = await User.create({
+            username,
+            email,
+            password: hashedPassword,
+            role: 'user',
         });
+
+        logger.info('User registered successfully', { 
+            userId: user._id,
+            email: user.email 
+        });
+
+        res.status(201).json({
+            message: 'User registered successfully',
+            user: {
+                id: user._id,
+                username: user.username,
+                email: user.email,
+                role: user.role,
+            },
+        });
+    } catch (error) {
+        next(error);
     }
 };
 
-exports.login = async (req, res) => {
+exports.login = async (req, res, next) => {
     try {
         const { email, password } = req.body;
 
-        const user = await User.findOne({ email }).select('+password').collation({ locale: 'en', strength: 2 }).exec();
+        logger.info('Login attempt', { email });
+
+        const user = await User.findOne({ email })
+            .select('+password')
+            .collation({ locale: 'en', strength: 2 })
+            .exec();
 
         if (!user) {
-            console.log('User not found');
-            return res.status(401).json({
-                error: 'Unauthorized',
-                message: 'Invalid email or password',
-            });
+            logger.warn('Login failed - User not found', { email });
+            throw new AppError('Invalid email or password', 401, 'AuthenticationError');
         }
 
         const isMatch = await bcrypt.compare(password, user.password);
-        console.log('Password comparison:', {
-            input: password,
-            stored: user.password,
-            match: isMatch,
-        });
-
         if (!isMatch) {
-            console.log('Password mismatch');
-            return res.status(401).json({
-                error: 'Unauthorized',
-                message: 'Invalid email or password',
-            });
+            logger.warn('Login failed - Invalid password', { email });
+            throw new AppError('Invalid email or password', 401, 'AuthenticationError');
         }
 
-        const accessToken = jwt.sign({ userId: user._id, role: user.role }, process.env.ACCESS_TOKEN_SECRET, {
-            expiresIn: '15m',
+        const accessToken = generateAccessToken(user);
+        const refreshToken = generateRefreshToken(user);
+
+        // Lưu refresh token vào database
+        user.refreshToken = refreshToken;
+        await user.save();
+
+        logger.info('Login successful', { 
+            userId: user._id,
+            email: user.email 
         });
 
         res.status(200).json({
+            message: 'Login successful',
             accessToken,
-            userId: user._id,
-            role: user.role,
+            refreshToken,
+            user: {
+                id: user._id,
+                username: user.username,
+                email: user.email,
+                role: user.role,
+            },
         });
     } catch (error) {
-        res.status(500).json({
-            error: 'Internal Server Error',
-            message: error.message,
-        });
+        next(error);
     }
 };
 
-exports.refreshToken = async (req, res) => {
+exports.refreshToken = async (req, res, next) => {
     try {
         const { refreshToken } = req.body;
+
+        logger.info('Refresh token attempt');
+
         if (!refreshToken) {
-            return res.status(401).json({ error: 'Unauthorized', message: 'No refresh token provided', status: 401 });
+            logger.warn('Refresh token failed - No token provided');
+            throw new AppError('No refresh token provided', 400, 'ValidationError');
         }
 
-        const user = await User.findOne({ refreshToken });
-        if (!user) {
-            return res.status(403).json({ error: 'Forbidden', message: 'Invalid refresh token', status: 403 });
+        const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
+        const user = await User.findById(decoded.id);
+
+        if (!user || user.refreshToken !== refreshToken) {
+            logger.warn('Refresh token failed - Invalid token');
+            throw new AppError('Invalid refresh token', 401, 'AuthenticationError');
         }
 
-        jwt.verify(refreshToken, process.env.JWT_SECRET || 'your_jwt_secret', (err, user) => {
-            if (err) {
-                return res.status(403).json({ error: 'Forbidden', message: 'Invalid refresh token', status: 403 });
-            }
-            const payload = { id: user.id, username: user.username, email: user.email, role: user.role };
-            const accessToken = generateAccessToken(payload);
-            res.status(200).json({ accessToken });
+        const newAccessToken = generateAccessToken(user);
+        const newRefreshToken = generateRefreshToken(user);
+
+        // Cập nhật refresh token mới
+        user.refreshToken = newRefreshToken;
+        await user.save();
+
+        logger.info('Token refreshed successfully', { 
+            userId: user._id 
+        });
+
+        res.status(200).json({
+            message: 'Token refreshed successfully',
+            accessToken: newAccessToken,
+            refreshToken: newRefreshToken,
         });
     } catch (error) {
-        res.status(500).json({ error: 'InternalServerError', message: error.message, status: 500 });
+        next(error);
     }
 };
 
-exports.logout = async (req, res) => {
+exports.logout = async (req, res, next) => {
     try {
         const { refreshToken } = req.body;
+
+        logger.info('Logout attempt');
+
         if (!refreshToken) {
-            return res.status(400).json({ error: 'BadRequest', message: 'No refresh token provided', status: 400 });
+            logger.warn('Logout failed - No token provided');
+            throw new AppError('No refresh token provided', 400, 'ValidationError');
         }
+
         const user = await User.findOne({ refreshToken });
         if (user) {
-            user.refreshToken = '';
+            user.refreshToken = null;
             await user.save();
+            logger.info('Logout successful', { 
+                userId: user._id 
+            });
         }
-        res.status(200).json({ message: 'Logout successful' });
+
+        res.status(200).json({
+            message: 'Logout successful',
+        });
     } catch (error) {
-        res.status(500).json({ error: 'InternalServerError', message: error.message, status: 500 });
+        next(error);
     }
 };
