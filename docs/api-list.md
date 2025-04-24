@@ -1526,6 +1526,8 @@ Developers can use the following tools to test the API:
 
 ### `GET /api/quiz-results/history` Lấy lịch sử quiz của user **[Auth]**
 
+> **Lưu ý:** User ID được lấy từ JWT token trong header Authorization, không cần truyền trong request.
+
 **Response:**
 
 ```json
@@ -1566,6 +1568,8 @@ Developers can use the following tools to test the API:
 
 ### `GET /api/quiz-results/statistics` Lấy thống kê quiz của user **[Auth]**
 
+> **Lưu ý:** User ID được lấy từ JWT token trong header Authorization, không cần truyền trong request.
+
 **Response:**
 
 ```json
@@ -1577,6 +1581,94 @@ Developers can use the following tools to test the API:
     "highScoreRate": 60,
     "timeEfficiency": 85,
     "rewardsEarned": 5
+}
+```
+
+### `POST /api/quizzes/:id/start` Bắt đầu làm quiz **[Auth]**
+
+> **Lưu ý:** User ID được lấy từ JWT token trong header Authorization, không cần truyền trong request.
+
+**Response:**
+
+```json
+{
+    "message": "Quiz started",
+    "quiz": {
+        "_id": "...",
+        "name": "Quiz Ẩm thực Việt Nam",
+        "description": "Kiểm tra kiến thức về các món ăn Việt.",
+        "questions": [
+            {
+                "_id": "...",
+                "content": "Phở bò là đặc sản của vùng nào?",
+                "correctAnswer": ["Miền Bắc"],
+                "incorrectAnswer": ["Miền Nam", "Miền Trung"],
+                "relatedFood": "foodObjectId"
+            }
+        ],
+        "timeLimit": 300,
+        "passingScore": 70
+    },
+    "quizResult": {
+        "_id": "...",
+        "userId": "...",
+        "quizId": "...",
+        "startedAt": "2024-04-24T10:00:00.000Z",
+        "totalQuestions": 10,
+        "status": "in_progress"
+    }
+}
+```
+
+### `POST /api/quizzes/submit` Nộp kết quả quiz **[Auth]**
+
+> **Lưu ý:** User ID được lấy từ JWT token trong header Authorization, không cần truyền trong request.
+
+**Request:**
+
+```json
+{
+    "quizId": "string",
+    "answers": [
+        {
+            "questionId": "string",
+            "selectedAnswer": "string",
+            "timeSpent": "number"
+        }
+    ],
+    "timeSpent": "number"
+}
+```
+
+**Response:**
+
+```json
+{
+    "message": "Quiz submitted",
+    "quizResult": {
+        "_id": "...",
+        "userId": "...",
+        "quizId": "...",
+        "score": 8,
+        "correctAnswers": 8,
+        "totalQuestions": 10,
+        "timeSpent": 300,
+        "startedAt": "2024-04-24T10:00:00.000Z",
+        "completedAt": "2024-04-24T10:05:00.000Z",
+        "status": "completed",
+        "answers": [
+            {
+                "questionId": "...",
+                "selectedAnswer": "string",
+                "isCorrect": true,
+                "timeSpent": 30
+            }
+        ],
+        "rewards": {
+            "badge": "badgeObjectId",
+            "voucher": "voucherObjectId"
+        }
+    }
 }
 ```
 
