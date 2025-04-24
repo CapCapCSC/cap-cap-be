@@ -92,7 +92,7 @@ exports.refreshToken = async (refreshToken) => {
         await user.save();
 
         return { user, newAccessToken, newRefreshToken };
-    } catch {
+    } catch (error) {
         logger.error('Error in refresh token', { error: error.message });
         throw new AppError('Error in refresh token', 500, 'ServerError');
     }
