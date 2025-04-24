@@ -34,9 +34,12 @@
         "jsonwebtoken": "^9.0.2",
         "mongo-seeding": "^4.0.1",
         "mongoose": "^8.13.2",
+        "morgan": "^1.10.0",
         "nodemon": "^3.1.9",
         "prettier": "^3.5.3",
-        "uuid": "^11.1.0"
+        "uuid": "^11.1.0",
+        "winston": "^3.17.0",
+        "winston-daily-rotate-file": "^5.0.0"
     },
     "devDependencies": {
         "jest": "^29.7.0",

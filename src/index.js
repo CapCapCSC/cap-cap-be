@@ -2,6 +2,9 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const errorHandler = require('./middlewares/errorHandler');
+const requestLogger = require('../middlewares/requestLogger');
+const errorLogger = require('../middlewares/errorLogger');
+const logger = require('../utils/logger');
 
 try {
     const db = require('../config/db/');
@@ -12,6 +15,9 @@ try {
 
     app.use(cors());
     app.use(bodyParser.json());
+
+    // Logging middleware
+    app.use(requestLogger);
 
     // Routes
     app.use('/api/auth', require('../routes/authRoutes'));
@@ -37,11 +43,12 @@ try {
         next(err);
     });
 
+    app.use(errorLogger);
     app.use(errorHandler);
 
     app.listen(PORT, () => {
-        console.log(`Server is running on port ${PORT}`);
+        logger.info(`Server is running on port ${PORT}`);
     });
 } catch (error) {
-    console.error('Failed to start server:', error);
+    logger.error('Failed to start server:', error);
 }
