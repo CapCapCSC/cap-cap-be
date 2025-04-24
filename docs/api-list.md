@@ -59,7 +59,7 @@ Các quy tắc chung:
 
 ```json
 {
-    "message": "Register successful",
+    "message": "Register successfully",
     "user": {
         "_id": "...",
         "username": "newuser",
@@ -88,7 +88,7 @@ Các quy tắc chung:
 
 ```json
 {
-    "message": "Login successful",
+    "message": "Login successfully",
     "accessToken": "jwt-access-token",
     "refreshToken": "jwt-refresh-token",
     "user": {
@@ -131,7 +131,48 @@ Các quy tắc chung:
 
 ```json
 {
-    "message": "Logout successful"
+    "message": "Logout successfully"
+}
+```
+
+---
+
+### `POST /api/auth/forgot-password` Quên mật khẩu **[Auth]**
+
+**Request:**
+
+```json
+{
+    "email": "example@gmail.com"
+}
+```
+
+**Response:**
+
+```json
+{
+    "message": "Password reset email sent successfully"
+}
+```
+
+---
+
+### `POST /api/auth/reset-password` Đặt lại mật khẩu **[Auth]**
+
+**Request:**
+
+```json
+{
+    "resetToken": "jwt-reset-token",
+    "newPassword": "example-password"
+}
+```
+
+**Response:**
+
+```json
+{
+    "message": "Password reset successfully"
 }
 ```
 

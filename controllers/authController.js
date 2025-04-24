@@ -1,7 +1,5 @@
+const AuthService = require('../services/authService');
 const User = require('../models/user');
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-const { generateAccessToken, generateRefreshToken } = require('../utils/token');
 const logger = require('../utils/logger');
 const AppError = require('../utils/AppError');
 
@@ -14,26 +12,7 @@ exports.register = async (req, res, next) => {
             username,
         });
 
-        const existingUser = await User.findOne({ email });
-        if (existingUser) {
-            logger.warn('Registration failed - Email exists', { email });
-            throw new AppError('Email already exists', 400, 'ValidationError');
-        }
-
-        if (!password || typeof password !== 'string') {
-            logger.warn('Registration failed - Invalid password format', { email });
-            throw new AppError('Invalid password format', 400, 'ValidationError');
-        }
-
-        const salt = await bcrypt.genSalt(10);
-        const hashedPassword = await bcrypt.hash(password, salt);
-
-        const user = await User.create({
-            username,
-            email,
-            password: hashedPassword,
-            role: 'user',
-        });
+        const user = await AuthService.register(username, email, password);
 
         logger.info('User registered successfully', {
             userId: user._id,
@@ -60,31 +39,7 @@ exports.login = async (req, res, next) => {
 
         logger.info('Login attempt', { email });
 
-        const user = await User.findOne({ email }).select('+password').collation({ locale: 'en', strength: 2 }).exec();
-
-        if (!user) {
-            logger.warn('Login failed - User not found', { email });
-            throw new AppError('Invalid email or password', 401, 'AuthenticationError');
-        }
-
-        const isMatch = await bcrypt.compare(password, user.password);
-        if (!isMatch) {
-            logger.warn('Login failed - Invalid password', { email });
-            throw new AppError('Invalid email or password', 401, 'AuthenticationError');
-        }
-
-        const tokenPayload = {
-            _id: user._id,
-            email: user.email,
-            role: user.role,
-        };
-
-        const accessToken = generateAccessToken(tokenPayload);
-        const refreshToken = generateRefreshToken(tokenPayload);
-
-        // Lưu refresh token vào database
-        user.refreshToken = refreshToken;
-        await user.save();
+        const { user, accessToken, refreshToken } = await AuthService.login(email, password);
 
         logger.info('Login successful', {
             userId: user._id,
@@ -113,25 +68,7 @@ exports.refreshToken = async (req, res, next) => {
 
         logger.info('Refresh token attempt');
 
-        if (!refreshToken) {
-            logger.warn('Refresh token failed - No token provided');
-            throw new AppError('No refresh token provided', 400, 'ValidationError');
-        }
-
-        const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
-        const user = await User.findById(decoded.id);
-
-        if (!user || user.refreshToken !== refreshToken) {
-            logger.warn('Refresh token failed - Invalid token');
-            throw new AppError('Invalid refresh token', 401, 'AuthenticationError');
-        }
-
-        const newAccessToken = generateAccessToken(user);
-        const newRefreshToken = generateRefreshToken(user);
-
-        // Cập nhật refresh token mới
-        user.refreshToken = newRefreshToken;
-        await user.save();
+        const { user, newAccessToken, newRefreshToken } = await AuthService.refreshToken(refreshToken);
 
         logger.info('Token refreshed successfully', {
             userId: user._id,
@@ -169,6 +106,37 @@ exports.logout = async (req, res, next) => {
 
         res.status(200).json({
             message: 'Logout successful',
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+exports.forgotPassword = async (req, res, next) => {
+    try {
+        const { email } = req.body;
+
+        logger.info('Forgot password attempt', { email });
+
+        await AuthService.forgotPassword(email);
+        logger.info('Forgot password email sent', { email });
+        res.status(200).json({
+            message: 'Password reset email sent successfully',
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+exports.resetPassword = async (req, res, next) => {
+    try {
+        const { resetToken, newPassword } = req.body;
+
+        logger.info('Reset password attempt', { resetToken });
+
+        await AuthService.resetPassword(resetToken, newPassword);
+        res.status(200).json({
+            message: 'Password reset successfully',
         });
     } catch (error) {
         next(error);
