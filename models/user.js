@@ -12,6 +12,8 @@ const user = new schema(
         role: { type: String, enum: ['user', 'admin'], default: 'user' },
         createdAt: { type: Date, default: Date.now },
         refreshToken: { type: String, default: '' },
+        resetPasswordToken: { type: String, default: '' },
+        resetPasswordExpires: { type: Date, default: Date.now },
     },
     { timestamps: true },
 );
