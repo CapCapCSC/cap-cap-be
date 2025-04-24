@@ -16,9 +16,8 @@ router.get('/:id', quizController.getQuizById); // Read one
 router.get('/:id/statistics', quizController.getQuizStatistics); // Get quiz statistics
 
 //AUTHENTICATED
-router.get('/user/history', authMiddleware, quizController.getUserQuizHistory); // Get user's quiz history
 router.post('/:id/start', authMiddleware, quizController.startQuiz); // Start quiz
-router.post('/submit', authMiddleware, validate(validator.submitQuizSchema), quizController.submitQuiz); // Submit quiz
+router.post('/:id/submit', authMiddleware, validate(validator.submitQuizSchema), quizController.submitQuiz); // Submit quiz
 
 //ADMIN
 router.post('/', authMiddleware, adminMiddleware, validate(validator.createQuizSchema), quizController.createQuiz); // Create

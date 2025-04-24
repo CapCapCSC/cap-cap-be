@@ -12,6 +12,7 @@ router.use(requestLogger);
 // AUTHENTICATED
 router.get('/history', authMiddleware, validate(validator.getQuizHistorySchema), quizResultController.getQuizHistory);
 router.get('/statistics', authMiddleware, quizResultController.getUserStatistics);
-router.get('/:id', authMiddleware, quizResultController.getQuizResult);
+router.get('/result/:resultId', authMiddleware, quizResultController.getQuizResult);
+router.get('/leaderboard/:quizId', authMiddleware, quizResultController.getQuizLeaderboard);
 
 module.exports = router;
