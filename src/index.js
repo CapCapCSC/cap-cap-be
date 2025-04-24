@@ -19,6 +19,7 @@ app.use('/api/auth', require('../routes/authRoutes'));
 app.use('/api/vouchers', require('../routes/voucherRoutes'));
 app.use('/api/users', require('../routes/userRoutes'));
 app.use('/api/restaurants', require('../routes/restaurantRoutes'));
+app.use('/api/quiz-results', require('../routes/quizResultRoutes'));
 app.use('/api/quizzes', require('../routes/quizRoutes'));
 app.use('/api/questions', require('../routes/questionRoutes'));
 app.use('/api/foodtags', require('../routes/foodtagRoutes'));

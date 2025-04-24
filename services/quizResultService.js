@@ -1,306 +1,312 @@
 const QuizResult = require('../models/quizResult');
 const User = require('../models/user');
+const Quiz = require('../models/quiz');
 const logger = require('../utils/logger');
 const AppError = require('../utils/AppError');
+const Badge = require('../models/badge');
+const Voucher = require('../models/voucher');
 
-exports.calculateScore = async (quiz, answers) => {
-    try {
-        logger.info('Calculating quiz score', {
-            quizId: quiz._id,
-            answerCount: answers.length,
-        });
+const QuizResultService = {
+    calculateScore: async (quizId, answers) => {
+        try {
+            logger.info('Calculating quiz score', {
+                quizId,
+                answerCount: answers.length,
+            });
 
-        let correctAnswers = 0;
-        const answerDetails = [];
-
-        for (const answer of answers) {
-            const question = quiz.questions.find((q) => q._id.toString() === answer.questionId);
-            if (!question) {
-                logger.warn('Question not found in quiz', {
-                    questionId: answer.questionId,
-                    quizId: quiz._id,
-                });
-                continue;
+            const quiz = await Quiz.findById(quizId).populate('questions');
+            if (!quiz) {
+                throw new Error('Quiz not found');
             }
 
-            const isCorrect = question.correctAnswer === answer.selectedAnswer;
-            if (isCorrect) correctAnswers++;
+            let correctAnswers = 0;
+            const questionMap = new Map(quiz.questions.map((q) => [q._id.toString(), q]));
 
-            answerDetails.push({
-                questionId: question._id,
-                selectedAnswer: answer.selectedAnswer,
-                isCorrect,
-                timeSpent: answer.timeSpent || 0,
+            for (const answer of answers) {
+                const question = questionMap.get(answer.questionId);
+                if (!question) continue;
+
+                // Check if selected answer is in correctAnswer array
+                if (question.correctAnswer.includes(answer.selectedAnswer)) {
+                    correctAnswers++;
+                }
+            }
+
+            const score = (correctAnswers / quiz.questions.length) * 100;
+            const isHighScore = score >= 80; // High score threshold
+
+            logger.info('Score calculated', {
+                quizId,
+                correctAnswers,
+                totalQuestions: quiz.questions.length,
+                score,
+                isHighScore,
             });
-        }
 
-        const score = (correctAnswers / quiz.questions.length) * 100;
-        const isHighScore = score >= passingScore;
-
-        logger.info('Score calculated', {
-            quizId: quiz._id,
-            score,
-            correctAnswers,
-            totalQuestions: quiz.questions.length,
-            isHighScore,
-        });
-
-        return {
-            score,
-            correctAnswers,
-            totalQuestions: quiz.questions.length,
-            answerDetails,
-            isHighScore,
-        };
-    } catch (error) {
-        logger.error('Error calculating score', {
-            error: error.message,
-            quizId: quiz._id,
-        });
-        throw error;
-    }
-};
-
-exports.create = async (data) => {
-    try {
-        logger.info('Creating quiz result', {
-            userId: data.userId,
-            quizId: data.quizId,
-        });
-
-        const quizResult = await QuizResult.create(data);
-        logger.info('Quiz result created successfully', {
-            quizResultId: quizResult._id,
-            userId: data.userId,
-            quizId: data.quizId,
-        });
-
-        return quizResult;
-    } catch (error) {
-        logger.error('Error creating quiz result', {
-            error: error.message,
-            userId: data.userId,
-            quizId: data.quizId,
-        });
-        throw error;
-    }
-};
-
-exports.awardRewards = async (userId, quiz, quizResult) => {
-    try {
-        if (!quizResult.isHighScore) {
-            return null;
-        }
-
-        logger.info('Awarding rewards for high score', {
-            userId,
-            quizId: quiz._id,
-            score: quizResult.score,
-        });
-
-        const rewards = {};
-
-        // Award badge if available
-        if (quiz.rewardBadge) {
-            rewards.badge = quiz.rewardBadge;
-            await User.findByIdAndUpdate(userId, {
-                $addToSet: { badges: quiz.rewardBadge },
-            });
-            logger.info('Badge awarded', {
-                userId,
-                badgeId: quiz.rewardBadge,
-            });
-        }
-
-        // Award voucher if available
-        if (quiz.rewardVoucher) {
-            rewards.voucher = quiz.rewardVoucher;
-            await User.findByIdAndUpdate(userId, {
-                $addToSet: { vouchers: quiz.rewardVoucher },
-            });
-            logger.info('Voucher awarded', {
-                userId,
-                voucherId: quiz.rewardVoucher,
-            });
-        }
-
-        // Update rewards in quiz result
-        if (Object.keys(rewards).length > 0) {
-            await QuizResult.findByIdAndUpdate(quizResult._id, {
-                rewards,
-            });
-        }
-
-        return rewards;
-    } catch (error) {
-        logger.error('Error awarding rewards', {
-            error: error.message,
-            userId,
-            quizId: quiz._id,
-        });
-        throw error;
-    }
-};
-
-exports.getById = async (id) => {
-    try {
-        logger.info('Fetching quiz result by ID', { quizResultId: id });
-
-        const quizResult = await QuizResult.findById(id)
-            .populate('userId', 'name email')
-            .populate('quizId', 'name timeLimit passingScore');
-        if (!quizResult) {
-            logger.warn('Quiz result not found', { quizResultId: id });
-            throw new AppError('Quiz result not found', 404, 'NotFound');
-        }
-
-        logger.info('Quiz result fetched successfully', {
-            quizResultId: quizResult._id,
-            userId: quizResult.userId,
-            quizId: quizResult.quizId,
-        });
-
-        return quizResult;
-    } catch (error) {
-        logger.error('Error fetching quiz result', {
-            error: error.message,
-            quizResultId: id,
-        });
-        throw error;
-    }
-};
-
-exports.getByUserId = async (userId, query = {}) => {
-    try {
-        const { page = 1, limit = 10, status } = query;
-        const filter = { userId };
-        if (status) filter.status = status;
-
-        logger.info('Fetching quiz results by user ID', {
-            userId,
-            page,
-            limit,
-            filter,
-        });
-
-        const results = await QuizResult.find(filter)
-            .populate('quizId', 'name timeLimit passingScore')
-            .sort({ completedAt: -1 })
-            .skip((page - 1) * limit)
-            .limit(parseInt(limit));
-        const total = await QuizResult.countDocuments(filter);
-
-        logger.info('Quiz results fetched successfully', {
-            userId,
-            count: results.length,
-            total,
-            page,
-            limit,
-        });
-
-        return { data: results, pagination: { page, limit, total } };
-    } catch (error) {
-        logger.error('Error fetching quiz results by user', {
-            error: error.message,
-            userId,
-        });
-        throw error;
-    }
-};
-
-exports.update = async (id, data) => {
-    try {
-        logger.info('Updating quiz result', {
-            quizResultId: id,
-            updateData: data,
-        });
-
-        const quizResult = await QuizResult.findByIdAndUpdate(id, data, { new: true });
-        if (!quizResult) {
-            logger.warn('Quiz result not found for update', { quizResultId: id });
-            throw new AppError('Quiz result not found', 404, 'NotFound');
-        }
-
-        logger.info('Quiz result updated successfully', {
-            quizResultId: quizResult._id,
-            userId: quizResult.userId,
-            quizId: quizResult.quizId,
-        });
-
-        return quizResult;
-    } catch (error) {
-        logger.error('Error updating quiz result', {
-            error: error.message,
-            quizResultId: id,
-        });
-        throw error;
-    }
-};
-
-exports.getStatistics = async (userId) => {
-    try {
-        logger.info('Getting user quiz statistics', { userId });
-
-        const results = await QuizResult.find({ userId, status: 'completed' }).populate(
-            'quizId',
-            'name timeLimit passingScore',
-        );
-
-        if (results.length === 0) {
-            logger.info('No quiz results found for user', { userId });
             return {
-                totalQuizzes: 0,
-                averageScore: 0,
-                timeSpent: {
-                    average: 0,
-                    total: 0,
-                },
-                completionRate: 0,
-                highScoreRate: 0,
+                score,
+                correctAnswers,
+                totalQuestions: quiz.questions.length,
+                isHighScore,
             };
+        } catch (error) {
+            logger.error('Error calculating score', {
+                error: error.message,
+                quizId,
+                answers,
+            });
+            throw error;
         }
+    },
 
-        const statistics = {
-            totalQuizzes: results.length,
-            averageScore: results.reduce((acc, result) => acc + result.score, 0) / results.length,
-            timeSpent: {
-                average: results.reduce((acc, result) => acc + result.timeSpent, 0) / results.length,
-                total: results.reduce((acc, result) => acc + result.timeSpent, 0),
-            },
-        };
+    create: async (data) => {
+        try {
+            logger.info('Creating new quiz result', {
+                userId: data.userId,
+                quizId: data.quizId,
+            });
 
-        // Calculate completion rate
-        const totalAttempts = await QuizResult.countDocuments({ userId });
-        statistics.completionRate = (results.length / totalAttempts) * 100;
+            // Set start time to current time if not provided
+            if (!data.startTime) {
+                data.startTime = new Date();
+            }
 
-        // Calculate high score rate (score >= passingScore)
-        const highScores = results.filter((result) => result.score >= result.quizId.passingScore).length;
-        statistics.highScoreRate = (highScores / results.length) * 100;
+            // Set completedAt to current time if not provided
+            if (!data.completedAt) {
+                data.completedAt = new Date();
+            }
 
-        // Calculate time efficiency (time spent vs time limit)
-        statistics.timeEfficiency =
-            (results.reduce((acc, result) => {
-                const efficiency = (result.quizId.timeLimit - result.timeSpent) / result.quizId.timeLimit;
-                return acc + (efficiency > 0 ? efficiency : 0);
-            }, 0) /
-                results.length) *
-            100;
+            // Add isCorrect to each answer
+            if (data.answers) {
+                const quiz = await Quiz.findById(data.quizId).populate('questions');
+                data.answers = data.answers.map((answer) => {
+                    const question = quiz.questions.find((q) => q._id.toString() === answer.questionId);
+                    return {
+                        ...answer,
+                        isCorrect: question.correctAnswer.includes(answer.selectedAnswer),
+                    };
+                });
+            }
 
-        // Calculate rewards earned
-        const rewardsEarned = results.filter((result) => result.rewards.badge || result.rewards.voucher).length;
-        statistics.rewardsEarned = rewardsEarned;
+            const quizResult = await QuizResult.create(data);
 
-        logger.info('User quiz statistics calculated successfully', {
-            userId,
-            statistics,
-        });
+            logger.info('Quiz result created successfully', {
+                quizResultId: quizResult._id,
+                userId: quizResult.userId,
+            });
 
-        return statistics;
-    } catch (error) {
-        logger.error('Error calculating user statistics', {
-            error: error.message,
-            userId,
-        });
-        throw error;
-    }
+            return quizResult;
+        } catch (error) {
+            logger.error('Error creating quiz result', {
+                error: error.message,
+                userId: data.userId,
+                quizId: data.quizId,
+            });
+            throw error;
+        }
+    },
+
+    awardRewards: async (userId, quiz, quizResult) => {
+        try {
+            logger.info('Awarding rewards', {
+                userId,
+                quizId: quiz._id,
+                score: quizResult.score,
+            });
+
+            const rewards = {};
+            const user = await User.findById(userId);
+
+            if (!user) {
+                throw new Error('User not found');
+            }
+
+            // Award badge if available
+            if (quiz.rewardBadge) {
+                const badge = await Badge.findById(quiz.rewardBadge);
+                if (badge) {
+                    rewards.badge = badge;
+                    user.badges.push(badge._id);
+                    await user.save();
+                    logger.info('Badge awarded', {
+                        userId,
+                        badgeId: badge._id,
+                    });
+                }
+            }
+
+            // Award voucher if available
+            if (quiz.rewardVoucher) {
+                const voucher = await Voucher.findById(quiz.rewardVoucher);
+                if (voucher) {
+                    rewards.voucher = voucher;
+                    user.vouchers.push(voucher._id);
+                    await user.save();
+                    logger.info('Voucher awarded', {
+                        userId,
+                        voucherId: voucher._id,
+                    });
+                }
+            }
+
+            // Update quiz result with rewards
+            quizResult.rewards = rewards;
+            await quizResult.save();
+
+            return rewards;
+        } catch (error) {
+            logger.error('Error awarding rewards', {
+                error: error.message,
+                userId,
+                quizId: quiz._id,
+            });
+            throw error;
+        }
+    },
+
+    getById: async (id) => {
+        try {
+            logger.info('Getting quiz result by ID', { quizResultId: id });
+
+            const quizResult = await QuizResult.findById(id);
+
+            if (!quizResult) {
+                logger.warn('Quiz result not found', { quizResultId: id });
+                throw new AppError('Quiz result not found', 404, 'NotFound');
+            }
+
+            logger.info('Quiz result fetched successfully', { quizResultId: id });
+            return quizResult;
+        } catch (error) {
+            logger.error('Error getting quiz result', {
+                error: error.message,
+                quizResultId: id,
+            });
+            throw error;
+        }
+    },
+
+    getByUserId: async (userId, query = {}) => {
+        try {
+            logger.info('Getting quiz results by user ID', { userId });
+
+            const page = parseInt(query.page) || 1;
+            const limit = parseInt(query.limit) || 10;
+            const skip = (page - 1) * limit;
+
+            const [results, total] = await Promise.all([
+                QuizResult.find({ userId }).sort({ submittedAt: -1 }).skip(skip).limit(limit),
+                QuizResult.countDocuments({ userId }),
+            ]);
+
+            logger.info('Quiz results fetched successfully', {
+                userId,
+                count: results.length,
+                total,
+            });
+
+            return {
+                data: results,
+                pagination: {
+                    total,
+                    page,
+                    limit,
+                    pages: Math.ceil(total / limit),
+                },
+            };
+        } catch (error) {
+            logger.error('Error getting quiz results by user ID', {
+                error: error.message,
+                userId,
+            });
+            throw error;
+        }
+    },
+
+    update: async (id, data) => {
+        try {
+            logger.info('Updating quiz result', {
+                quizResultId: id,
+                updateData: data,
+            });
+
+            const quizResult = await QuizResult.findByIdAndUpdate(id, data, { new: true });
+            if (!quizResult) {
+                logger.warn('Quiz result not found for update', { quizResultId: id });
+                throw new AppError('Quiz result not found', 404, 'NotFound');
+            }
+
+            logger.info('Quiz result updated successfully', {
+                quizResultId: quizResult._id,
+                userId: quizResult.userId,
+                quizId: quizResult.quizId,
+            });
+
+            return quizResult;
+        } catch (error) {
+            logger.error('Error updating quiz result', {
+                error: error.message,
+                quizResultId: id,
+            });
+            throw error;
+        }
+    },
+
+    getStatistics: async (userId) => {
+        try {
+            logger.info('Getting user statistics', { userId });
+
+            const results = await QuizResult.find({
+                userId,
+                status: 'completed',
+            });
+
+            if (!results || results.length === 0) {
+                return {
+                    totalQuizzes: 0,
+                    averageScore: 0,
+                    timeSpent: 0,
+                    completionRate: 0,
+                    highScoreRate: 0,
+                    timeEfficiency: 0,
+                    rewardsEarned: 0,
+                };
+            }
+
+            const totalQuizzes = results.length;
+            const totalScore = results.reduce((sum, result) => sum + result.score, 0);
+            const averageScore = totalScore / totalQuizzes;
+            const totalTimeSpent = results.reduce((sum, result) => sum + (result.timeSpent || 0), 0);
+            const completedQuizzes = results.length;
+            const highScoreQuizzes = results.filter((result) => result.score >= 80).length;
+            const rewardsEarned = results.filter(
+                (result) => result.rewards && Object.keys(result.rewards).length > 0,
+            ).length;
+
+            const statistics = {
+                totalQuizzes,
+                averageScore: Math.round(averageScore * 100) / 100,
+                timeSpent: Math.round(totalTimeSpent / 60), // Convert to minutes
+                completionRate: 100, // Since we only count completed quizzes
+                highScoreRate: Math.round((highScoreQuizzes / totalQuizzes) * 100),
+                timeEfficiency: Math.round((averageScore / (totalTimeSpent / 60)) * 100) / 100,
+                rewardsEarned,
+            };
+
+            logger.info('Statistics calculated', {
+                userId,
+                statistics,
+            });
+
+            return statistics;
+        } catch (error) {
+            logger.error('Error getting statistics', {
+                error: error.message,
+                userId,
+            });
+            throw error;
+        }
+    },
 };
+
+module.exports = QuizResultService;
