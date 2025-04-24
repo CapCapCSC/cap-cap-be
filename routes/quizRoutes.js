@@ -11,6 +11,7 @@ router.get('/', quizController.getAllQuizzes); // Read all
 router.get('/:id', quizController.getQuizById); // Read one
 
 //AUTHENTICATED
+router.post('/:id/start', authMiddleware, quizController.startQuiz); // Start quiz
 router.post('/:id/submit', authMiddleware, quizController.submitQuiz); // Submit quiz
 
 //ADMIN
