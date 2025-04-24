@@ -18,7 +18,7 @@ const logger = createLogger({
         logFormat
     ),
     transports: [
-
+        // Console transport
         new transports.Console({
             format: combine(
                 colorize(),
@@ -26,6 +26,7 @@ const logger = createLogger({
             )
         }),
 
+        // Error log file
         new transports.DailyRotateFile({
             filename: 'logs/error-%DATE%.log',
             datePattern: 'YYYY-MM-DD',
@@ -35,6 +36,7 @@ const logger = createLogger({
             level: 'error'
         }),
 
+        // All logs file
         new transports.DailyRotateFile({
             filename: 'logs/combined-%DATE%.log',
             datePattern: 'YYYY-MM-DD',

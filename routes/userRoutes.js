@@ -5,6 +5,10 @@ const authMiddleware = require('../middlewares/authMiddleware');
 const adminMiddleware = require('../middlewares/adminMiddleware');
 const validator = require('../middlewares/validationSchemas');
 const validate = require('../middlewares/validate');
+const requestLogger = require('../middlewares/requestLogger');
+
+// Apply request logging middleware
+router.use(requestLogger);
 
 //AUTHENTICATED
 router.get('/:id', authMiddleware, userController.getUserById); // Read one

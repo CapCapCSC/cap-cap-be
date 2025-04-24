@@ -3,8 +3,12 @@ const router = express.Router();
 const voucherController = require('../controllers/voucherController');
 const authMiddleware = require('../middlewares/authMiddleware');
 const adminMiddleware = require('../middlewares/adminMiddleware');
+const requestLogger = require('../middlewares/requestLogger');
 const validator = require('../middlewares/validationSchemas');
 const validate = require('../middlewares/validate');
+
+// Apply request logger middleware
+router.use(requestLogger);
 
 //PUBLIC
 router.get('/', voucherController.getAllVouchers); // Read all
