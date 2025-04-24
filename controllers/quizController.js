@@ -1,73 +1,140 @@
 const QuizService = require('../services/quizService');
+const logger = require('../utils/logger');
 
-exports.createQuiz = async (req, res) => {
+exports.createQuiz = async (req, res, next) => {
     try {
+        logger.info('Creating quiz request received', {
+            body: req.body,
+        });
+
         const quiz = await QuizService.create(req.body);
+        logger.info('Quiz created successfully', {
+            quizId: quiz._id,
+            title: quiz.title,
+        });
+
         res.status(201).json({ message: 'Quiz created', quiz });
     } catch (error) {
-        res.status(500).json({ error: 'InternalServerError', message: error.message });
+        next(error);
     }
 };
 
-exports.getAllQuizzes = async (req, res) => {
+exports.getAllQuizzes = async (req, res, next) => {
     try {
+        logger.info('Get all quizzes request received', {
+            query: req.query,
+        });
+
         const quizzes = await QuizService.getAll(req.query);
+        logger.info('Quizzes fetched successfully', {
+            count: quizzes.data.length,
+            total: quizzes.pagination.total,
+        });
+
         res.status(200).json(quizzes);
     } catch (error) {
-        res.status(500).json({ error: 'InternalServerError', message: error.message });
+        next(error);
     }
 };
 
-exports.getQuizById = async (req, res) => {
+exports.getQuizById = async (req, res, next) => {
     try {
+        logger.info('Get quiz by ID request received', {
+            quizId: req.params.id,
+        });
+
         const quiz = await QuizService.getById(req.params.id);
-        if (!quiz) return res.status(404).json({ error: 'NotFound', message: 'Quiz not found' });
+        logger.info('Quiz fetched successfully', {
+            quizId: quiz._id,
+            title: quiz.title,
+        });
+
         res.status(200).json(quiz);
     } catch (error) {
-        res.status(500).json({ error: 'InternalServerError', message: error.message });
+        next(error);
     }
 };
 
-exports.updateQuiz = async (req, res) => {
+exports.updateQuiz = async (req, res, next) => {
     try {
+        logger.info('Update quiz request received', {
+            quizId: req.params.id,
+            updateData: req.body,
+        });
+
         const quiz = await QuizService.update(req.params.id, req.body);
-        if (!quiz) return res.status(404).json({ error: 'NotFound', message: 'Quiz not found' });
+        logger.info('Quiz updated successfully', {
+            quizId: quiz._id,
+            title: quiz.title,
+        });
+
         res.status(200).json({ message: 'Quiz updated', quiz });
     } catch (error) {
-        res.status(500).json({ error: 'InternalServerError', message: error.message });
+        next(error);
     }
 };
 
-exports.deleteQuiz = async (req, res) => {
+exports.deleteQuiz = async (req, res, next) => {
     try {
-        const success = await QuizService.delete(req.params.id);
-        if (!success) return res.status(404).json({ error: 'NotFound', message: 'Quiz not found' });
+        logger.info('Delete quiz request received', {
+            quizId: req.params.id,
+        });
+
+        await QuizService.delete(req.params.id);
+        logger.info('Quiz deleted successfully', {
+            quizId: req.params.id,
+        });
+
         res.status(200).json({ message: 'Quiz deleted' });
     } catch (error) {
-        res.status(500).json({ error: 'InternalServerError', message: error.message });
+        next(error);
     }
 };
 
-exports.startQuiz = async (req, res) => {
+exports.startQuiz = async (req, res, next) => {
     try {
         const { id } = req.params;
         const { userId } = req.body;
+
+        logger.info('Starting quiz request received', {
+            quizId: id,
+            userId,
+        });
+
         const { quiz, quizResult } = await QuizService.startQuiz(id, userId);
-        if (!quiz) return res.status(404).json({ error: 'NotFound', message: 'Quiz not found' });
+        logger.info('Quiz started successfully', {
+            quizId: quiz._id,
+            userId,
+            quizResultId: quizResult._id,
+        });
+
         res.status(200).json({ message: 'Quiz started', quiz, quizResult });
     } catch (error) {
-        res.status(500).json({ error: 'InternalServerError', message: error.message });
+        next(error);
     }
 };
 
-exports.submitQuiz = async (req, res) => {
+exports.submitQuiz = async (req, res, next) => {
     try {
         const { id } = req.params;
         const { userId, answers, quizResultId } = req.body;
+
+        logger.info('Submitting quiz request received', {
+            quizId: id,
+            userId,
+            quizResultId,
+        });
+
         const result = await QuizService.submitQuiz(id, userId, answers, quizResultId);
-        if (!result) return res.status(404).json({ error: 'NotFound', message: 'Quiz not found' });
+        logger.info('Quiz submitted successfully', {
+            quizId: id,
+            userId,
+            quizResultId,
+            score: result.score,
+        });
+
         res.status(200).json({ message: 'Quiz submitted', result });
     } catch (error) {
-        res.status(500).json({ error: 'InternalServerError', message: error.message });
+        next(error);
     }
 };

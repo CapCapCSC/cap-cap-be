@@ -9,9 +9,9 @@ exports.register = async (req, res, next) => {
     try {
         const { username, email, password } = req.body;
 
-        logger.info('Registration attempt', { 
+        logger.info('Registration attempt', {
             email,
-            username 
+            username,
         });
 
         const existingUser = await User.findOne({ email });
@@ -35,9 +35,9 @@ exports.register = async (req, res, next) => {
             role: 'user',
         });
 
-        logger.info('User registered successfully', { 
+        logger.info('User registered successfully', {
             userId: user._id,
-            email: user.email 
+            email: user.email,
         });
 
         res.status(201).json({
@@ -60,10 +60,7 @@ exports.login = async (req, res, next) => {
 
         logger.info('Login attempt', { email });
 
-        const user = await User.findOne({ email })
-            .select('+password')
-            .collation({ locale: 'en', strength: 2 })
-            .exec();
+        const user = await User.findOne({ email }).select('+password').collation({ locale: 'en', strength: 2 }).exec();
 
         if (!user) {
             logger.warn('Login failed - User not found', { email });
@@ -83,9 +80,9 @@ exports.login = async (req, res, next) => {
         user.refreshToken = refreshToken;
         await user.save();
 
-        logger.info('Login successful', { 
+        logger.info('Login successful', {
             userId: user._id,
-            email: user.email 
+            email: user.email,
         });
 
         res.status(200).json({
@@ -130,8 +127,8 @@ exports.refreshToken = async (req, res, next) => {
         user.refreshToken = newRefreshToken;
         await user.save();
 
-        logger.info('Token refreshed successfully', { 
-            userId: user._id 
+        logger.info('Token refreshed successfully', {
+            userId: user._id,
         });
 
         res.status(200).json({
@@ -159,8 +156,8 @@ exports.logout = async (req, res, next) => {
         if (user) {
             user.refreshToken = null;
             await user.save();
-            logger.info('Logout successful', { 
-                userId: user._id 
+            logger.info('Logout successful', {
+                userId: user._id,
             });
         }
 
