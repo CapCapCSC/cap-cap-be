@@ -6,6 +6,7 @@ const bcrypt = require('bcryptjs');
 const { v4: uuidv4 } = require('uuid');
 
 const authRoutes = require('../routes/authRoutes');
+const errorHandler = require('../middlewares/errorHandler');
 const User = require('../models/user');
 
 require('dotenv').config();
@@ -13,6 +14,7 @@ require('dotenv').config();
 const app = express();
 app.use(bodyParser.json());
 app.use('/api/auth', authRoutes);
+app.use(errorHandler);
 
 beforeAll(async () => {
     await mongoose.connect(process.env.MONGODB_URI_TEST || process.env.MONGODB_URI);

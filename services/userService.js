@@ -9,11 +9,12 @@ exports.create = async (data) => {
         logger.info('User created successfully', { userId: user._id });
         return user;
     } catch (error) {
-        logger.error('Error creating user', { 
+        logger.error('Error creating user', {
             error: error.message,
-            email: data.email 
+            email: data.email,
         });
-        if (error.code === 11000) { // Duplicate key error
+        if (error.code === 11000) {
+            // Duplicate key error
             throw new AppError('Email already exists', 409, 'ConflictError');
         }
         throw error;
@@ -26,14 +27,14 @@ exports.getById = async (id) => {
         const user = await User.findById(id).select('username vouchers badges');
         if (!user) {
             logger.warn('User not found', { userId: id });
-            throw new AppError('User not found', 404, 'NotFound');
+            return null;
         }
         logger.info('User fetched successfully', { userId: id });
         return user;
     } catch (error) {
-        logger.error('Error fetching user', { 
+        logger.error('Error fetching user', {
             error: error.message,
-            userId: id 
+            userId: id,
         });
         throw error;
     }
@@ -45,14 +46,14 @@ exports.update = async (id, data) => {
         const user = await User.findByIdAndUpdate(id, data, { new: true });
         if (!user) {
             logger.warn('User not found for update', { userId: id });
-            throw new AppError('User not found', 404, 'NotFound');
+            return null;
         }
         logger.info('User updated successfully', { userId: id });
         return user;
     } catch (error) {
-        logger.error('Error updating user', { 
+        logger.error('Error updating user', {
             error: error.message,
-            userId: id 
+            userId: id,
         });
         throw error;
     }
@@ -64,14 +65,14 @@ exports.delete = async (id) => {
         const result = await User.findByIdAndDelete(id);
         if (!result) {
             logger.warn('User not found for deletion', { userId: id });
-            throw new AppError('User not found', 404, 'NotFound');
+            return false;
         }
         logger.info('User deleted successfully', { userId: id });
         return true;
     } catch (error) {
-        logger.error('Error deleting user', { 
+        logger.error('Error deleting user', {
             error: error.message,
-            userId: id 
+            userId: id,
         });
         throw error;
     }
@@ -80,24 +81,22 @@ exports.delete = async (id) => {
 exports.addBadge = async (userId, badgeId) => {
     try {
         logger.info('Adding badge to user', { userId, badgeId });
-        const user = await User.findByIdAndUpdate(
-            userId, 
-            { $addToSet: { badges: badgeId } }, 
-            { new: true }
-        ).populate('badges');
-        
+        const user = await User.findByIdAndUpdate(userId, { $addToSet: { badges: badgeId } }, { new: true }).populate(
+            'badges',
+        );
+
         if (!user) {
             logger.warn('User not found when adding badge', { userId });
             throw new AppError('User not found', 404, 'NotFound');
         }
-        
+
         logger.info('Badge added to user successfully', { userId, badgeId });
         return user;
     } catch (error) {
-        logger.error('Error adding badge to user', { 
+        logger.error('Error adding badge to user', {
             error: error.message,
             userId,
-            badgeId 
+            badgeId,
         });
         throw error;
     }
@@ -107,23 +106,23 @@ exports.addVoucher = async (userId, voucherId) => {
     try {
         logger.info('Adding voucher to user', { userId, voucherId });
         const user = await User.findByIdAndUpdate(
-            userId, 
-            { $addToSet: { vouchers: voucherId } }, 
-            { new: true }
+            userId,
+            { $addToSet: { vouchers: voucherId } },
+            { new: true },
         ).populate('vouchers');
-        
+
         if (!user) {
             logger.warn('User not found when adding voucher', { userId });
             throw new AppError('User not found', 404, 'NotFound');
         }
-        
+
         logger.info('Voucher added to user successfully', { userId, voucherId });
         return user;
     } catch (error) {
-        logger.error('Error adding voucher to user', { 
+        logger.error('Error adding voucher to user', {
             error: error.message,
             userId,
-            voucherId 
+            voucherId,
         });
         throw error;
     }

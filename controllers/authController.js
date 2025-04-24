@@ -73,8 +73,14 @@ exports.login = async (req, res, next) => {
             throw new AppError('Invalid email or password', 401, 'AuthenticationError');
         }
 
-        const accessToken = generateAccessToken(user);
-        const refreshToken = generateRefreshToken(user);
+        const tokenPayload = {
+            _id: user._id,
+            email: user.email,
+            role: user.role,
+        };
+
+        const accessToken = generateAccessToken(tokenPayload);
+        const refreshToken = generateRefreshToken(tokenPayload);
 
         // Lưu refresh token vào database
         user.refreshToken = refreshToken;

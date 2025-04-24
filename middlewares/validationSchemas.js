@@ -134,6 +134,61 @@ const validateSchema = (schema) => {
     };
 };
 
+exports.submitQuizSchema = Joi.object({
+    quizId: Joi.string().required().hex().length(24).messages({
+        'string.hex': 'Invalid quiz ID format',
+        'string.length': 'Invalid quiz ID length',
+        'any.required': 'Quiz ID is required',
+    }),
+    answers: Joi.array()
+        .items(
+            Joi.object({
+                questionId: Joi.string().required().hex().length(24).messages({
+                    'string.hex': 'Invalid question ID format',
+                    'string.length': 'Invalid question ID length',
+                    'any.required': 'Question ID is required',
+                }),
+                selectedAnswer: Joi.string().required().messages({
+                    'any.required': 'Selected answer is required',
+                }),
+                timeSpent: Joi.number().min(0).default(0).messages({
+                    'number.min': 'Time spent must be a positive number',
+                }),
+            }),
+        )
+        .required()
+        .min(1)
+        .messages({
+            'array.min': 'At least one answer is required',
+            'any.required': 'Answers array is required',
+        }),
+    timeSpent: Joi.number().required().min(0).messages({
+        'number.min': 'Total time spent must be a positive number',
+        'any.required': 'Total time spent is required',
+    }),
+});
+
+// Schema cho lấy lịch sử làm bài
+exports.getQuizHistorySchema = Joi.object({
+    page: Joi.number().min(1).default(1).messages({
+        'number.min': 'Page must be greater than 0',
+    }),
+    limit: Joi.number().min(1).max(50).default(10).messages({
+        'number.min': 'Limit must be greater than 0',
+        'number.max': 'Limit cannot exceed 50',
+    }),
+    status: Joi.string().valid('completed', 'in_progress', 'abandoned').messages({
+        'any.only': 'Invalid status value',
+    }),
+    startDate: Joi.date().iso().messages({
+        'date.format': 'Start date must be in ISO format',
+    }),
+    endDate: Joi.date().iso().min(Joi.ref('startDate')).messages({
+        'date.format': 'End date must be in ISO format',
+        'date.min': 'End date must be after start date',
+    }),
+});
+
 module.exports = {
     registerSchema,
     loginSchema,
