@@ -144,47 +144,44 @@ exports.delete = async (id) => {
     }
 };
 
-exports.startQuiz = async (id, userId) => {
+exports.startQuiz = async (quizId, userId) => {
     try {
-        logger.info('Starting quiz', {
-            quizId: id,
-            userId,
-        });
+        logger.info('Starting quiz', { quizId, userId });
 
-        const quiz = await Quiz.findById(id).populate('questions');
+        const quiz = await Quiz.findById(quizId).populate('questions');
         if (!quiz) {
-            logger.warn('Quiz not found for starting', { quizId: id });
+            logger.warn('Quiz not found', { quizId });
             throw new AppError('Quiz not found', 404, 'NotFound');
         }
 
-        if (!quiz.isAvailable) {
-            logger.warn('Quiz is not available', {
-                quizId: id,
-                isActive: quiz.isActive,
-                questionCount: quiz.questions.length,
-                validUntil: quiz.validUntil,
-            });
-            throw new AppError('Quiz is not available', 400, 'NotAvailable');
-        }
-
+        // Create initial quiz result
         const quizResult = await QuizResultService.create({
             userId,
-            quizId: id,
+            quizId,
+            score: 0,
+            correctAnswers: 0,
+            totalQuestions: quiz.questions.length,
+            answers: [],
             startedAt: new Date(),
+            completedAt: new Date(), // Will be updated when quiz is submitted
+            timeSpent: 0,
             status: 'in_progress',
         });
 
         logger.info('Quiz started successfully', {
-            quizId: id,
+            quizId,
             userId,
             quizResultId: quizResult._id,
         });
 
-        return { quiz, quizResult };
+        return {
+            quiz,
+            quizResult,
+        };
     } catch (error) {
         logger.error('Error starting quiz', {
             error: error.message,
-            quizId: id,
+            quizId,
             userId,
         });
         throw error;

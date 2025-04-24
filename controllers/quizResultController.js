@@ -1,6 +1,7 @@
 const QuizResultService = require('../services/quizResultService');
 const logger = require('../utils/logger');
 const AppError = require('../utils/AppError');
+const QuizResult = require('../models/quizResult');
 
 exports.createQuizResult = async (req, res, next) => {
     try {
@@ -106,15 +107,25 @@ exports.getQuizHistory = async (req, res, next) => {
 
         const result = await QuizResultService.getByUserId(userId, query);
 
+        // Populate quiz and user
+        const populatedResults = await Promise.all(
+            result.data.map(async (quizResult) => {
+                const populated = await QuizResult.findById(quizResult._id)
+                    .populate('quizId')
+                    .populate('userId', 'username email');
+                return populated;
+            }),
+        );
+
         logger.info('Quiz history fetched successfully', {
             userId,
-            count: result.data.length,
+            count: populatedResults.length,
             total: result.pagination.total,
         });
 
         res.status(200).json({
             success: true,
-            data: result.data,
+            data: populatedResults,
             pagination: result.pagination,
         });
     } catch (error) {

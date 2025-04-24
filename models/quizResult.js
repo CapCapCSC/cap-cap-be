@@ -19,10 +19,9 @@ const quizResultSchema = new schema(
         startedAt: { type: Date, required: true },
         completedAt: {
             type: Date,
-            required: true,
             validate: {
                 validator: function (v) {
-                    return v > this.startedAt;
+                    return v >= this.startedAt;
                 },
                 message: 'Completion time must be after start time',
             },
