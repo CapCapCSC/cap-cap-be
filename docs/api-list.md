@@ -974,6 +974,94 @@ GET /api/restaurants/random?district=Quận 1
 }
 ```
 
+### `POST /api/quizzes/:id/start` Bắt đầu làm quiz **[Auth]**
+
+> **Lưu ý:** User ID được lấy từ JWT token trong header Authorization, không cần truyền trong request.
+
+**Response:**
+
+```json
+{
+    "message": "Quiz started",
+    "quiz": {
+        "_id": "...",
+        "name": "Quiz Ẩm thực Việt Nam",
+        "description": "Kiểm tra kiến thức về các món ăn Việt.",
+        "questions": [
+            {
+                "_id": "...",
+                "content": "Phở bò là đặc sản của vùng nào?",
+                "correctAnswer": ["Miền Bắc"],
+                "incorrectAnswer": ["Miền Nam", "Miền Trung"],
+                "relatedFood": "foodObjectId"
+            }
+        ],
+        "timeLimit": 300,
+        "passingScore": 70
+    },
+    "quizResult": {
+        "_id": "...",
+        "userId": "...",
+        "quizId": "...",
+        "startedAt": "2024-04-24T10:00:00.000Z",
+        "totalQuestions": 10,
+        "status": "in_progress"
+    }
+}
+```
+
+### `POST /api/quizzes/:id/submit` Nộp kết quả quiz **[Auth]**
+
+> **Lưu ý:** User ID được lấy từ JWT token trong header Authorization, không cần truyền trong request.
+
+**Request:**
+
+```json
+{
+    "quizId": "string",
+    "answers": [
+        {
+            "questionId": "string",
+            "selectedAnswer": "string",
+            "timeSpent": "number"
+        }
+    ],
+    "timeSpent": "number"
+}
+```
+
+**Response:**
+
+```json
+{
+    "message": "Quiz submitted",
+    "quizResult": {
+        "_id": "...",
+        "userId": "...",
+        "quizId": "...",
+        "score": 8,
+        "correctAnswers": 8,
+        "totalQuestions": 10,
+        "timeSpent": 300,
+        "startedAt": "2024-04-24T10:00:00.000Z",
+        "completedAt": "2024-04-24T10:05:00.000Z",
+        "status": "completed",
+        "answers": [
+            {
+                "questionId": "...",
+                "selectedAnswer": "string",
+                "isCorrect": true,
+                "timeSpent": 30
+            }
+        ],
+        "rewards": {
+            "badge": "badgeObjectId",
+            "voucher": "voucherObjectId"
+        }
+    }
+}
+```
+
 ### `DELETE /api/quizzes/:id` Xóa quiz **[Auth][Admin]**
 
 **Response:**
@@ -1466,75 +1554,6 @@ GET /api/foods?tags=661f3b...e1,661f3b...e2
 }
 ```
 
-### Tham gia quiz
-
-#### `POST /api/quizzes/:id/start` Bắt đầu làm quiz **[Auth]**
-
-**Request:**
-
-```json
-{
-    "userId": "userObjectId"
-}
-```
-
-**Response:**
-
-```json
-{
-    "message": "Quiz started",
-    "quiz": "quizObjectId",
-    "quizResult": {
-        "_id": "quizResultObjectId",
-        "userId": "userObjectId",
-        "quizId": "quizObjectId",
-        "startedAt": "DateCreated",
-        "submittedAt": "",
-        "score": ""
-    }
-}
-```
-
-#### `POST /api/quizzes/:id/submit` Nộp kết quả quiz **[Auth]**
-
-**Request:**
-
-```json
-{
-    "userId": "userObjectId",
-    "answers": [
-        { "questionId": "questionObjectId1", "answer": ["Pizza"] },
-        { "questionId": "questionObjectId2", "answer": ["Pho"] }
-    ],
-    "quizResultId": "quizResultObjectId"
-}
-```
-
-**Response:**
-
-```json
-{
-    "message": "Quiz submitted",
-    "userId": "userObjectId",
-    "result": {
-        "score": 8,
-        "total": 10,
-        "correctAnswers": [
-            { "questionId": "questionObjectId1", "isCorrect": true },
-            { "questionId": "questionObjectId2", "isCorrect": false }
-        ]
-    },
-    "quizResult": {
-        "_id": "quizResultObjectId",
-        "userId": "userObjectId",
-        "quizId": "quizObjectId",
-        "startedAt": "DateCreated",
-        "submittedAt": "DateSubmitted",
-        "score": "score"
-    }
-}
-```
-
 ---
 
 ## Versioning
@@ -1625,92 +1644,141 @@ Developers can use the following tools to test the API:
 }
 ```
 
-### `POST /api/quizzes/:id/start` Bắt đầu làm quiz **[Auth]**
+### `GET /api/quiz-results/result/:resultId` Lấy chi tiết kết quả quiz **[Auth]**
 
-> **Lưu ý:** User ID được lấy từ JWT token trong header Authorization, không cần truyền trong request.
+> **Lưu ý:**
+>
+> - User ID được lấy từ JWT token trong header Authorization
+> - User chỉ có thể xem kết quả quiz của chính mình
+> - `:resultId` là ID của kết quả quiz trong bảng `quizResults`
 
-**Response:**
-
-```json
-{
-    "message": "Quiz started",
-    "quiz": {
-        "_id": "...",
-        "name": "Quiz Ẩm thực Việt Nam",
-        "description": "Kiểm tra kiến thức về các món ăn Việt.",
-        "questions": [
-            {
-                "_id": "...",
-                "content": "Phở bò là đặc sản của vùng nào?",
-                "correctAnswer": ["Miền Bắc"],
-                "incorrectAnswer": ["Miền Nam", "Miền Trung"],
-                "relatedFood": "foodObjectId"
-            }
-        ],
-        "timeLimit": 300,
-        "passingScore": 70
-    },
-    "quizResult": {
-        "_id": "...",
-        "userId": "...",
-        "quizId": "...",
-        "startedAt": "2024-04-24T10:00:00.000Z",
-        "totalQuestions": 10,
-        "status": "in_progress"
-    }
-}
-```
-
-### `POST /api/quizzes/submit` Nộp kết quả quiz **[Auth]**
-
-> **Lưu ý:** User ID được lấy từ JWT token trong header Authorization, không cần truyền trong request.
-
-**Request:**
+**Response Success (200):**
 
 ```json
 {
-    "quizId": "string",
-    "answers": [
-        {
-            "questionId": "string",
-            "selectedAnswer": "string",
-            "timeSpent": "number"
-        }
-    ],
-    "timeSpent": "number"
-}
-```
-
-**Response:**
-
-```json
-{
-    "message": "Quiz submitted",
-    "quizResult": {
-        "_id": "...",
-        "userId": "...",
-        "quizId": "...",
+    "success": true,
+    "data": {
+        "_id": "661f3b555555555555555555",
+        "userId": "661f3b555555555555555556",
+        "quizId": {
+            "_id": "661f3b555555555555555557",
+            "name": "Quiz Ẩm thực Việt Nam",
+            "description": "Kiểm tra kiến thức về các món ăn Việt.",
+            "timeLimit": 300,
+            "passingScore": 70
+        },
         "score": 8,
         "correctAnswers": 8,
         "totalQuestions": 10,
-        "timeSpent": 300,
+        "timeSpent": 280,
         "startedAt": "2024-04-24T10:00:00.000Z",
-        "completedAt": "2024-04-24T10:05:00.000Z",
+        "completedAt": "2024-04-24T10:04:40.000Z",
         "status": "completed",
         "answers": [
             {
-                "questionId": "...",
-                "selectedAnswer": "string",
+                "questionId": "661f3b555555555555555558",
+                "selectedAnswer": "Miền Bắc",
                 "isCorrect": true,
                 "timeSpent": 30
             }
+            // ... các câu trả lời khác
         ],
         "rewards": {
-            "badge": "badgeObjectId",
-            "voucher": "voucherObjectId"
+            "badge": {
+                "_id": "661f3b555555555555555559",
+                "name": "Chuyên gia ẩm thực",
+                "iconUrl": "https://example.com/badge.png"
+            },
+            "voucher": {
+                "_id": "661f3b555555555555555560",
+                "name": "Giảm 10% nhà hàng A",
+                "discountValue": 10,
+                "validUntil": "2024-12-31T23:59:59.000Z"
+            }
         }
     }
 }
 ```
 
----
+**Error Responses:**
+
+_401 Unauthorized - Token không hợp lệ_
+
+```json
+{
+    "status": 401,
+    "message": "Invalid token",
+    "error": "UnauthorizedError"
+}
+```
+
+_403 Forbidden - Không có quyền xem kết quả này_
+
+```json
+{
+    "status": 403,
+    "message": "Unauthorized access",
+    "error": "Unauthorized"
+}
+```
+
+_404 Not Found - Không tìm thấy kết quả quiz_
+
+```json
+{
+    "status": 404,
+    "message": "Quiz result not found",
+    "error": "NotFoundError"
+}
+```
+
+**Ghi chú:**
+
+- Kết quả trả về bao gồm thông tin chi tiết về:
+    - Quiz (tên, mô tả, thời gian giới hạn, điểm đạt)
+    - Kết quả làm bài (điểm số, số câu đúng, thời gian làm)
+    - Danh sách câu trả lời chi tiết
+    - Phần thưởng nhận được (nếu có)
+- Thời gian (`timeSpent`) được tính bằng giây
+- Trạng thái (`status`) có thể là: `in_progress`, `completed`, `abandoned`
+- Phần thưởng (`rewards`) có thể là `null` nếu không đạt điều kiện nhận thưởng
+
+### `GET /api/quiz-results/leaderboard/:quizId` Lấy bảng xếp hạng cho một quiz **[Auth]**
+
+> **Lưu ý:** User ID được lấy từ JWT token trong header Authorization, không cần truyền trong request.
+
+**Response:**
+
+```json
+{
+    "message": "Quiz leaderboard retrieved successfully",
+    "data": [
+        {
+            "username": "user1",
+            "score": 9,
+            "timeSpent": 120,
+            "completedAt": "2024-04-24T10:05:00.000Z"
+        },
+        {
+            "username": "user2",
+            "score": 8,
+            "timeSpent": 150,
+            "completedAt": "2024-04-24T09:30:00.000Z"
+        },
+        {
+            "username": "user3",
+            "score": 8,
+            "timeSpent": 180,
+            "completedAt": "2024-04-24T09:00:00.000Z"
+        }
+    ]
+}
+```
+
+**Ghi chú:**
+
+- Chỉ trả về tối đa 3 người chơi có điểm số cao nhất
+- Nếu có nhiều người cùng điểm số, ưu tiên người hoàn thành nhanh hơn
+- Chỉ tính các bài quiz đã hoàn thành (status: completed)
+- Nếu không có đủ 3 người chơi, trả về số lượng hiện có
+- Nếu không có người chơi nào, trả về mảng rỗng

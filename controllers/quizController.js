@@ -106,136 +106,75 @@ exports.startQuiz = async (req, res, next) => {
             userId,
         });
 
-        const quiz = await Quiz.findById(id).populate('questions');
-        if (!quiz) {
-            logger.warn('Quiz not found', { quizId: id });
-            throw new AppError('Quiz not found', 404, 'NotFound');
-        }
-
-        const startTime = new Date();
-        const quizResult = await QuizResultService.create({
-            userId,
-            quizId: id,
-            score: 0,
-            correctAnswers: 0,
-            totalQuestions: quiz.questions.length,
-            answers: [],
-            startedAt: startTime,
-            completedAt: startTime,
-            timeSpent: 0,
-            status: 'in_progress',
-        });
+        const result = await QuizService.startQuiz(id, userId);
 
         logger.info('Quiz started successfully', {
             quizId: id,
             userId,
-            quizResultId: quizResult._id,
+            quizResultId: result.quizResult._id,
         });
 
         res.status(200).json({
             success: true,
-            quiz: quiz.toObject(),
-            quizResult: quizResult.toObject(),
+            data: {
+                quiz: result.quiz,
+                quizResult: result.quizResult,
+            },
         });
     } catch (error) {
-        logger.error('Error starting quiz', {
-            error: error.message,
-            quizId: req.params.id,
-            userId: req.user._id,
-        });
         next(error);
     }
 };
 
 exports.submitQuiz = async (req, res, next) => {
     try {
-        const { quizId, answers, timeSpent } = req.body;
+        const { id } = req.params;
         const userId = req.user._id;
+        const { answers } = req.body;
 
-        logger.info('Submitting quiz', {
-            quizId,
+        logger.info('Submitting quiz request received', {
+            quizId: id,
             userId,
             answerCount: answers.length,
-            timeSpent,
         });
 
-        // Get quiz
-        const quiz = await QuizService.getById(quizId);
-        if (!quiz) {
-            logger.warn('Quiz not found', { quizId });
-            throw new AppError('Quiz not found', 404, 'NotFound');
-        }
-
-        // Calculate score
-        const scoreResult = await QuizResultService.calculateScore(quizId, answers);
-
-        // Create quiz result
-        const startTime = new Date(Date.now() - timeSpent * 1000);
-        const completedAt = new Date();
-
-        const quizResult = await QuizResultService.create({
-            userId,
-            quizId,
-            answers: answers.map((answer) => ({
-                questionId: answer.questionId,
-                selectedAnswer: answer.selectedAnswer,
-                timeSpent: answer.timeSpent || 0,
-            })),
-            score: scoreResult.score,
-            correctAnswers: scoreResult.correctAnswers,
-            totalQuestions: quiz.questions.length,
-            timeSpent,
-            status: 'completed',
-            startedAt: startTime,
-            completedAt,
-        });
-
-        // Award rewards if high score
-        let rewards = null;
-        if (scoreResult.isHighScore) {
-            rewards = await QuizResultService.awardRewards(userId, quiz, quizResult);
-            quizResult.rewards = rewards;
-            await quizResult.save();
-        }
+        const quizResult = await QuizService.submitQuiz(id, userId, answers);
 
         logger.info('Quiz submitted successfully', {
-            quizId,
+            quizId: id,
             userId,
-            score: scoreResult.score,
-            isHighScore: scoreResult.isHighScore,
+            quizResultId: quizResult._id,
+            score: quizResult.score,
+            timeSpent: quizResult.timeSpent,
         });
 
         res.status(200).json({
             success: true,
-            data: {
-                ...quizResult.toObject(),
-                isHighScore: scoreResult.isHighScore,
-                rewards,
-            },
+            data: quizResult,
         });
     } catch (error) {
-        logger.error('Error submitting quiz', {
-            error: error.message,
-            quizId: req.body.quizId,
-            userId: req.user._id,
-        });
         next(error);
     }
 };
 
 exports.getQuizStatistics = async (req, res, next) => {
     try {
+        const { id } = req.params;
+
         logger.info('Get quiz statistics request received', {
-            quizId: req.params.id,
+            quizId: id,
         });
 
-        const statistics = await QuizService.getStatistics(req.params.id);
+        const statistics = await QuizService.getStatistics(id);
+
         logger.info('Quiz statistics fetched successfully', {
-            quizId: req.params.id,
-            statistics,
+            quizId: id,
         });
 
-        res.status(200).json(statistics);
+        res.status(200).json({
+            success: true,
+            data: statistics,
+        });
     } catch (error) {
         next(error);
     }

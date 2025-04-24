@@ -2,6 +2,8 @@ const QuizResultService = require('../services/quizResultService');
 const logger = require('../utils/logger');
 const AppError = require('../utils/AppError');
 const QuizResult = require('../models/quizResult');
+const User = require('../models/user');
+const mongoose = require('mongoose');
 
 exports.createQuizResult = async (req, res, next) => {
     try {
@@ -158,6 +160,69 @@ exports.getUserStatistics = async (req, res, next) => {
         logger.error('Error getting user statistics', {
             error: error.message,
             userId: req.user._id,
+        });
+        next(error);
+    }
+};
+
+exports.getQuizLeaderboard = async (req, res, next) => {
+    try {
+        const { quizId } = req.params;
+        logger.info('Getting quiz leaderboard', { quizId });
+
+        const leaderboard = await QuizResult.aggregate([
+            // Match completed quiz results for the specific quiz
+            {
+                $match: {
+                    quizId: new mongoose.Types.ObjectId(quizId),
+                    status: 'completed',
+                },
+            },
+            // Sort by score (descending) and timeSpent (ascending)
+            {
+                $sort: {
+                    score: -1,
+                    timeSpent: 1,
+                },
+            },
+            // Limit to top 3 results
+            { $limit: 3 },
+            // Join with users collection to get user details
+            {
+                $lookup: {
+                    from: 'users',
+                    localField: 'userId',
+                    foreignField: '_id',
+                    as: 'user',
+                },
+            },
+            // Unwind the user array (since lookup returns an array)
+            { $unwind: '$user' },
+            // Project only the fields we need
+            {
+                $project: {
+                    _id: 0,
+                    username: '$user.username',
+                    score: 1,
+                    timeSpent: 1,
+                    completedAt: 1,
+                },
+            },
+        ]);
+
+        logger.info('Quiz leaderboard retrieved successfully', {
+            quizId,
+            count: leaderboard.length,
+        });
+
+        res.status(200).json({
+            message: 'Quiz leaderboard retrieved successfully',
+            data: leaderboard,
+        });
+    } catch (error) {
+        logger.error('Error getting quiz leaderboard', {
+            error: error.message,
+            quizId: req.params.quizId,
         });
         next(error);
     }
