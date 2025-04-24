@@ -796,7 +796,11 @@ GET /api/restaurants/random?district=Quận 1
     "description": "Kiểm tra kiến thức về các món ăn Việt.",
     "imageUrl": "https://example.com/quiz.jpg",
     "questions": ["questionObjectId1", "questionObjectId2"],
-    "validUntil": "2025-12-31T23:59:59.000Z"
+    "timeLimit": 300,
+    "passingScore": 70,
+    "validUntil": "2025-12-31T23:59:59.000Z",
+    "rewardBadge": "badgeObjectId",
+    "rewardVoucher": "voucherObjectId"
 }
 ```
 
@@ -811,7 +815,18 @@ GET /api/restaurants/random?district=Quận 1
         "description": "Kiểm tra kiến thức về các món ăn Việt.",
         "imageUrl": "https://example.com/quiz.jpg",
         "questions": ["questionObjectId1", "questionObjectId2"],
-        "validUntil": "2025-12-31T23:59:59.000Z"
+        "timeLimit": 300,
+        "passingScore": 70,
+        "validUntil": "2025-12-31T23:59:59.000Z",
+        "rewardBadge": "badgeObjectId",
+        "rewardVoucher": "voucherObjectId",
+        "isActive": true,
+        "statistics": {
+            "totalAttempts": 0,
+            "averageScore": 0,
+            "completionRate": 0,
+            "averageTimeSpent": 0
+        }
     }
 }
 ```
@@ -821,16 +836,32 @@ GET /api/restaurants/random?district=Quận 1
 **Response:**
 
 ```json
-[
-    {
-        "_id": "...",
-        "name": "Quiz Ẩm thực Việt Nam",
-        "description": "Kiểm tra kiến thức về các món ăn Việt.",
-        "imageUrl": "https://example.com/quiz.jpg",
-        "questions": ["questionObjectId1", "questionObjectId2"],
-        "validUntil": "2025-12-31T23:59:59.000Z"
+{
+    "data": [
+        {
+            "_id": "...",
+            "name": "Quiz Ẩm thực Việt Nam",
+            "description": "Kiểm tra kiến thức về các món ăn Việt.",
+            "imageUrl": "https://example.com/quiz.jpg",
+            "questions": ["questionObjectId1", "questionObjectId2"],
+            "timeLimit": 300,
+            "passingScore": 70,
+            "validUntil": "2025-12-31T23:59:59.000Z",
+            "isActive": true,
+            "statistics": {
+                "totalAttempts": 10,
+                "averageScore": 75.5,
+                "completionRate": 90,
+                "averageTimeSpent": 300
+            }
+        }
+    ],
+    "pagination": {
+        "page": 1,
+        "limit": 10,
+        "total": 20
     }
-]
+}
 ```
 
 ### `GET /api/quizzes/:id` Lấy thông tin chi tiết quiz **[Public]**
@@ -844,7 +875,16 @@ GET /api/restaurants/random?district=Quận 1
     "description": "Kiểm tra kiến thức về các món ăn Việt.",
     "imageUrl": "https://example.com/quiz.jpg",
     "questions": ["questionObjectId1", "questionObjectId2"],
-    "validUntil": "2025-12-31T23:59:59.000Z"
+    "timeLimit": 300,
+    "passingScore": 70,
+    "validUntil": "2025-12-31T23:59:59.000Z",
+    "isActive": true,
+    "statistics": {
+        "totalAttempts": 10,
+        "averageScore": 75.5,
+        "completionRate": 90,
+        "averageTimeSpent": 300
+    }
 }
 ```
 
@@ -858,7 +898,11 @@ GET /api/restaurants/random?district=Quận 1
     "description": "Kiểm tra kiến thức về các món ăn Việt.",
     "imageUrl": "https://example.com/quiz.jpg",
     "questions": ["questionObjectId1", "questionObjectId2"],
-    "validUntil": "2025-12-31T23:59:59.000Z"
+    "timeLimit": 300,
+    "passingScore": 70,
+    "validUntil": "2025-12-31T23:59:59.000Z",
+    "rewardBadge": "badgeObjectId",
+    "rewardVoucher": "voucherObjectId"
 }
 ```
 
@@ -873,7 +917,18 @@ GET /api/restaurants/random?district=Quận 1
         "description": "Kiểm tra kiến thức về các món ăn Việt.",
         "imageUrl": "https://example.com/quiz.jpg",
         "questions": ["questionObjectId1", "questionObjectId2"],
-        "validUntil": "2025-12-31T23:59:59.000Z"
+        "timeLimit": 300,
+        "passingScore": 70,
+        "validUntil": "2025-12-31T23:59:59.000Z",
+        "rewardBadge": "badgeObjectId",
+        "rewardVoucher": "voucherObjectId",
+        "isActive": true,
+        "statistics": {
+            "totalAttempts": 0,
+            "averageScore": 0,
+            "completionRate": 0,
+            "averageTimeSpent": 0
+        }
     }
 }
 ```
@@ -885,6 +940,90 @@ GET /api/restaurants/random?district=Quận 1
 ```json
 {
     "message": "Quiz deleted"
+}
+```
+
+### `POST /api/quizzes/:id/start` Bắt đầu làm quiz **[Auth]**
+
+**Response:**
+
+```json
+{
+    "message": "Quiz started",
+    "quiz": {
+        "_id": "...",
+        "name": "Quiz Ẩm thực Việt Nam",
+        "description": "Kiểm tra kiến thức về các món ăn Việt.",
+        "questions": [
+            {
+                "_id": "...",
+                "content": "Phở bò là đặc sản của vùng nào?",
+                "correctAnswer": ["Miền Bắc"],
+                "incorrectAnswer": ["Miền Nam", "Miền Trung"],
+                "relatedFood": "foodObjectId"
+            }
+        ],
+        "timeLimit": 300,
+        "passingScore": 70
+    },
+    "quizResult": {
+        "_id": "...",
+        "userId": "...",
+        "quizId": "...",
+        "startedAt": "2024-04-24T10:00:00.000Z",
+        "totalQuestions": 10,
+        "status": "in_progress"
+    }
+}
+```
+
+### `POST /api/quizzes/submit` Nộp kết quả quiz **[Auth]**
+
+**Request:**
+
+```json
+{
+    "quizId": "string",
+    "answers": [
+        {
+            "questionId": "string",
+            "selectedAnswer": "string",
+            "timeSpent": "number"
+        }
+    ],
+    "timeSpent": "number"
+}
+```
+
+**Response:**
+
+```json
+{
+    "message": "Quiz submitted",
+    "quizResult": {
+        "_id": "...",
+        "userId": "...",
+        "quizId": "...",
+        "score": 8,
+        "correctAnswers": 8,
+        "totalQuestions": 10,
+        "timeSpent": 300,
+        "startedAt": "2024-04-24T10:00:00.000Z",
+        "completedAt": "2024-04-24T10:05:00.000Z",
+        "status": "completed",
+        "answers": [
+            {
+                "questionId": "...",
+                "selectedAnswer": "string",
+                "isCorrect": true,
+                "timeSpent": 30
+            }
+        ],
+        "rewards": {
+            "badge": "badgeObjectId",
+            "voucher": "voucherObjectId"
+        }
+    }
 }
 ```
 
@@ -1294,7 +1433,7 @@ GET /api/foods?tags=661f3b...e1,661f3b...e2
 
 ```json
 {
-    "userId": "userObjectId",
+    "userId": "userObjectId"
 }
 ```
 
@@ -1310,7 +1449,7 @@ GET /api/foods?tags=661f3b...e1,661f3b...e2
         "quizId": "quizObjectId",
         "startedAt": "DateCreated",
         "submittedAt": "",
-        "score": "", 
+        "score": ""
     }
 }
 ```
@@ -1350,7 +1489,7 @@ GET /api/foods?tags=661f3b...e1,661f3b...e2
         "quizId": "quizObjectId",
         "startedAt": "DateCreated",
         "submittedAt": "DateSubmitted",
-        "score": "score", 
+        "score": "score"
     }
 }
 ```
@@ -1380,5 +1519,65 @@ Developers can use the following tools to test the API:
 
 - **Postman**: Import the API collection for quick testing.
 - **Mock Server**: Use a mock server to simulate API responses without affecting production.
+
+---
+
+## Quiz Result
+
+### `GET /api/quiz-results/history` Lấy lịch sử quiz của user **[Auth]**
+
+**Response:**
+
+```json
+{
+    "data": [
+        {
+            "_id": "...",
+            "quizId": "...",
+            "userId": "...",
+            "score": 8,
+            "correctAnswers": 8,
+            "totalQuestions": 10,
+            "timeSpent": 300,
+            "startedAt": "2024-04-24T10:00:00.000Z",
+            "completedAt": "2024-04-24T10:05:00.000Z",
+            "status": "completed",
+            "answers": [
+                {
+                    "questionId": "...",
+                    "selectedAnswer": "string",
+                    "isCorrect": true,
+                    "timeSpent": 30
+                }
+            ],
+            "rewards": {
+                "badge": "badgeObjectId",
+                "voucher": "voucherObjectId"
+            }
+        }
+    ],
+    "pagination": {
+        "page": 1,
+        "limit": 10,
+        "total": 20
+    }
+}
+```
+
+### `GET /api/quiz-results/statistics` Lấy thống kê quiz của user **[Auth]**
+
+**Response:**
+
+```json
+{
+    "totalQuizzes": 10,
+    "averageScore": 75.5,
+    "timeSpent": 3600,
+    "completionRate": 90,
+    "highScoreRate": 60,
+    "timeEfficiency": 85,
+    "rewardsEarned": 5
+}
+```
 
 ---
