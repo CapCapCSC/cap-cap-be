@@ -1,6 +1,7 @@
 const QuizResultService = require('../services/quizResultService');
 const logger = require('../utils/logger');
 const AppError = require('../utils/AppError');
+
 exports.createQuizResult = async (req, res, next) => {
     try {
         logger.info('Creating new quiz result', {
@@ -30,24 +31,39 @@ exports.createQuizResult = async (req, res, next) => {
 
 exports.getQuizResult = async (req, res, next) => {
     try {
-        logger.info('Fetching quiz result', {
-            quizResultId: req.params.id,
-            path: req.path,
-            method: req.method,
+        const { id } = req.params;
+        const userId = req.user._id;
+
+        logger.info('Getting quiz result', {
+            quizResultId: id,
+            userId,
         });
 
-        const quizResult = await QuizResultService.getById(req.params.id);
+        const quizResult = await QuizResultService.getById(id);
+
+        // Kiểm tra xem người dùng có quyền xem kết quả này không
+        if (quizResult.userId.toString() !== userId.toString()) {
+            logger.warn('Unauthorized access to quiz result', {
+                quizResultId: id,
+                userId,
+            });
+            throw new AppError('Unauthorized access', 403, 'Unauthorized');
+        }
 
         logger.info('Quiz result fetched successfully', {
-            quizResultId: quizResult._id,
-            userId: quizResult.userId,
+            quizResultId: id,
+            userId,
         });
 
-        res.json(quizResult);
+        res.status(200).json({
+            success: true,
+            data: quizResult,
+        });
     } catch (error) {
-        logger.error('Error fetching quiz result', {
+        logger.error('Error getting quiz result', {
             error: error.message,
             quizResultId: req.params.id,
+            userId: req.user._id,
         });
         next(error);
     }
@@ -73,6 +89,64 @@ exports.getUserQuizResults = async (req, res, next) => {
         logger.error('Error fetching user quiz results', {
             error: error.message,
             userId: req.params.userId,
+        });
+        next(error);
+    }
+};
+
+exports.getQuizHistory = async (req, res, next) => {
+    try {
+        const userId = req.user._id;
+        const query = req.query;
+
+        logger.info('Getting quiz history', {
+            userId,
+            query,
+        });
+
+        const result = await QuizResultService.getByUserId(userId, query);
+
+        logger.info('Quiz history fetched successfully', {
+            userId,
+            count: result.data.length,
+            total: result.pagination.total,
+        });
+
+        res.status(200).json({
+            success: true,
+            data: result.data,
+            pagination: result.pagination,
+        });
+    } catch (error) {
+        logger.error('Error getting quiz history', {
+            error: error.message,
+            userId: req.user._id,
+        });
+        next(error);
+    }
+};
+
+exports.getUserStatistics = async (req, res, next) => {
+    try {
+        const userId = req.user._id;
+
+        logger.info('Getting user quiz statistics', { userId });
+
+        const statistics = await QuizResultService.getStatistics(userId);
+
+        logger.info('User quiz statistics fetched successfully', {
+            userId,
+            statistics,
+        });
+
+        res.status(200).json({
+            success: true,
+            data: statistics,
+        });
+    } catch (error) {
+        logger.error('Error getting user statistics', {
+            error: error.message,
+            userId: req.user._id,
         });
         next(error);
     }

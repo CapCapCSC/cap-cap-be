@@ -6,7 +6,7 @@ const AppError = require('../utils/AppError');
 exports.create = async (data) => {
     try {
         logger.info('Creating new quiz', {
-            title: data.title,
+            name: data.name,
             description: data.description,
             questionCount: data.questions?.length || 0,
         });
@@ -14,14 +14,14 @@ exports.create = async (data) => {
         const quiz = await Quiz.create(data);
         logger.info('Quiz created successfully', {
             quizId: quiz._id,
-            title: quiz.title,
+            name: quiz.name,
         });
 
         return quiz;
     } catch (error) {
         logger.error('Error creating quiz', {
             error: error.message,
-            title: data.title,
+            name: data.name,
         });
         throw error;
     }
@@ -29,18 +29,27 @@ exports.create = async (data) => {
 
 exports.getAll = async (query) => {
     try {
-        const { page = 1, limit = 10, tags } = query;
-        const filter = tags ? { tags: { $in: tags.split(',') } } : {};
+        const { page = 1, limit = 10, search, isActive } = query;
+        const filter = {};
+
+        if (search) {
+            filter.$text = { $search: search };
+        }
+        if (isActive !== undefined) {
+            filter.isActive = isActive === 'true';
+        }
 
         logger.info('Fetching quizzes', {
             page,
             limit,
-            tags: tags ? tags.split(',') : 'all',
+            search,
+            isActive,
         });
 
         const quizzes = await Quiz.find(filter)
             .skip((page - 1) * limit)
-            .limit(parseInt(limit));
+            .limit(parseInt(limit))
+            .sort({ createdAt: -1 });
         const total = await Quiz.countDocuments(filter);
 
         logger.info('Quizzes fetched successfully', {
@@ -72,7 +81,7 @@ exports.getById = async (id) => {
 
         logger.info('Quiz fetched successfully', {
             quizId: quiz._id,
-            title: quiz.title,
+            name: quiz.name,
             questionCount: quiz.questions.length,
         });
 
@@ -101,7 +110,7 @@ exports.update = async (id, data) => {
 
         logger.info('Quiz updated successfully', {
             quizId: quiz._id,
-            title: quiz.title,
+            name: quiz.name,
         });
 
         return quiz;
@@ -148,10 +157,21 @@ exports.startQuiz = async (id, userId) => {
             throw new AppError('Quiz not found', 404, 'NotFound');
         }
 
+        if (!quiz.isAvailable) {
+            logger.warn('Quiz is not available', {
+                quizId: id,
+                isActive: quiz.isActive,
+                questionCount: quiz.questions.length,
+                validUntil: quiz.validUntil,
+            });
+            throw new AppError('Quiz is not available', 400, 'NotAvailable');
+        }
+
         const quizResult = await QuizResultService.create({
             userId,
             quizId: id,
             startedAt: new Date(),
+            status: 'in_progress',
         });
 
         logger.info('Quiz started successfully', {
@@ -188,39 +208,68 @@ exports.submitQuiz = async (id, userId, answers, quizResultId) => {
 
         let score = 0;
         const total = quiz.questions.length;
+        const completedAt = new Date();
 
-        const correctAnswers = quiz.questions.map((question) => {
+        const answerDetails = quiz.questions.map((question) => {
             const userAnswer = answers.find((answer) => answer.questionId === question._id.toString());
             const isCorrect = userAnswer && question.correctAnswer === userAnswer.answer;
             if (isCorrect) score++;
             return {
                 questionId: question._id,
+                selectedAnswer: userAnswer?.answer || '',
                 isCorrect,
+                timeSpent: userAnswer?.timeSpent || 0,
             };
         });
 
-        const percentageScore = total > 0 ? Math.floor((score / total) * 100) : 0;
+        const percentageScore = (score / total) * 100;
+        const timeSpent = Math.floor((completedAt - new Date(quizResultId.startedAt)) / 1000);
 
-        const quizResult = await QuizResultService.updateWhenSubmitted(quizResultId, {
+        const quizResult = await QuizResultService.update(quizResultId, {
             score: percentageScore,
-            submittedAt: new Date(),
+            correctAnswers: score,
+            totalQuestions: total,
+            answers: answerDetails,
+            completedAt,
+            timeSpent,
+            status: 'completed',
+            rewards: {
+                badge: percentageScore >= quiz.passingScore ? quiz.rewardBadge : null,
+                voucher: percentageScore >= quiz.passingScore ? quiz.rewardVoucher : null,
+            },
+        });
+
+        // Update quiz statistics
+        const totalAttempts = quiz.statistics.totalAttempts + 1;
+        const newAverageScore =
+            (quiz.statistics.averageScore * quiz.statistics.totalAttempts + percentageScore) / totalAttempts;
+        const newAverageTimeSpent =
+            (quiz.statistics.averageTimeSpent * quiz.statistics.totalAttempts + timeSpent) / totalAttempts;
+
+        await Quiz.findByIdAndUpdate(id, {
+            $inc: { 'statistics.totalAttempts': 1 },
+            $set: {
+                'statistics.averageScore': newAverageScore,
+                'statistics.averageTimeSpent': newAverageTimeSpent,
+                'statistics.completionRate':
+                    (quiz.statistics.completionRate * quiz.statistics.totalAttempts + 100) / totalAttempts,
+            },
         });
 
         logger.info('Quiz submitted successfully', {
             quizId: id,
             userId,
-            quizResultId,
+            quizResultId: quizResult._id,
             score: percentageScore,
-            totalQuestions: total,
+            timeSpent,
         });
 
-        return { userId, score, total, correctAnswers, quizResult };
+        return quizResult;
     } catch (error) {
         logger.error('Error submitting quiz', {
             error: error.message,
             quizId: id,
             userId,
-            quizResultId,
         });
         throw error;
     }
