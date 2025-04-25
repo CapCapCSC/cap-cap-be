@@ -1,12 +1,20 @@
 const mongoose = require('mongoose');
-const User = require('../models/user');
 const Quiz = require('../models/quiz');
 const Question = require('../models/question');
 const Badge = require('../models/badge');
+const Restaurant = require('../models/restaurant');
+const Voucher = require('../models/voucher');
+const Food = require('../models/food');
+const FoodTag = require('../models/foodTag');
 const QuizResult = require('../models/quizResult');
-const questions = require('./seed-data/questions.json');
-const quizzes = require('./seed-data/quizzes.json');
+
+const questions = require('./seed-data/Question.json');
+const quizzes = require('./seed-data/Quiz.json');
 const badges = require('./seed-data/Badge.json');
+const restaurants = require('./seed-data/Restaurant.json');
+const vouchers = require('./seed-data/Voucher.json');
+const foods = require('./seed-data/Food.json');
+const foodTags = require('./seed-data/FoodTag.json');
 const quizResults = require('./seed-data/quizResults.json');
 
 require('dotenv').config();
@@ -23,12 +31,32 @@ async function seedData() {
             Question.deleteMany({}),
             Badge.deleteMany({}),
             QuizResult.deleteMany({}),
+            Restaurant.deleteMany({}),
+            Voucher.deleteMany({}),
+            Food.deleteMany({}),
+            FoodTag.deleteMany({}),
         ]);
         console.log('Cleaned old data');
 
         // Seed badges
         const createdBadges = await Badge.create(badges);
         console.log('Seeded badges');
+
+        // Seed food tags
+        const createdFoodTags = await FoodTag.create(foodTags);
+        console.log('Seeded food tags');
+
+        // Seed foods
+        const createdFoods = await Food.create(foods);
+        console.log('Seeded foods');
+
+        // Seed restaurants
+        const createdRestaurants = await Restaurant.create(restaurants);
+        console.log('Seeded restaurants');
+
+        // Seed vouchers
+        const createdVouchers = await Voucher.create(vouchers);
+        console.log('Seeded vouchers');
 
         // Seed questions
         const createdQuestions = await Question.create(questions);
