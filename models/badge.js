@@ -5,6 +5,7 @@ const badge = new schema(
     {
         name: { type: String, required: true, unique: true },
         iconUrl: { type: String },
+        description: { type: String },
     },
     { timestamps: true },
 );

@@ -69,7 +69,7 @@ exports.getRestaurantById = async (req, res, next) => {
             name: restaurant.name,
         });
 
-        restaurant.locationUrl = createGoogleMapsLink(restaurant.district);
+        restaurant.locationUrl = createGoogleMapsLink(restaurant.address);
         res.status(200).json(restaurant);
     } catch (error) {
         logger.error('Error fetching restaurant', {
