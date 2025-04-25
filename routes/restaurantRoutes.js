@@ -23,7 +23,7 @@ router.use(requestLogger);
  * @swagger
  * /api/restaurants:
  *   get:
- *     summary: Get all restaurants
+ *     summary: Get all restaurants with pagination and filtering
  *     tags: [Restaurant]
  *     parameters:
  *       - in: query
@@ -45,7 +45,7 @@ router.use(requestLogger);
  *         description: Comma-separated list of tags to filter restaurants
  *     responses:
  *       200:
- *         description: List of restaurants
+ *         description: List of restaurants with pagination info
  *         content:
  *           application/json:
  *             schema:
@@ -67,7 +67,7 @@ router.use(requestLogger);
  *       500:
  *         description: Server error
  */
-router.get('/', cache(CACHE_DURATION), restaurantController.getAllRestaurants); // Read all
+router.get('/', cache(CACHE_DURATION), restaurantController.getAllRestaurants);
 
 /**
  * @swagger
@@ -84,7 +84,7 @@ router.get('/', cache(CACHE_DURATION), restaurantController.getAllRestaurants); 
  *         description: Restaurant ID
  *     responses:
  *       200:
- *         description: Restaurant details
+ *         description: Restaurant details with Google Maps link
  *         content:
  *           application/json:
  *             schema:
@@ -94,17 +94,18 @@ router.get('/', cache(CACHE_DURATION), restaurantController.getAllRestaurants); 
  *       500:
  *         description: Server error
  */
-router.get('/:id', cache(CACHE_DURATION), restaurantController.getRestaurantById); // Read one
+router.get('/:id', cache(CACHE_DURATION), restaurantController.getRestaurantById);
 
 /**
  * @swagger
  * /api/restaurants/random:
  *   get:
- *     summary: Get 3 random restaurants
+ *     summary: Get 3 random restaurants by district
  *     tags: [Restaurant]
  *     parameters:
  *       - in: query
  *         name: district
+ *         required: true
  *         schema:
  *           type: string
  *         description: District to filter restaurants
@@ -122,7 +123,7 @@ router.get('/:id', cache(CACHE_DURATION), restaurantController.getRestaurantById
  *       500:
  *         description: Server error
  */
-router.get('/random', cache(CACHE_DURATION), restaurantController.getRandom3Restaurants); // Get random 3 restaurants
+router.get('/random', cache(CACHE_DURATION), restaurantController.getRandom3Restaurants);
 
 /**
  * @swagger
@@ -137,7 +138,30 @@ router.get('/random', cache(CACHE_DURATION), restaurantController.getRandom3Rest
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/Restaurant'
+ *             type: object
+ *             required:
+ *               - name
+ *             properties:
+ *               name:
+ *                 type: string
+ *               menu:
+ *                 type: array
+ *                 items:
+ *                   type: object
+ *                   properties:
+ *                     food:
+ *                       type: string
+ *                       description: Food ID
+ *                     price:
+ *                       type: number
+ *               imageUrl:
+ *                 type: string
+ *               address:
+ *                 type: string
+ *               districtId:
+ *                 type: string
+ *               locationUrl:
+ *                 type: string
  *     responses:
  *       201:
  *         description: Restaurant created successfully
@@ -166,7 +190,7 @@ router.post(
     adminMiddleware,
     validate(validator.createRestaurantSchema),
     restaurantController.createRestaurant,
-); // Create
+);
 
 /**
  * @swagger
@@ -188,7 +212,28 @@ router.post(
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/Restaurant'
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *               menu:
+ *                 type: array
+ *                 items:
+ *                   type: object
+ *                   properties:
+ *                     food:
+ *                       type: string
+ *                       description: Food ID
+ *                     price:
+ *                       type: number
+ *               imageUrl:
+ *                 type: string
+ *               address:
+ *                 type: string
+ *               districtId:
+ *                 type: string
+ *               locationUrl:
+ *                 type: string
  *     responses:
  *       200:
  *         description: Restaurant updated successfully
@@ -219,7 +264,7 @@ router.put(
     adminMiddleware,
     validate(validator.updateRestaurantSchema),
     restaurantController.updateRestaurant,
-); // Update
+);
 
 /**
  * @swagger
@@ -255,7 +300,7 @@ router.put(
  *       500:
  *         description: Server error
  */
-router.delete('/:id', clearCache, authMiddleware, adminMiddleware, restaurantController.deleteRestaurant); // Delete
+router.delete('/:id', clearCache, authMiddleware, adminMiddleware, restaurantController.deleteRestaurant);
 
 /**
  * @swagger
@@ -275,6 +320,7 @@ router.delete('/:id', clearCache, authMiddleware, adminMiddleware, restaurantCon
  *             properties:
  *               food:
  *                 type: string
+ *                 description: Food ID
  *               price:
  *                 type: number
  *         imageUrl:

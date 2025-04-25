@@ -30,7 +30,20 @@ router.use(requestLogger);
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/User'
+ *             type: object
+ *             required:
+ *               - username
+ *               - email
+ *               - password
+ *             properties:
+ *               username:
+ *                 type: string
+ *               email:
+ *                 type: string
+ *                 format: email
+ *               password:
+ *                 type: string
+ *                 format: password
  *     responses:
  *       201:
  *         description: User created successfully
@@ -50,7 +63,7 @@ router.use(requestLogger);
  *       500:
  *         description: Server error
  */
-router.post('/', validate(validator.createUserSchema), userController.createUser); // Create
+router.post('/', validate(validator.createUserSchema), userController.createUser);
 
 /**
  * @swagger
@@ -73,7 +86,18 @@ router.post('/', validate(validator.createUserSchema), userController.createUser
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/User'
+ *               type: object
+ *               properties:
+ *                 username:
+ *                   type: string
+ *                 vouchers:
+ *                   type: array
+ *                   items:
+ *                     type: string
+ *                 badges:
+ *                   type: array
+ *                   items:
+ *                     type: string
  *       401:
  *         description: Unauthorized
  *       404:
@@ -81,7 +105,7 @@ router.post('/', validate(validator.createUserSchema), userController.createUser
  *       500:
  *         description: Server error
  */
-router.get('/:id', authMiddleware, cache(CACHE_DURATION), userController.getUserById); // Read one
+router.get('/:id', authMiddleware, cache(CACHE_DURATION), userController.getUserById);
 
 /**
  * @swagger
@@ -103,7 +127,19 @@ router.get('/:id', authMiddleware, cache(CACHE_DURATION), userController.getUser
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/User'
+ *             type: object
+ *             properties:
+ *               username:
+ *                 type: string
+ *               email:
+ *                 type: string
+ *                 format: email
+ *               password:
+ *                 type: string
+ *                 format: password
+ *               role:
+ *                 type: string
+ *                 enum: [user, admin]
  *     responses:
  *       200:
  *         description: User updated successfully
@@ -134,7 +170,7 @@ router.put(
     adminMiddleware,
     validate(validator.updateUserSchema),
     userController.updateUser,
-); // Update
+);
 
 /**
  * @swagger
@@ -170,7 +206,7 @@ router.put(
  *       500:
  *         description: Server error
  */
-router.delete('/:id', clearCache, authMiddleware, adminMiddleware, userController.deleteUser); // Delete
+router.delete('/:id', clearCache, authMiddleware, adminMiddleware, userController.deleteUser);
 
 /**
  * @swagger
@@ -193,9 +229,12 @@ router.delete('/:id', clearCache, authMiddleware, adminMiddleware, userControlle
  *         application/json:
  *           schema:
  *             type: object
+ *             required:
+ *               - badgeId
  *             properties:
  *               badgeId:
  *                 type: string
+ *                 description: ID of the badge to add
  *     responses:
  *       200:
  *         description: Badge added successfully
@@ -217,7 +256,7 @@ router.delete('/:id', clearCache, authMiddleware, adminMiddleware, userControlle
  *       500:
  *         description: Server error
  */
-router.post('/:id/badge', authMiddleware, validate(validator.addBadgeSchema), userController.addBadge); // Add badge
+router.post('/:id/badge', authMiddleware, validate(validator.addBadgeSchema), userController.addBadge);
 
 /**
  * @swagger
@@ -240,9 +279,12 @@ router.post('/:id/badge', authMiddleware, validate(validator.addBadgeSchema), us
  *         application/json:
  *           schema:
  *             type: object
+ *             required:
+ *               - voucherId
  *             properties:
  *               voucherId:
  *                 type: string
+ *                 description: ID of the voucher to add
  *     responses:
  *       200:
  *         description: Voucher added successfully
@@ -264,7 +306,7 @@ router.post('/:id/badge', authMiddleware, validate(validator.addBadgeSchema), us
  *       500:
  *         description: Server error
  */
-router.post('/:id/voucher', authMiddleware, validate(validator.addVoucherSchema), userController.addVoucher); // Add voucher
+router.post('/:id/voucher', authMiddleware, validate(validator.addVoucherSchema), userController.addVoucher);
 
 /**
  * @swagger
@@ -279,19 +321,24 @@ router.post('/:id/voucher', authMiddleware, validate(validator.addVoucherSchema)
  *           type: string
  *         email:
  *           type: string
+ *           format: email
  *         password:
  *           type: string
+ *           format: password
  *         badges:
  *           type: array
  *           items:
  *             type: string
+ *             description: Badge ID
  *         vouchers:
  *           type: array
  *           items:
  *             type: string
+ *             description: Voucher ID
  *         role:
  *           type: string
  *           enum: [user, admin]
+ *           default: user
  *         refreshToken:
  *           type: string
  *         resetPasswordToken:
