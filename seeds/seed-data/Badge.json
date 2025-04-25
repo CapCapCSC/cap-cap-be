@@ -1,17 +1,62 @@
 [
     {
         "_id": "661f3b44-4444-4444-4444-444444444445",
-        "name": "Beginner",
-        "iconUrl": "https://example.com/icons/beginner.png"
+        "name": "Newbie Explorer",
+        "iconUrl": "https://example.com/icons/newbie.png",
+        "description": "Hoàn thành bài quiz đầu tiên"
     },
     {
         "_id": "661f3b44-4444-4444-4444-444444444446",
-        "name": "Intermediate",
-        "iconUrl": "https://example.com/icons/intermediate.png"
+        "name": "Food Master",
+        "iconUrl": "https://example.com/icons/food-master.png",
+        "description": "Đạt điểm cao trong 5 bài quiz về ẩm thực"
     },
     {
         "_id": "661f3b44-4444-4444-4444-444444444447",
-        "name": "Expert",
-        "iconUrl": "https://example.com/icons/expert.png"
+        "name": "Speed Runner",
+        "iconUrl": "https://example.com/icons/speed-runner.png",
+        "description": "Hoàn thành bài quiz trong thời gian nhanh nhất"
+    },
+    {
+        "_id": "661f3b44-4444-4444-4444-444444444448",
+        "name": "Perfect Score",
+        "iconUrl": "https://example.com/icons/perfect-score.png",
+        "description": "Đạt điểm tuyệt đối trong một bài quiz"
+    },
+    {
+        "_id": "661f3b44-4444-4444-4444-444444444449",
+        "name": "Quiz Marathon",
+        "iconUrl": "https://example.com/icons/marathon.png",
+        "description": "Hoàn thành 10 bài quiz liên tiếp"
+    },
+    {
+        "_id": "661f3b44-4444-4444-4444-444444444450",
+        "name": "Culinary Expert",
+        "iconUrl": "https://example.com/icons/culinary-expert.png",
+        "description": "Đạt điểm cao trong tất cả các bài quiz về ẩm thực"
+    },
+    {
+        "_id": "661f3b44-4444-4444-4444-444444444451",
+        "name": "Early Bird",
+        "iconUrl": "https://example.com/icons/early-bird.png",
+        "description": "Hoàn thành bài quiz trong vòng 24h sau khi đăng"
+    },
+    {
+        "_id": "661f3b44-4444-4444-4444-444444444452",
+        "name": "Social Butterfly",
+        "iconUrl": "https://example.com/icons/social-butterfly.png",
+        "description": "Chia sẻ kết quả quiz trên mạng xã hội"
+    },
+    {
+        "_id": "661f3b44-4444-4444-4444-444444444453",
+        "name": "Streak Master",
+        "iconUrl": "https://example.com/icons/streak-master.png",
+        "description": "Hoàn thành bài quiz mỗi ngày trong 7 ngày liên tiếp"
+    },
+    {
+        "_id": "661f3b44-4444-4444-4444-444444444454",
+        "name": "Knowledge Seeker",
+        "iconUrl": "https://example.com/icons/knowledge-seeker.png",
+        "description": "Hoàn thành 50 câu hỏi trong các bài quiz"
     }
 ]

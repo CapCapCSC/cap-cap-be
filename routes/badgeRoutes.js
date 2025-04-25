@@ -35,6 +35,9 @@ const CACHE_DURATION = 3600; // 1 hour
  *         iconUrl:
  *           type: string
  *           description: URL to the badge's icon
+ *         description:
+ *           type: string
+ *           description: The description of the badge
  *         createdAt:
  *           type: string
  *           format: date-time
@@ -139,6 +142,9 @@ router.get('/:id', cache(CACHE_DURATION), badgeController.getBadgeById);
  *               iconUrl:
  *                 type: string
  *                 description: URL to the badge's icon
+ *               description:
+ *                 type: string
+ *                 description: The description of the badge
  *     responses:
  *       201:
  *         description: Badge created successfully
@@ -193,6 +199,9 @@ router.post(
  *               iconUrl:
  *                 type: string
  *                 description: URL to the badge's icon
+ *               description:
+ *                 type: string
+ *                 description: The description of the badge
  *     responses:
  *       200:
  *         description: Badge updated successfully
