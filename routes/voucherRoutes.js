@@ -6,23 +6,26 @@ const adminMiddleware = require('../middlewares/adminMiddleware');
 const requestLogger = require('../middlewares/requestLogger');
 const validator = require('../middlewares/validationSchemas');
 const validate = require('../middlewares/validate');
+const { cache, clearCache } = require('../middlewares/cache');
 
+const CACHE_DURATION = 3600; // 1 hour
 // Apply request logger middleware
 router.use(requestLogger);
 
 //PUBLIC
-router.get('/', voucherController.getAllVouchers); // Read all
-router.get('/:id', voucherController.getVoucherById); // Read one
+router.get('/', cache(CACHE_DURATION), voucherController.getAllVouchers); // Read all
+router.get('/:id', cache(CACHE_DURATION), voucherController.getVoucherById); // Read one
 
 //ADMIN
 router.post(
     '/',
+    clearCache,
     authMiddleware,
     adminMiddleware,
     validate(validator.createVoucherSchema),
     voucherController.createVoucher,
 ); // Create
-router.put('/:id', authMiddleware, adminMiddleware, voucherController.updateVoucher); // Update
-router.delete('/:id', authMiddleware, adminMiddleware, voucherController.deleteVoucher); // Delete
+router.put('/:id', clearCache, authMiddleware, adminMiddleware, voucherController.updateVoucher); // Update
+router.delete('/:id', clearCache, authMiddleware, adminMiddleware, voucherController.deleteVoucher); // Delete
 
 module.exports = router;
