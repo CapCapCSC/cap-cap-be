@@ -14,15 +14,15 @@ const createUserSchema = Joi.object({
 exports.createUserSchema = createUserSchema;
 
 exports.createRestaurantSchema = Joi.object({
-    name: Joi.string().required(),
+    username: Joi.string().required(),
 });
 
 exports.createFoodSchema = Joi.object({
-    name: Joi.string().required(),
+    username: Joi.string().required(),
 });
 
 exports.createFoodTagSchema = Joi.object({
-    name: Joi.string().required(),
+    username: Joi.string().required(),
 });
 
 exports.createQuestionSchema = Joi.object({
@@ -32,18 +32,18 @@ exports.createQuestionSchema = Joi.object({
 });
 
 exports.createQuizSchema = Joi.object({
-    name: Joi.string().required(),
+    username: Joi.string().required(),
     questions: Joi.array().required(),
 });
 
 exports.createVoucherSchema = Joi.object({
-    name: Joi.string().required(),
+    username: Joi.string().required(),
     validUntil: Joi.date().required(),
     discountValue: Joi.number().required(),
 });
 
 exports.createBadgeSchema = Joi.object({
-    name: Joi.string().required(),
+    username: Joi.string().required(),
 });
 
 exports.updateUserSchema = Joi.object({
@@ -66,7 +66,7 @@ const loginSchema = Joi.object({
 });
 
 const foodSchema = Joi.object({
-    name: Joi.string().required().min(2).max(100),
+    username: Joi.string().required().min(2).max(100),
     description: Joi.string().required().min(10).max(500),
     price: Joi.number().required().min(0),
     category: Joi.string().required().valid('appetizer', 'main', 'dessert', 'drink'),
