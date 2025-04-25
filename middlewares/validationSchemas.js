@@ -5,7 +5,7 @@ const AppError = require('../utils/AppError');
 // Create validation schemas
 
 const createUserSchema = Joi.object({
-    name: Joi.string().min(3).max(30).required(),
+    username: Joi.string().min(3).max(30).required(),
     email: Joi.string().email().required(),
     password: Joi.string().min(6).max(30).required(),
     role: Joi.string().valid('user', 'admin').default('user'),
@@ -14,15 +14,15 @@ const createUserSchema = Joi.object({
 exports.createUserSchema = createUserSchema;
 
 exports.createRestaurantSchema = Joi.object({
-    name: Joi.string().required(),
+    username: Joi.string().required(),
 });
 
 exports.createFoodSchema = Joi.object({
-    name: Joi.string().required(),
+    username: Joi.string().required(),
 });
 
 exports.createFoodTagSchema = Joi.object({
-    name: Joi.string().required(),
+    username: Joi.string().required(),
 });
 
 exports.createQuestionSchema = Joi.object({
@@ -32,23 +32,27 @@ exports.createQuestionSchema = Joi.object({
 });
 
 exports.createQuizSchema = Joi.object({
-    name: Joi.string().required(),
+    username: Joi.string().required(),
     questions: Joi.array().required(),
 });
 
 exports.createVoucherSchema = Joi.object({
-    name: Joi.string().required(),
+    username: Joi.string().required(),
     validUntil: Joi.date().required(),
     discountValue: Joi.number().required(),
 });
 
 exports.createBadgeSchema = Joi.object({
-    name: Joi.string().required(),
+    username: Joi.string().required(),
 });
 
-// Update validation schemas
-
-exports.updateUserSchema = createUserSchema.or('name', 'email', 'password', 'role');
+// fix khuc nay de update username 
+exports.updateUserSchema = Joi.object({
+    username: Joi.string().min(3).max(30),
+    email: Joi.string().email(),
+    password: Joi.string().min(6).max(30),
+    role: Joi.string().valid('user', 'admin'),
+}).or('username', 'email', 'password', 'role');
 
 const registerSchema = Joi.object({
     username: Joi.string().required().min(3).max(30),
@@ -63,7 +67,7 @@ const loginSchema = Joi.object({
 });
 
 const foodSchema = Joi.object({
-    name: Joi.string().required().min(2).max(100),
+    username: Joi.string().required().min(2).max(100),
     description: Joi.string().required().min(10).max(500),
     price: Joi.number().required().min(0),
     category: Joi.string().required().valid('appetizer', 'main', 'dessert', 'drink'),
