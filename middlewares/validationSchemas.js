@@ -46,7 +46,6 @@ exports.createBadgeSchema = Joi.object({
     username: Joi.string().required(),
 });
 
-// fix khuc nay de update username 
 exports.updateUserSchema = Joi.object({
     username: Joi.string().min(3).max(30),
     email: Joi.string().email(),
