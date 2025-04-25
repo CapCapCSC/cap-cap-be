@@ -8,6 +8,7 @@ const errorHandler = require('../middlewares/errorHandler');
 const requestLogger = require('../middlewares/requestLogger');
 const errorLogger = require('../middlewares/errorLogger');
 const logger = require('../utils/logger');
+const rateLimit = require('express-rate-limit');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -27,6 +28,14 @@ app.use(
         customSiteTitle: 'CapCap API Documentation',
     }),
 );
+
+// Rate limit
+const limiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 100, // Limit each IP to 100 requests per windowMs
+    message: 'Too many requests from this IP, please try again later.',
+});
+app.use(limiter);
 
 // Routes
 app.use('/api/auth', require('../routes/authRoutes'));
