@@ -1,6 +1,9 @@
+require('dotenv').config();
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const swaggerUi = require('swagger-ui-express');
+const swaggerSpecs = require('../config/swagger');
 const errorHandler = require('../middlewares/errorHandler');
 const requestLogger = require('../middlewares/requestLogger');
 const errorLogger = require('../middlewares/errorLogger');
@@ -13,6 +16,17 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(bodyParser.json());
 app.use(requestLogger);
+
+// Swagger Documentation
+app.use(
+    '/api-docs',
+    swaggerUi.serve,
+    swaggerUi.setup(swaggerSpecs, {
+        explorer: true,
+        customCss: '.swagger-ui .topbar { display: none }',
+        customSiteTitle: 'CapCap API Documentation',
+    }),
+);
 
 // Routes
 app.use('/api/auth', require('../routes/authRoutes'));
