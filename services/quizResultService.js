@@ -9,51 +9,45 @@ const Voucher = require('../models/voucher');
 const QuizResultService = {
     calculateScore: async (quizId, answers) => {
         try {
-            logger.info('Calculating quiz score', {
-                quizId,
-                answerCount: answers.length,
-            });
+            logger.info('Calculating quiz score', { quizId });
 
             const quiz = await Quiz.findById(quizId).populate('questions');
             if (!quiz) {
-                throw new Error('Quiz not found');
+                throw new AppError('Quiz not found', 404, 'NotFound');
             }
 
             let correctAnswers = 0;
-            const questionMap = new Map(quiz.questions.map((q) => [q._id.toString(), q]));
-
-            for (const answer of answers) {
-                const question = questionMap.get(answer.questionId);
-                if (!question) continue;
-
-                // Check if selected answer is in correctAnswer array
-                if (question.correctAnswer.includes(answer.selectedAnswer)) {
-                    correctAnswers++;
+            const answerDetails = answers.map((answer) => {
+                const question = quiz.questions.find((q) => q._id.toString() === answer.questionId);
+                if (!question) {
+                    throw new AppError(`Question ${answer.questionId} not found`, 400, 'InvalidQuestion');
                 }
-            }
+
+                const isCorrect = question.correctAnswer === answer.selectedAnswer;
+                if (isCorrect) correctAnswers++;
+
+                return {
+                    questionId: answer.questionId,
+                    selectedAnswer: answer.selectedAnswer,
+                    isCorrect,
+                    timeSpent: answer.timeSpent || 0,
+                };
+            });
 
             const score = (correctAnswers / quiz.questions.length) * 100;
-            const isHighScore = score >= 80; // High score threshold
-
-            logger.info('Score calculated', {
-                quizId,
-                correctAnswers,
-                totalQuestions: quiz.questions.length,
-                score,
-                isHighScore,
-            });
+            const isHighScore = score >= quiz.passingScore;
 
             return {
                 score,
                 correctAnswers,
                 totalQuestions: quiz.questions.length,
                 isHighScore,
+                answerDetails,
             };
         } catch (error) {
             logger.error('Error calculating score', {
                 error: error.message,
                 quizId,
-                answers,
             });
             throw error;
         }
@@ -61,38 +55,48 @@ const QuizResultService = {
 
     create: async (data) => {
         try {
-            logger.info('Creating new quiz result', {
+            logger.info('Creating quiz result', {
                 userId: data.userId,
                 quizId: data.quizId,
             });
 
-            // Set start time to current time if not provided
-            if (!data.startTime) {
-                data.startTime = new Date();
+            // Validate required fields
+            const requiredFields = [
+                'userId',
+                'quizId',
+                'answers',
+                'score',
+                'correctAnswers',
+                'totalQuestions',
+                'timeSpent',
+                'status',
+            ];
+            for (const field of requiredFields) {
+                if (!data[field]) {
+                    throw new AppError(`Missing required field: ${field}`, 400, 'ValidationError');
+                }
             }
 
-            // Set completedAt to current time if not provided
-            if (!data.completedAt) {
-                data.completedAt = new Date();
-            }
+            // Create quiz result
+            const quizResult = new QuizResult({
+                userId: data.userId,
+                quizId: data.quizId,
+                answers: data.answers,
+                score: data.score,
+                correctAnswers: data.correctAnswers,
+                totalQuestions: data.totalQuestions,
+                timeSpent: data.timeSpent,
+                status: data.status,
+                startTime: data.startTime,
+                completedAt: data.completedAt,
+            });
 
-            // Add isCorrect to each answer
-            if (data.answers) {
-                const quiz = await Quiz.findById(data.quizId).populate('questions');
-                data.answers = data.answers.map((answer) => {
-                    const question = quiz.questions.find((q) => q._id.toString() === answer.questionId);
-                    return {
-                        ...answer,
-                        isCorrect: question.correctAnswer.includes(answer.selectedAnswer),
-                    };
-                });
-            }
-
-            const quizResult = await QuizResult.create(data);
+            await quizResult.save();
 
             logger.info('Quiz result created successfully', {
-                quizResultId: quizResult._id,
-                userId: quizResult.userId,
+                resultId: quizResult._id,
+                userId: data.userId,
+                quizId: data.quizId,
             });
 
             return quizResult;
