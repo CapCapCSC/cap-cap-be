@@ -76,18 +76,36 @@ exports.refreshToken = async (refreshToken) => {
             throw new AppError('No refresh token provided', 400, 'ValidationError');
         }
 
-        const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
-        const user = await User.findById(decoded.id);
-
-        if (!user || user.refreshToken !== refreshToken) {
-            logger.warn('Refresh token failed - Invalid token');
+        let decoded;
+        try {
+            decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET || 'your_refresh_token_secret');
+        } catch (error) {
+            logger.warn('Refresh token failed - Invalid token', { error: error.message });
             throw new AppError('Invalid refresh token', 401, 'AuthenticationError');
         }
 
-        const newAccessToken = generateAccessToken(user);
-        const newRefreshToken = generateRefreshToken(user);
+        const user = await User.findById(decoded._id);
+        if (!user) {
+            logger.warn('Refresh token failed - User not found', { refreshToken });
+            throw new AppError('Invalid refresh token', 401, 'AuthenticationError');
+        }
+
+        if (user.refreshToken !== refreshToken) {
+            logger.warn('Refresh token failed - Token mismatch', { refreshToken });
+            throw new AppError('Invalid refresh token', 401, 'AuthenticationError');
+        }
+
+        const tokenPayload = {
+            _id: user._id,
+            email: user.email,
+            role: user.role,
+        };
+
+        const newAccessToken = generateAccessToken(tokenPayload);
+        const newRefreshToken = generateRefreshToken(tokenPayload);
 
         // Cập nhật refresh token mới
+        user.accessToken = newAccessToken;
         user.refreshToken = newRefreshToken;
         await user.save();
 
