@@ -88,26 +88,26 @@ exports.getById = async (id) => {
 exports.getRandom3 = async (filters) => {
     try {
         logger.info('Fetching random 3 restaurants', {
-            district: filters.district,
+            districtId: filters.districtId,
         });
 
         const matchStage = {};
-        if (filters.district) {
-            matchStage.district = filters.district;
+        if (filters.districtId) {
+            matchStage.districtId = filters.districtId;
         }
 
         const restaurants = await Restaurant.aggregate([{ $match: matchStage }, { $sample: { size: 3 } }]);
 
         if (!restaurants || restaurants.length === 0) {
             logger.warn('No restaurants found for random selection', {
-                district: filters.district,
+                districtId: filters.districtId,
             });
             return [];
         }
 
         logger.info('Random restaurants fetched successfully', {
             count: restaurants.length,
-            district: filters.district,
+            districtId: filters.districtId,
         });
 
         return restaurants;
@@ -164,6 +164,34 @@ exports.delete = async (id) => {
         logger.error('Error deleting restaurant', {
             error: error.message,
             restaurantId: id,
+        });
+        throw error;
+    }
+};
+
+exports.getByFoodId = async (foodId) => {
+    try {
+        console.log('RestaurantService.getByFoodId: Starting with foodId:', foodId);
+        logger.info('Fetching restaurants by food ID', { foodId });
+
+        console.log('RestaurantService.getByFoodId: Calling Restaurant.find');
+        const restaurants = await Restaurant.find({
+            'menu.food': foodId,
+        }).select('name address menu');
+        console.log('RestaurantService.getByFoodId: Restaurant.find result:', restaurants);
+
+        logger.info('Restaurants fetched successfully', {
+            count: restaurants.length,
+            foodId,
+        });
+
+        return restaurants;
+    } catch (error) {
+        console.error('RestaurantService.getByFoodId: Error:', error);
+        logger.error('Error fetching restaurants by food ID', {
+            error: error.message,
+            stack: error.stack,
+            foodId,
         });
         throw error;
     }
