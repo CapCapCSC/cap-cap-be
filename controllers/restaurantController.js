@@ -82,8 +82,8 @@ exports.getRestaurantById = async (req, res, next) => {
 
 exports.getRandom3Restaurants = async (req, res, next) => {
     try {
-        const { district } = req.query;
-        if (!district) {
+        const { districtId } = req.query;
+        if (!districtId) {
             logger.warn('District is required for random restaurants', {
                 path: req.path,
                 method: req.method,
@@ -92,23 +92,23 @@ exports.getRandom3Restaurants = async (req, res, next) => {
         }
 
         logger.info('Fetching random 3 restaurants', {
-            district,
+            districtId,
             path: req.path,
             method: req.method,
         });
 
-        const restaurants = await RestaurantService.getRandom3({ district });
+        const restaurants = await RestaurantService.getRandom3({ districtId });
 
         logger.info('Random restaurants fetched successfully', {
             count: restaurants.length,
-            district,
+            districtId,
         });
 
         res.status(200).json(restaurants);
     } catch (error) {
         logger.error('Error fetching random restaurants', {
             error: error.message,
-            district: req.query.district,
+            districtId: req.query.districtId,
         });
         next(error);
     }

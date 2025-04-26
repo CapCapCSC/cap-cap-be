@@ -7,7 +7,7 @@ const generateAccessToken = (payload) => {
 };
 
 const generateRefreshToken = (payload) => {
-    return jwt.sign(payload, process.env.JWT_SECRET || 'your_jwt_secret', {
+    return jwt.sign(payload, process.env.REFRESH_TOKEN_SECRET || 'your_refresh_token_secret', {
         expiresIn: '7d',
     });
 };
@@ -16,5 +16,5 @@ const generateResetPasswordToken = (payload) => {
     return jwt.sign(payload, process.env.JWT_SECRET || 'your_jwt_secret', {
         expiresIn: '1h',
     });
-}
+};
 module.exports = { generateAccessToken, generateRefreshToken, generateResetPasswordToken };

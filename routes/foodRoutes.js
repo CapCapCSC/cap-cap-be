@@ -71,6 +71,32 @@ router.get('/', cache(CACHE_DURATION), foodController.getAllFoods);
 
 /**
  * @swagger
+ * /api/foods/random:
+ *   get:
+ *     summary: Get random food with related restaurants
+ *     tags: [Food]
+ *     responses:
+ *       200:
+ *         description: Random food and related restaurants
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 food:
+ *                   $ref: '#/components/schemas/Food'
+ *                 restaurants:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/Restaurant'
+ *       404:
+ *         description: No foods available
+ *       500:
+ *         description: Server error
+ */
+router.get('/random', foodController.getRandomFood);
+/**
+ * @swagger
  * /api/foods/{id}:
  *   get:
  *     summary: Get food by ID
@@ -95,33 +121,6 @@ router.get('/', cache(CACHE_DURATION), foodController.getAllFoods);
  *         description: Server error
  */
 router.get('/:id', cache(CACHE_DURATION), foodController.getFoodById);
-
-/**
- * @swagger
- * /api/foods/random:
- *   get:
- *     summary: Get random food with related restaurants
- *     tags: [Food]
- *     responses:
- *       200:
- *         description: Random food and related restaurants
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 food:
- *                   $ref: '#/components/schemas/Food'
- *                 restaurants:
- *                   type: array
- *                   items:
- *                     $ref: '#/components/schemas/Restaurant'
- *       404:
- *         description: No foods available
- *       500:
- *         description: Server error
- */
-router.get('/random', cache(CACHE_DURATION), foodController.getRandomFood);
 
 /**
  * @swagger

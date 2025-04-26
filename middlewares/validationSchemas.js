@@ -14,36 +14,69 @@ const createUserSchema = Joi.object({
 exports.createUserSchema = createUserSchema;
 
 exports.createRestaurantSchema = Joi.object({
-    username: Joi.string().required(),
+    name: Joi.string().required(),
+    menu: Joi.array().items(
+        Joi.object({
+            food: Joi.string().required(),
+            price: Joi.number().required(),
+        }),
+    ),
+    imageUrl: Joi.string().uri(),
+    address: Joi.string(),
+    districtId: Joi.string(),
+    locationUrl: Joi.string().uri(),
 });
 
 exports.createFoodSchema = Joi.object({
-    username: Joi.string().required(),
+    name: Joi.string().required(),
+    description: Joi.string(),
+    ingredients: Joi.array().items(Joi.string()),
+    imgUrl: Joi.string().uri(),
+    tags: Joi.array().items(Joi.string()),
 });
 
 exports.createFoodTagSchema = Joi.object({
-    username: Joi.string().required(),
+    name: Joi.string().required(),
+    color: Joi.string(),
 });
 
 exports.createQuestionSchema = Joi.object({
     content: Joi.string().required(),
     correctAnswer: Joi.array().items(Joi.string()).required(),
     incorrectAnswer: Joi.array().items(Joi.string()).required(),
+    relatedFood: Joi.string(),
 });
 
 exports.createQuizSchema = Joi.object({
-    username: Joi.string().required(),
+    name: Joi.string().required(),
     questions: Joi.array().required(),
+    description: Joi.string(),
+    imageUrl: Joi.string().uri(),
+    dateCreated: Joi.date(),
+    validUntil: Joi.date(),
+    timeLimit: Joi.number().required().min(0),
+    passingScore: Joi.number().required().min(0).max(100),
+    rewardBadge: Joi.string(),
+    rewardVoucher: Joi.string(),
+    isActive: Joi.boolean().default(true),
+    statistics: Joi.object({
+        totalAttempts: Joi.number().default(0),
+        averageScore: Joi.number().default(0),
+        completionRate: Joi.number().default(0),
+        averageTimeSpent: Joi.number().default(0),
+    })
 });
 
 exports.createVoucherSchema = Joi.object({
-    username: Joi.string().required(),
+    name: Joi.string().required(),
     validUntil: Joi.date().required(),
     discountValue: Joi.number().required(),
 });
 
 exports.createBadgeSchema = Joi.object({
-    username: Joi.string().required(),
+    name: Joi.string().required(),
+    iconUrl: Joi.string().uri().required(),
+    description: Joi.string().required(),
 });
 
 exports.updateUserSchema = Joi.object({
@@ -66,7 +99,7 @@ const loginSchema = Joi.object({
 });
 
 const foodSchema = Joi.object({
-    username: Joi.string().required().min(2).max(100),
+    name: Joi.string().required().min(2).max(100),
     description: Joi.string().required().min(10).max(500),
     price: Joi.number().required().min(0),
     category: Joi.string().required().valid('appetizer', 'main', 'dessert', 'drink'),

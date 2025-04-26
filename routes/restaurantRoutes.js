@@ -71,6 +71,35 @@ router.get('/', cache(CACHE_DURATION), restaurantController.getAllRestaurants);
 
 /**
  * @swagger
+ * /api/restaurants/random:
+ *   get:
+ *     summary: Get 3 random restaurants by district
+ *     tags: [Restaurant]
+ *     parameters:
+ *       - in: query
+ *         name: districtId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: District to filter restaurants
+ *     responses:
+ *       200:
+ *         description: List of random restaurants
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Restaurant'
+ *       400:
+ *         description: District is required
+ *       500:
+ *         description: Server error
+ */
+router.get('/random', cache(CACHE_DURATION), restaurantController.getRandom3Restaurants);
+
+/**
+ * @swagger
  * /api/restaurants/{id}:
  *   get:
  *     summary: Get restaurant by ID
@@ -95,35 +124,6 @@ router.get('/', cache(CACHE_DURATION), restaurantController.getAllRestaurants);
  *         description: Server error
  */
 router.get('/:id', cache(CACHE_DURATION), restaurantController.getRestaurantById);
-
-/**
- * @swagger
- * /api/restaurants/random:
- *   get:
- *     summary: Get 3 random restaurants by district
- *     tags: [Restaurant]
- *     parameters:
- *       - in: query
- *         name: district
- *         required: true
- *         schema:
- *           type: string
- *         description: District to filter restaurants
- *     responses:
- *       200:
- *         description: List of random restaurants
- *         content:
- *           application/json:
- *             schema:
- *               type: array
- *               items:
- *                 $ref: '#/components/schemas/Restaurant'
- *       400:
- *         description: District is required
- *       500:
- *         description: Server error
- */
-router.get('/random', cache(CACHE_DURATION), restaurantController.getRandom3Restaurants);
 
 /**
  * @swagger
@@ -262,7 +262,6 @@ router.put(
     clearCache,
     authMiddleware,
     adminMiddleware,
-    validate(validator.updateRestaurantSchema),
     restaurantController.updateRestaurant,
 );
 

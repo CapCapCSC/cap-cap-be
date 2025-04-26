@@ -146,7 +146,7 @@ router.get('/:id', cache(CACHE_DURATION), quizController.getQuizById); // Read o
  *       500:
  *         description: Server error
  */
-router.get('/:id/statistics', cache(CACHE_DURATION), quizController.getQuizStatistics); // Get quiz statistics
+router.get('/:id/statistics', quizController.getQuizStatistics); // Get quiz statistics
 
 /**
  * @swagger
@@ -333,14 +333,7 @@ router.post(
  *       500:
  *         description: Server error
  */
-router.put(
-    '/:id',
-    clearCache,
-    authMiddleware,
-    adminMiddleware,
-    validate(validator.updateQuizSchema),
-    quizController.updateQuiz,
-); // Update
+router.put('/:id', clearCache, authMiddleware, adminMiddleware, quizController.updateQuiz); // Update
 
 /**
  * @swagger

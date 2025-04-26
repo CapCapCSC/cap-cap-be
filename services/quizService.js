@@ -1,4 +1,5 @@
 const Quiz = require('../models/quiz');
+const QuizResult = require('../models/quizResult');
 const QuizResultService = require('../services/quizResultService');
 const logger = require('../utils/logger');
 const AppError = require('../utils/AppError');
@@ -278,7 +279,7 @@ exports.updateQuizStatistics = async (quizId, score, timeSpent) => {
 
 exports.getStatistics = async (quizId) => {
     try {
-        const statistics = await QuizResultService.aggregate([
+        const statistics = await QuizResult.aggregate([
             {
                 $match: {
                     quizId: new mongoose.Types.ObjectId(quizId),
