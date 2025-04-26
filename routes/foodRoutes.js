@@ -94,8 +94,7 @@ router.get('/', cache(CACHE_DURATION), foodController.getAllFoods);
  *       500:
  *         description: Server error
  */
-router.get('/random', cache(CACHE_DURATION), foodController.getRandomFood);
-
+router.get('/random', foodController.getRandomFood);
 /**
  * @swagger
  * /api/foods/{id}:
