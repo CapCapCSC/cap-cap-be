@@ -7,6 +7,7 @@ const Voucher = require('../models/voucher');
 const Food = require('../models/food');
 const FoodTag = require('../models/foodTag');
 const QuizResult = require('../models/quizResult');
+const { createGoogleMapsLink } = require('../utils/googleMaps');
 
 const questions = require('./seed-data/Question.json');
 const quizzes = require('./seed-data/Quiz.json');
@@ -50,8 +51,14 @@ async function seedData() {
         const createdFoods = await Food.create(foods);
         console.log('Seeded foods');
 
-        // Seed restaurants
-        const createdRestaurants = await Restaurant.create(restaurants);
+        // Seed restaurants with auto-generated locationUrl
+        const restaurantsWithLocation = await Promise.all(
+            restaurants.map(async (restaurant) => ({
+                ...restaurant,
+                locationUrl: await createGoogleMapsLink(restaurant.address),
+            })),
+        );
+        const createdRestaurants = await Restaurant.create(restaurantsWithLocation);
         console.log('Seeded restaurants');
 
         // Seed vouchers
