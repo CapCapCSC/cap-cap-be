@@ -1,25 +1,25 @@
 [
     {
         "userId": "661f7c111111111111111111",
-        "quizId": "661f3b44-1111-1111-1111-111111111111",
+        "quizId": "661f6b111111111111111111",
         "score": 90,
         "correctAnswers": 3,
         "totalQuestions": 3,
         "answers": [
             {
-                "questionId": "661f3b44-2222-2222-2222-222222222222",
+                "questionId": "661f5b000000000000000001",
                 "selectedAnswer": "Thịt bò",
                 "isCorrect": true,
                 "timeSpent": 15
             },
             {
-                "questionId": "661f3b44-3333-3333-3333-333333333333",
+                "questionId": "661f5b000000000000000002",
                 "selectedAnswer": "Pháp",
                 "isCorrect": true,
                 "timeSpent": 20
             },
             {
-                "questionId": "661f3b44-4444-4444-4444-444444444444",
+                "questionId": "661f5b000000000000000003",
                 "selectedAnswer": "Thịt lợn nướng",
                 "isCorrect": true,
                 "timeSpent": 25
@@ -30,30 +30,30 @@
         "timeSpent": 60,
         "status": "completed",
         "rewards": {
-            "badge": "661f3b44-4444-4444-4444-444444444445"
+            "badge": "661f3b444444444444444110"
         }
     },
     {
         "userId": "661f7c222222222222222222",
-        "quizId": "661f3b44-1111-1111-1111-111111111111",
+        "quizId": "661f6b111111111111111111",
         "score": 70,
         "correctAnswers": 2,
         "totalQuestions": 3,
         "answers": [
             {
-                "questionId": "661f3b44-2222-2222-2222-222222222222",
+                "questionId": "661f5b000000000000000001",
                 "selectedAnswer": "Thịt bò",
                 "isCorrect": true,
                 "timeSpent": 20
             },
             {
-                "questionId": "661f3b44-3333-3333-3333-333333333333",
+                "questionId": "661f5b000000000000000002",
                 "selectedAnswer": "Trung Quốc",
                 "isCorrect": false,
                 "timeSpent": 15
             },
             {
-                "questionId": "661f3b44-4444-4444-4444-444444444444",
+                "questionId": "661f5b000000000000000003",
                 "selectedAnswer": "Thịt lợn nướng",
                 "isCorrect": true,
                 "timeSpent": 25
@@ -64,30 +64,30 @@
         "timeSpent": 60,
         "status": "completed",
         "rewards": {
-            "badge": "661f3b44-4444-4444-4444-444444444445"
+            "badge": "661f3b444444444444444110"
         }
     },
     {
         "userId": "661f7c222222222222222222",
-        "quizId": "661f3b44-5555-5555-5555-555555555555",
+        "quizId": "661f6b222222222222222222",
         "score": 85,
         "correctAnswers": 3,
         "totalQuestions": 3,
         "answers": [
             {
-                "questionId": "661f3b44-6666-6666-6666-666666666666",
+                "questionId": "661f5b000000000000000004",
                 "selectedAnswer": "Bánh mì",
                 "isCorrect": true,
                 "timeSpent": 10
             },
             {
-                "questionId": "661f3b44-7777-7777-7777-777777777777",
+                "questionId": "661f5b000000000000000006",
                 "selectedAnswer": "Phở",
                 "isCorrect": true,
                 "timeSpent": 15
             },
             {
-                "questionId": "661f3b44-8888-8888-8888-888888888888",
+                "questionId": "661f5b00000000000000000c",
                 "selectedAnswer": "Bún chả",
                 "isCorrect": true,
                 "timeSpent": 20
@@ -98,7 +98,7 @@
         "timeSpent": 45,
         "status": "completed",
         "rewards": {
-            "badge": "661f3b44-4444-4444-4444-444444444446"
+            "badge": "661f3b444444444444444111"
         }
     }
 ]

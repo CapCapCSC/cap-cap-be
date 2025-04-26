@@ -2,6 +2,8 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const User = require('../models/user');
 
+require('dotenv').config();
+
 const users = [
     {
         _id: '661f7c111111111111111111',

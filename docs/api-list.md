@@ -3,6 +3,8 @@
 Tài liệu liệt kê toàn bộ endpoint backend của hệ thống "Cạp Cạp", phân nhóm rõ ràng theo resource.  
 Tất cả API đều đi qua prefix `/api`.
 
+Có thể một số phần đã outdated. Vui lòng xem API documentation.
+
 ---
 
 ## Authorization
