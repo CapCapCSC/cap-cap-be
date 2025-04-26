@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const foodTagController = require('../controllers/foodtagController');
+const foodTagController = require('../controllers/foodTagController');
 const authMiddleware = require('../middlewares/authMiddleware');
 const adminMiddleware = require('../middlewares/adminMiddleware');
 const requestLogger = require('../middlewares/requestLogger');
