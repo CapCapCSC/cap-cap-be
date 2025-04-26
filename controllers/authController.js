@@ -87,23 +87,8 @@ exports.refreshToken = async (req, res, next) => {
 exports.logout = async (req, res, next) => {
     try {
         const { refreshToken } = req.body;
-
+        AuthService.logout(refreshToken);
         logger.info('Logout attempt');
-
-        if (!refreshToken) {
-            logger.warn('Logout failed - No token provided');
-            throw new AppError('No refresh token provided', 400, 'ValidationError');
-        }
-
-        const user = await User.findOne({ refreshToken });
-        if (user) {
-            user.refreshToken = null;
-            await user.save();
-            logger.info('Logout successful', {
-                userId: user._id,
-            });
-        }
-
         res.status(200).json({
             message: 'Logout successful',
         });

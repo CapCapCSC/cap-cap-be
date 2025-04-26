@@ -98,6 +98,27 @@ exports.refreshToken = async (refreshToken) => {
     }
 };
 
+exports.logout = async (refreshToken) => {
+    try {
+        if (!refreshToken) {
+            logger.warn('Logout failed - No token provided');
+            throw new AppError('No refresh token provided', 400, 'ValidationError');
+        }
+
+        const user = await User.findOne({ refreshToken });
+        if (user) {
+            user.refreshToken = null;
+            await user.save();
+            logger.info('Logout successful', {
+                userId: user._id,
+            });
+        }
+    } catch (error) {
+        logger.error('Error in logout', { error: error.message });
+        throw new AppError('Error in logout', 500, 'ServerError');
+    }
+};
+
 exports.forgotPassword = async (email) => {
     try {
         const user = await User.findOne({ email });
