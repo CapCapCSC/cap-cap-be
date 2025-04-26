@@ -256,7 +256,7 @@ router.delete('/:id', clearCache, authMiddleware, adminMiddleware, userControlle
  *       500:
  *         description: Server error
  */
-router.post('/:id/badge', authMiddleware, validate(validator.addBadgeSchema), userController.addBadge);
+router.post('/:id/badge', authMiddleware, userController.addBadge);
 
 /**
  * @swagger
@@ -306,7 +306,7 @@ router.post('/:id/badge', authMiddleware, validate(validator.addBadgeSchema), us
  *       500:
  *         description: Server error
  */
-router.post('/:id/voucher', authMiddleware, validate(validator.addVoucherSchema), userController.addVoucher);
+router.post('/:id/voucher', authMiddleware, userController.addVoucher);
 
 /**
  * @swagger

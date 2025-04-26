@@ -338,7 +338,6 @@ router.put(
     clearCache,
     authMiddleware,
     adminMiddleware,
-    validate(validator.updateQuizSchema),
     quizController.updateQuiz,
 ); // Update
 

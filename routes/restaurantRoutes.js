@@ -262,7 +262,6 @@ router.put(
     clearCache,
     authMiddleware,
     adminMiddleware,
-    validate(validator.updateRestaurantSchema),
     restaurantController.updateRestaurant,
 );
 

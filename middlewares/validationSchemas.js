@@ -15,6 +15,16 @@ exports.createUserSchema = createUserSchema;
 
 exports.createRestaurantSchema = Joi.object({
     name: Joi.string().required(),
+    menu: Joi.array().items(
+        Joi.object({
+            food: Joi.string().required(),
+            price: Joi.number().required(),
+        }),
+    ),
+    imageUrl: Joi.string().uri(),
+    address: Joi.string(),
+    districtId: Joi.string(),
+    locationUrl: Joi.string().uri(),
 });
 
 exports.createFoodSchema = Joi.object({
@@ -40,6 +50,21 @@ exports.createQuestionSchema = Joi.object({
 exports.createQuizSchema = Joi.object({
     name: Joi.string().required(),
     questions: Joi.array().required(),
+    description: Joi.string(),
+    imageUrl: Joi.string().uri(),
+    dateCreated: Joi.date(),
+    validUntil: Joi.date(),
+    timeLimit: Joi.number().required().min(0),
+    passingScore: Joi.number().required().min(0).max(100),
+    rewardBadge: Joi.string(),
+    rewardVoucher: Joi.string(),
+    isActive: Joi.boolean().default(true),
+    statistics: Joi.object({
+        totalAttempts: Joi.number().default(0),
+        averageScore: Joi.number().default(0),
+        completionRate: Joi.number().default(0),
+        averageTimeSpent: Joi.number().default(0),
+    })
 });
 
 exports.createVoucherSchema = Joi.object({
