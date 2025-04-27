@@ -5,6 +5,7 @@ const nodemailer = require('nodemailer');
 const { generateAccessToken, generateRefreshToken, generateResetPasswordToken } = require('../utils/token');
 const logger = require('../utils/logger');
 const AppError = require('../utils/AppError');
+const crypto = require('crypto');
 
 exports.register = async (username, email, password) => {
     try {
@@ -139,35 +140,62 @@ exports.logout = async (refreshToken) => {
 
 exports.forgotPassword = async (email) => {
     try {
+        logger.info('Processing forgot password request', { email });
+
         const user = await User.findOne({ email });
         if (!user) {
-            logger.warn('Forgot password - User not found', { email });
-            throw new AppError('User not found', 404, 'ValidationError');
+            logger.warn('User not found for forgot password', { email });
+            throw new AppError('User not found', 404, 'NotFound');
         }
 
-        // Generate reset password token and save it to the user document
-        const resetToken = generateResetPasswordToken(user);
-        user.resetPasswordToken = resetToken;
-        user.resetPasswordExpires = Date.now() + 3600000; // 1h
-        await user.save();
+        // Generate reset token
+        const resetToken = crypto.randomBytes(32).toString('hex');
+        const resetTokenExpiry = new Date(Date.now() + 3600000); // 1 hour
 
+        // Update user with reset token
+        const updatedUser = await User.findByIdAndUpdate(
+            user._id,
+            {
+                resetPasswordToken: resetToken,
+                resetPasswordExpires: resetTokenExpiry,
+            },
+            { new: true },
+        );
+
+        if (!updatedUser) {
+            logger.error('Failed to update user with reset token', { userId: user._id });
+            throw new AppError('Failed to generate reset token', 500, 'ServerError');
+        }
+
+        logger.info('Reset token generated and saved', {
+            email,
+            resetToken,
+            resetTokenExpiry,
+            userId: updatedUser._id,
+        });
+
+        // Configure nodemailer with Gmail
         const transporter = nodemailer.createTransport({
-            service: 'Gmail',
+            host: 'smtp.gmail.com',
+            port: 587,
+            secure: false,
             auth: {
                 user: process.env.GMAIL_USER,
-                pass: process.env.GMAIL_PASS,
+                pass: process.env.GMAIL_APP_PASSWORD,
             },
         });
-        const resetLink = `${process.env.FRONTEND_URL}/reset-password/${resetToken}`;
+
+        // Send email with reset link
+        const resetUrl = `${process.env.FRONTEND_URL}/reset-password?token=${resetToken}`;
         await transporter.sendMail({
-            from: process.env.GMAIL_USER,
-            to: email,
-            subject: 'Password Reset',
-            html: `<p>Click <a href="${resetLink}">here</a> to reset your password.</p>`,
+            from: `"CapCap Support" <${process.env.GMAIL_USER}>`,
+            to: user.email,
+            subject: 'Password Reset Request',
+            text: `To reset your password, click the following link: ${resetUrl}\nIf you did not request this, please ignore this email.`,
         });
 
-        logger.info('Forgot password - Email sent', { email });
-        return { message: 'Reset password email sent' };
+        logger.info('Password reset email sent', { email });
+        return { message: 'Password reset email sent', token: resetToken };
     } catch (error) {
         logger.error('Error in forgot password', { error: error.message });
         throw new AppError('Error in forgot password', 500, 'ServerError');
@@ -175,27 +203,73 @@ exports.forgotPassword = async (email) => {
 };
 
 exports.resetPassword = async (resetToken, newPassword) => {
-    let payload;
     try {
-        // Validate token
-        payload = jwt.verify(resetToken, process.env.JWT_SECRET);
+        logger.info('Reset password attempt', { resetToken });
 
-        const user = await User.findOne({
-            _id: payload.userId,
-            resetPasswordToken: resetToken,
-            resetPasswordExpires: { $gt: Date.now() },
+        // Log the current time and token details for debugging
+        const now = new Date();
+        logger.info('Current time and token details', {
+            currentTime: now,
+            resetToken,
         });
-        if (!user) return res.status(400).json({ message: 'Invalid or expired token' });
 
-        // Reset password
-        user.password = await bcrypt.hash(newPassword, 10);
-        user.resetPasswordToken = undefined;
-        user.resetPasswordExpires = undefined;
-        await user.save();
+        // First, find user by token only to check if token exists
+        const userWithToken = await User.findOne({ resetPasswordToken: resetToken });
+        logger.info('User with token found', {
+            tokenExists: !!userWithToken,
+            tokenExpiry: userWithToken?.resetPasswordExpires,
+            currentTime: now,
+            storedToken: userWithToken?.resetPasswordToken,
+            inputToken: resetToken,
+            tokensMatch: userWithToken?.resetPasswordToken === resetToken,
+        });
 
-        logger.info('Password reset successfully', {});
+        // Then find user with valid token and not expired
+        const user = await User.findOne({
+            resetPasswordToken: resetToken,
+            resetPasswordExpires: { $gt: now },
+        });
+
+        if (!user) {
+            if (userWithToken) {
+                logger.warn('Token expired', {
+                    tokenExpiry: userWithToken.resetPasswordExpires,
+                    currentTime: now,
+                });
+                throw new AppError('Reset token has expired', 400, 'ValidationError');
+            } else {
+                logger.warn('Invalid token', {
+                    resetToken,
+                    storedToken: userWithToken?.resetPasswordToken,
+                    tokensMatch: userWithToken?.resetPasswordToken === resetToken,
+                });
+                throw new AppError('Invalid reset token', 400, 'ValidationError');
+            }
+        }
+
+        // Hash new password
+        const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+        // Update user with new password and clear reset token
+        const updatedUser = await User.findByIdAndUpdate(
+            user._id,
+            {
+                password: hashedPassword,
+                resetPasswordToken: undefined,
+                resetPasswordExpires: undefined,
+            },
+            { new: true },
+        );
+
+        if (!updatedUser) {
+            logger.error('Failed to update password', { userId: user._id });
+            throw new AppError('Failed to reset password', 500, 'ServerError');
+        }
+
+        logger.info('Password reset successfully', { userId: user._id });
+        return { message: 'Password reset successful' };
     } catch (error) {
         logger.error('Error in reset password', { error: error.message });
-        throw new AppError('Invalid or expired token', 400, 'ValidationError');
+        throw error;
     }
 };

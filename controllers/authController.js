@@ -116,13 +116,38 @@ exports.forgotPassword = async (req, res, next) => {
 
 exports.resetPassword = async (req, res, next) => {
     try {
-        const { resetToken, newPassword } = req.body;
+        const { token, newPassword } = req.body;
 
-        logger.info('Reset password attempt', { resetToken });
+        logger.info('Reset password attempt', { token });
 
-        await AuthService.resetPassword(resetToken, newPassword);
+        await AuthService.resetPassword(token, newPassword);
         res.status(200).json({
             message: 'Password reset successfully',
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+exports.verifyResetToken = async (req, res, next) => {
+    try {
+        const { token } = req.body;
+
+        logger.info('Verify reset token attempt', { token });
+
+        const user = await User.findOne({
+            resetPasswordToken: token,
+            resetPasswordExpires: { $gt: Date.now() },
+        });
+
+        if (!user) {
+            logger.warn('Invalid or expired reset token', { token });
+            throw new AppError('Invalid or expired token', 400, 'ValidationError');
+        }
+
+        logger.info('Reset token verified successfully', { token });
+        res.status(200).json({
+            message: 'Token is valid',
         });
     } catch (error) {
         next(error);
