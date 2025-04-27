@@ -168,9 +168,21 @@ exports.forgotPassword = async (email) => {
             expiresIn: '1h',
         });
 
+        // Configure nodemailer with Gmail
+        const transporter = nodemailer.createTransport({
+            host: 'smtp.gmail.com',
+            port: 587,
+            secure: false, // true for 465, false for other ports
+            auth: {
+                user: process.env.GMAIL_USER,
+                pass: process.env.GMAIL_APP_PASSWORD, // Use App Password instead of regular password
+            },
+        });
+
         // Send email with reset link
         const resetUrl = `${process.env.FRONTEND_URL}/reset-password?token=${resetToken}`;
-        await sendEmail({
+        await transporter.sendMail({
+            from: `"CapCap Support" <${process.env.GMAIL_USER}>`,
             to: user.email,
             subject: 'Password Reset Request',
             text: `To reset your password, click the following link: ${resetUrl}\nIf you did not request this, please ignore this email.`,
