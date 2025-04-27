@@ -56,7 +56,7 @@ The project includes a comprehensive set of seed data for testing and developmen
 
 2. Run the seeding script:
     ```bash
-    npm run seed
+    node seed/seed-data.js
     # or
     yarn seed
     ```
