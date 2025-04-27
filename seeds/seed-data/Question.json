@@ -1,0 +1,146 @@
+[
+    {
+        "_id": "661f5b000000000000000001",
+        "content": "Phở bò là đặc sản của vùng nào?",
+        "correctAnswer": ["Miền Bắc"],
+        "incorrectAnswer": ["Miền Nam", "Miền Trung", "Tây Nguyên"],
+        "relatedFood": "661f3b100000000000000001"
+    },
+    {
+        "_id": "661f5b000000000000000002",
+        "content": "Bún chả thường được ăn kèm với loại rau nào?",
+        "correctAnswer": ["Rau sống"],
+        "incorrectAnswer": ["Rau muống", "Rau cải", "Rau ngót"],
+        "relatedFood": "661f3b100000000000000002"
+    },
+    {
+        "_id": "661f5b000000000000000003",
+        "content": "Bánh mì Việt Nam có nguồn gốc từ sự kết hợp của ẩm thực nước nào?",
+        "correctAnswer": ["Pháp"],
+        "incorrectAnswer": ["Mỹ", "Nhật Bản", "Hàn Quốc"],
+        "relatedFood": "661f3b100000000000000003"
+    },
+    {
+        "_id": "661f5b000000000000000004",
+        "content": "Cơm tấm thường được ăn kèm với loại nước chấm nào?",
+        "correctAnswer": ["Nước mắm"],
+        "incorrectAnswer": ["Nước tương", "Nước sốt me", "Nước chanh"],
+        "relatedFood": "661f3b100000000000000004"
+    },
+    {
+        "_id": "661f5b000000000000000005",
+        "content": "Gỏi cuốn thường được chấm với loại nước chấm nào?",
+        "correctAnswer": ["Tương đậu phộng"],
+        "incorrectAnswer": ["Nước mắm", "Nước sốt me", "Nước tương"],
+        "relatedFood": "661f3b100000000000000005"
+    },
+    {
+        "_id": "661f5b000000000000000006",
+        "content": "Bánh xèo có lớp vỏ được làm từ nguyên liệu chính nào?",
+        "correctAnswer": ["Bột gạo"],
+        "incorrectAnswer": ["Bột mì", "Bột năng", "Bột bắp"],
+        "relatedFood": "661f3b100000000000000006"
+    },
+    {
+        "_id": "661f5b000000000000000007",
+        "content": "Chè ba màu gồm những lớp màu nào?",
+        "correctAnswer": ["Đậu xanh, đậu đỏ, thạch lá dứa"],
+        "incorrectAnswer": [
+            "Đậu xanh, đậu đen, thạch dừa",
+            "Đậu đỏ, đậu đen, thạch sương sáo",
+            "Đậu xanh, thạch dừa, thạch sương sáo"
+        ],
+        "relatedFood": "661f3b100000000000000007"
+    },
+    {
+        "_id": "661f5b000000000000000008",
+        "content": "Bánh cuốn thường được ăn kèm với loại chả nào?",
+        "correctAnswer": ["Chả lụa"],
+        "incorrectAnswer": ["Chả cá", "Chả bò", "Chả cốm"],
+        "relatedFood": "661f3b100000000000000008"
+    },
+    {
+        "_id": "661f5b000000000000000009",
+        "content": "Bún bò Huế có nước dùng đặc trưng bởi mùi của loại gia vị nào?",
+        "correctAnswer": ["Sả"],
+        "incorrectAnswer": ["Hành", "Tỏi", "Gừng"],
+        "relatedFood": "661f3b100000000000000009"
+    },
+    {
+        "_id": "661f5b00000000000000000a",
+        "content": "Đậu hũ sốt cà là món ăn thuộc loại nào?",
+        "correctAnswer": ["Món chay"],
+        "incorrectAnswer": ["Món mặn", "Món tráng miệng", "Món nước"],
+        "relatedFood": "661f3b10000000000000000a"
+    },
+    {
+        "_id": "661f5b00000000000000000b",
+        "content": "Bánh tráng trộn thường có thành phần nào sau đây?",
+        "correctAnswer": ["Xoài xanh"],
+        "incorrectAnswer": ["Dưa leo", "Cà rốt", "Củ cải"],
+        "relatedFood": "661f3b10000000000000000b"
+    },
+    {
+        "_id": "661f5b00000000000000000c",
+        "content": "Bánh bèo thường được chan với loại nước chấm nào?",
+        "correctAnswer": ["Nước mắm pha ngọt"],
+        "incorrectAnswer": ["Nước tương", "Nước sốt me", "Nước chanh"],
+        "relatedFood": "661f3b10000000000000000c"
+    },
+    {
+        "_id": "661f5b00000000000000000d",
+        "content": "Bánh đa cua là đặc sản của vùng nào?",
+        "correctAnswer": ["Hải Phòng"],
+        "incorrectAnswer": ["Hà Nội", "Huế", "Đà Nẵng"],
+        "relatedFood": "661f3b10000000000000000d"
+    },
+    {
+        "_id": "661f5b00000000000000000e",
+        "content": "Bún riêu có vị chua đặc trưng từ nguyên liệu nào?",
+        "correctAnswer": ["Cà chua"],
+        "incorrectAnswer": ["Me", "Chanh", "Dấm"],
+        "relatedFood": "661f3b10000000000000000e"
+    },
+    {
+        "_id": "661f5b00000000000000000f",
+        "content": "Bún mắm có nước lèo được nấu từ loại mắm nào?",
+        "correctAnswer": ["Mắm cá linh"],
+        "incorrectAnswer": ["Mắm tôm", "Mắm ruốc", "Mắm cá cơm"],
+        "relatedFood": "661f3b10000000000000000f"
+    },
+    {
+        "_id": "661f5b000000000000000010",
+        "content": "Bánh khọt thường được ăn kèm với loại rau nào?",
+        "correctAnswer": ["Rau sống"],
+        "incorrectAnswer": ["Rau muống", "Rau cải", "Rau ngót"],
+        "relatedFood": "661f3b100000000000000010"
+    },
+    {
+        "_id": "661f5b000000000000000011",
+        "content": "Bánh tét là món ăn truyền thống của vùng nào?",
+        "correctAnswer": ["Miền Nam"],
+        "incorrectAnswer": ["Miền Bắc", "Miền Trung", "Tây Nguyên"],
+        "relatedFood": "661f3b100000000000000011"
+    },
+    {
+        "_id": "661f5b000000000000000012",
+        "content": "Bánh chưng thường được gói bằng loại lá nào?",
+        "correctAnswer": ["Lá dong"],
+        "incorrectAnswer": ["Lá chuối", "Lá sen", "Lá dứa"],
+        "relatedFood": "661f3b100000000000000012"
+    },
+    {
+        "_id": "661f5b000000000000000013",
+        "content": "Nem rán thường được chấm với loại nước chấm nào?",
+        "correctAnswer": ["Nước mắm pha chua ngọt"],
+        "incorrectAnswer": ["Nước tương", "Nước sốt me", "Nước chanh"],
+        "relatedFood": "661f3b100000000000000013"
+    },
+    {
+        "_id": "661f5b000000000000000014",
+        "content": "Bánh bột lọc có nhân làm từ nguyên liệu nào?",
+        "correctAnswer": ["Tôm và thịt"],
+        "incorrectAnswer": ["Đậu xanh", "Thịt bò", "Cá"],
+        "relatedFood": "661f3b100000000000000014"
+    }
+]

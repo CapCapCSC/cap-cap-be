@@ -1,0 +1,42 @@
+[
+    {
+        "_id": "661f4c111111111111111111",
+        "name": "Giảm giá 10%",
+        "validUntil": "2025-12-31T23:59:59.000Z",
+        "applicableRestaurants": ["661f1c000000000000000001", "661f1c000000000000000002"],
+        "discountValue": 10,
+        "used": false
+    },
+    {
+        "_id": "661f4c222222222222222222",
+        "name": "Giảm giá 20%",
+        "validUntil": "2026-06-30T23:59:59.000Z",
+        "applicableRestaurants": ["661f1c000000000000000003"],
+        "discountValue": 20,
+        "used": false
+    },
+    {
+        "_id": "661f4c333333333333333333",
+        "name": "Giảm giá 15%",
+        "validUntil": "2024-11-15T23:59:59.000Z",
+        "applicableRestaurants": ["661f1c000000000000000004", "661f1c000000000000000005"],
+        "discountValue": 15,
+        "used": true
+    },
+    {
+        "_id": "661f4c444444444444444444",
+        "name": "Giảm giá 5%",
+        "validUntil": "2023-12-31T23:59:59.000Z",
+        "applicableRestaurants": ["661f1c000000000000000006"],
+        "discountValue": 5,
+        "used": false
+    },
+    {
+        "_id": "661f4c555555555555555555",
+        "name": "Giảm giá 25%",
+        "validUntil": "2027-01-01T23:59:59.000Z",
+        "applicableRestaurants": ["661f1c000000000000000007", "661f1c000000000000000008"],
+        "discountValue": 25,
+        "used": false
+    }
+]
