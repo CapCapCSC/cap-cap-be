@@ -136,30 +136,23 @@ exports.delete = async (id) => {
 
 exports.getRandom = async () => {
     try {
-        console.log('FoodService.getRandom: Starting');
         logger.info('Fetching random food');
 
         // First check if there are any foods in the database
         const count = await Food.countDocuments();
-        console.log('FoodService.getRandom: Total foods in database:', count);
 
         if (count === 0) {
-            console.log('FoodService.getRandom: No foods in database');
             return null;
         }
 
-        console.log('FoodService.getRandom: Calling Food.aggregate');
         const randomFood = await Food.aggregate([{ $sample: { size: 1 } }]);
-        console.log('FoodService.getRandom: Food.aggregate result:', randomFood);
 
         if (!randomFood || randomFood.length === 0) {
-            console.log('FoodService.getRandom: No foods found');
             logger.warn('No foods available for random selection');
             return null;
         }
 
         const food = randomFood[0];
-        console.log('FoodService.getRandom: Selected food:', food);
         logger.info('Random food selected', {
             foodId: food._id,
             name: food.name,
