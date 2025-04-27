@@ -1,5 +1,7 @@
+const upload = require('../middlewares/upload');
 const UserService = require('../services/userService');
 const logger = require('../utils/logger');
+const { uploadAvatar } = require('../controllers/uploadController');
 
 exports.createUser = async (req, res, next) => {
     try {
