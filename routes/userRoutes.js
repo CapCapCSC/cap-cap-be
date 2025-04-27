@@ -6,6 +6,7 @@ const adminMiddleware = require('../middlewares/adminMiddleware');
 const requestLogger = require('../middlewares/requestLogger');
 const validator = require('../middlewares/validationSchemas');
 const validate = require('../middlewares/validate');
+const upload = require('../middlewares/upload');
 const { cache, clearCache } = require('../middlewares/cache');
 
 const CACHE_DURATION = 3600; // 1 hour
@@ -64,6 +65,61 @@ router.use(requestLogger);
  *         description: Server error
  */
 router.post('/', validate(validator.createUserSchema), userController.createUser);
+
+/**
+ * @swagger
+ * /api/users/{id}/avatar:
+ *   put:
+ *     summary: Change user avatar (upload file)
+ *     tags: [User]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: User ID
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               avatar:
+ *                 type: string
+ *                 format: binary
+ *                 description: Image file to upload as avatar
+ *     responses:
+ *       200:
+ *         description: Avatar updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                 user:
+ *                   $ref: '#/components/schemas/User'
+ *       400:
+ *         description: Invalid request body or missing file
+ *       401:
+ *         description: Unauthorized
+ *       404:
+ *         description: User not found
+ *       500:
+ *         description: Server error
+ */
+router.put(
+    '/:id/avatar',
+    authMiddleware,
+    validate(validator.changeAvatarSchema),
+    upload.single('avatar'),
+    userController.changeAvatar,
+);
 
 /**
  * @swagger
