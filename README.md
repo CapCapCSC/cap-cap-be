@@ -39,17 +39,7 @@ CapCap is a backend system designed to manage resources for a food-related appli
     yarn install
     ```
 
-3. Create a `.env` file in the root directory and configure the following environment variables:
-
-    ```
-    PORT=3000
-    MONGODB_URI=mongodb+srv://<username>:<password>@<cluster-url>/
-    MONGODB_URI_TEST=mongodb+srv://<username>:<password>@<cluster-url>/capcap_test
-    JWT_SECRET=<your_jwt_secret>
-    ACCESS_TOKEN_SECRET=<your_access_token_secret>
-    ```
-
-    Replace `<username>`, `<password>`, `<cluster-url>`, `<your_jwt_secret>`, and `<your_access_token_secret>` with your actual credentials.
+3. Create a `.env` file in the root directory and configure environment variables with your actual credentials. (There is an example template in `.env.example`)
 
 4. Start the development server:
     ```bash
