@@ -63,7 +63,6 @@ exports.getRestaurantById = async (req, res, next) => {
         });
 
         const restaurant = await RestaurantService.getById(req.params.id);
-
         logger.info('Restaurant fetched successfully', {
             restaurantId: restaurant._id,
             name: restaurant.name,

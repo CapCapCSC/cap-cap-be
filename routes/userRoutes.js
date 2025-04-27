@@ -6,6 +6,7 @@ const adminMiddleware = require('../middlewares/adminMiddleware');
 const requestLogger = require('../middlewares/requestLogger');
 const validator = require('../middlewares/validationSchemas');
 const validate = require('../middlewares/validate');
+const upload = require('../middlewares/upload');
 const { cache, clearCache } = require('../middlewares/cache');
 
 const CACHE_DURATION = 3600; // 1 hour
@@ -69,7 +70,7 @@ router.post('/', validate(validator.createUserSchema), userController.createUser
  * @swagger
  * /api/users/{id}/avatar:
  *   put:
- *     summary: Change user avatar
+ *     summary: Change user avatar (upload file)
  *     tags: [User]
  *     security:
  *       - bearerAuth: []
@@ -83,15 +84,14 @@ router.post('/', validate(validator.createUserSchema), userController.createUser
  *     requestBody:
  *       required: true
  *       content:
- *         application/json:
+ *         multipart/form-data:
  *           schema:
  *             type: object
- *             required:
- *               - newAvatar
  *             properties:
  *               avatar:
  *                 type: string
- *                 description: URL of the new avatar
+ *                 format: binary
+ *                 description: Image file to upload as avatar
  *     responses:
  *       200:
  *         description: Avatar updated successfully
@@ -105,7 +105,7 @@ router.post('/', validate(validator.createUserSchema), userController.createUser
  *                 user:
  *                   $ref: '#/components/schemas/User'
  *       400:
- *         description: Invalid request body
+ *         description: Invalid request body or missing file
  *       401:
  *         description: Unauthorized
  *       404:
@@ -113,7 +113,7 @@ router.post('/', validate(validator.createUserSchema), userController.createUser
  *       500:
  *         description: Server error
  */
-router.put('/:id/avatar', authMiddleware, validate(validator.changeAvatarSchema), userController.changeAvatar);
+router.put('/:id/avatar', authMiddleware, validate(validator.changeAvatarSchema), upload.single('avatar'), userController.changeAvatar);
 
 /**
  * @swagger
