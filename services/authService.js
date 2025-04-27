@@ -153,29 +153,35 @@ exports.forgotPassword = async (email) => {
         const resetTokenExpiry = new Date(Date.now() + 3600000); // 1 hour
 
         // Update user with reset token
-        user.resetPasswordToken = resetToken;
-        user.resetPasswordExpires = resetTokenExpiry;
-        await user.save();
+        const updatedUser = await User.findByIdAndUpdate(
+            user._id,
+            {
+                resetPasswordToken: resetToken,
+                resetPasswordExpires: resetTokenExpiry,
+            },
+            { new: true },
+        );
 
-        // Create JWT token with user data
-        const tokenPayload = {
-            id: user._id,
-            email: user.email,
-            role: user.role,
-        };
+        if (!updatedUser) {
+            logger.error('Failed to update user with reset token', { userId: user._id });
+            throw new AppError('Failed to generate reset token', 500, 'ServerError');
+        }
 
-        const token = jwt.sign(tokenPayload, process.env.JWT_SECRET, {
-            expiresIn: '1h',
+        logger.info('Reset token generated and saved', {
+            email,
+            resetToken,
+            resetTokenExpiry,
+            userId: updatedUser._id,
         });
 
         // Configure nodemailer with Gmail
         const transporter = nodemailer.createTransport({
             host: 'smtp.gmail.com',
             port: 587,
-            secure: false, // true for 465, false for other ports
+            secure: false,
             auth: {
                 user: process.env.GMAIL_USER,
-                pass: process.env.GMAIL_APP_PASSWORD, // Use App Password instead of regular password
+                pass: process.env.GMAIL_APP_PASSWORD,
             },
         });
 
@@ -189,7 +195,7 @@ exports.forgotPassword = async (email) => {
         });
 
         logger.info('Password reset email sent', { email });
-        return { message: 'Password reset email sent', token };
+        return { message: 'Password reset email sent', token: resetToken };
     } catch (error) {
         logger.error('Error in forgot password', { error: error.message });
         throw new AppError('Error in forgot password', 500, 'ServerError');
@@ -197,27 +203,73 @@ exports.forgotPassword = async (email) => {
 };
 
 exports.resetPassword = async (resetToken, newPassword) => {
-    let payload;
     try {
-        // Validate token
-        payload = jwt.verify(resetToken, process.env.JWT_SECRET);
+        logger.info('Reset password attempt', { resetToken });
 
-        const user = await User.findOne({
-            _id: payload.userId,
-            resetPasswordToken: resetToken,
-            resetPasswordExpires: { $gt: Date.now() },
+        // Log the current time and token details for debugging
+        const now = new Date();
+        logger.info('Current time and token details', {
+            currentTime: now,
+            resetToken,
         });
-        if (!user) return res.status(400).json({ message: 'Invalid or expired token' });
 
-        // Reset password
-        user.password = await bcrypt.hash(newPassword, 10);
-        user.resetPasswordToken = undefined;
-        user.resetPasswordExpires = undefined;
-        await user.save();
+        // First, find user by token only to check if token exists
+        const userWithToken = await User.findOne({ resetPasswordToken: resetToken });
+        logger.info('User with token found', {
+            tokenExists: !!userWithToken,
+            tokenExpiry: userWithToken?.resetPasswordExpires,
+            currentTime: now,
+            storedToken: userWithToken?.resetPasswordToken,
+            inputToken: resetToken,
+            tokensMatch: userWithToken?.resetPasswordToken === resetToken,
+        });
 
-        logger.info('Password reset successfully', {});
+        // Then find user with valid token and not expired
+        const user = await User.findOne({
+            resetPasswordToken: resetToken,
+            resetPasswordExpires: { $gt: now },
+        });
+
+        if (!user) {
+            if (userWithToken) {
+                logger.warn('Token expired', {
+                    tokenExpiry: userWithToken.resetPasswordExpires,
+                    currentTime: now,
+                });
+                throw new AppError('Reset token has expired', 400, 'ValidationError');
+            } else {
+                logger.warn('Invalid token', {
+                    resetToken,
+                    storedToken: userWithToken?.resetPasswordToken,
+                    tokensMatch: userWithToken?.resetPasswordToken === resetToken,
+                });
+                throw new AppError('Invalid reset token', 400, 'ValidationError');
+            }
+        }
+
+        // Hash new password
+        const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+        // Update user with new password and clear reset token
+        const updatedUser = await User.findByIdAndUpdate(
+            user._id,
+            {
+                password: hashedPassword,
+                resetPasswordToken: undefined,
+                resetPasswordExpires: undefined,
+            },
+            { new: true },
+        );
+
+        if (!updatedUser) {
+            logger.error('Failed to update password', { userId: user._id });
+            throw new AppError('Failed to reset password', 500, 'ServerError');
+        }
+
+        logger.info('Password reset successfully', { userId: user._id });
+        return { message: 'Password reset successful' };
     } catch (error) {
         logger.error('Error in reset password', { error: error.message });
-        throw new AppError('Invalid or expired token', 400, 'ValidationError');
+        throw error;
     }
 };
