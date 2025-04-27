@@ -79,13 +79,6 @@ exports.createBadgeSchema = Joi.object({
     description: Joi.string().required(),
 });
 
-exports.updateUserSchema = Joi.object({
-    username: Joi.string().min(3).max(30),
-    email: Joi.string().email(),
-    password: Joi.string().min(6).max(30),
-    role: Joi.string().valid('user', 'admin'),
-}).or('username', 'email', 'password', 'role');
-
 const registerSchema = Joi.object({
     username: Joi.string().required().min(3).max(30),
     email: Joi.string().required().email(),
@@ -224,6 +217,14 @@ exports.getQuizHistorySchema = Joi.object({
         'date.min': 'End date must be after start date',
     }),
 });
+
+exports.updateUserSchema = Joi.object({
+    username: Joi.string().min(3).max(30),
+    email: Joi.string().email(),
+    password: Joi.string().min(6).max(30),
+    role: Joi.string().valid('user', 'admin'),
+    avatar: Joi.string().uri(),
+}).or('username', 'email', 'password', 'role', 'avatar');
 
 module.exports = {
     registerSchema,
