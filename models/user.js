@@ -7,6 +7,11 @@ const user = new schema(
         username: { type: String, required: true },
         email: { type: String, required: true, unique: true },
         password: { type: String, required: true },
+        avatar: {
+            type: String,
+            default:
+                'https://res.cloudinary.com/dd2exbt35/image/upload/v1745756446/food-images/qs5eqxdvjukmwb9pq91p.png',
+        },
         badges: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Badge' }],
         vouchers: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Voucher' }],
         role: { type: String, enum: ['user', 'admin'], default: 'user' },

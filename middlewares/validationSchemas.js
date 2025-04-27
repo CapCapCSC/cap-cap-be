@@ -13,6 +13,10 @@ const createUserSchema = Joi.object({
 
 exports.createUserSchema = createUserSchema;
 
+exports.changeAvatarSchema = Joi.object({
+    newAvatar: Joi.string().uri().required(),
+});
+
 exports.createRestaurantSchema = Joi.object({
     name: Joi.string().required(),
     menu: Joi.array().items(
@@ -64,7 +68,7 @@ exports.createQuizSchema = Joi.object({
         averageScore: Joi.number().default(0),
         completionRate: Joi.number().default(0),
         averageTimeSpent: Joi.number().default(0),
-    })
+    }),
 });
 
 exports.createVoucherSchema = Joi.object({
