@@ -39,6 +39,7 @@ exports.getAll = async (query) => {
         });
 
         const restaurants = await Restaurant.find(filter)
+            .populate('menu.food')
             .skip((page - 1) * limit)
             .limit(parseInt(limit));
         const total = await Restaurant.countDocuments(filter);
@@ -62,25 +63,24 @@ exports.getAll = async (query) => {
 
 exports.getById = async (id) => {
     try {
-        logger.info('Fetching restaurant by ID', { restaurantId: id });
+        logger.info('Getting restaurant by ID', { id });
+        const restaurant = await Restaurant.findOne({ _id: id })
+            .populate({
+                path: 'menu.food',
+                model: 'Food',
+                select: 'name description ingredients imgUrl tags',
+            })
+            .lean(); // Convert to plain JavaScript object
 
-        const restaurant = await Restaurant.findById(id);
         if (!restaurant) {
-            logger.warn('Restaurant not found', { restaurantId: id });
+            logger.warn('Restaurant not found', { id });
             throw new AppError('Restaurant not found', 404, 'NotFound');
         }
 
-        logger.info('Restaurant fetched successfully', {
-            restaurantId: restaurant._id,
-            name: restaurant.name,
-        });
-
+        logger.info('Restaurant found', { id });
         return restaurant;
     } catch (error) {
-        logger.error('Error fetching restaurant', {
-            error: error.message,
-            restaurantId: id,
-        });
+        logger.error('Error getting restaurant by ID', { id, error: error.message });
         throw error;
     }
 };
@@ -105,12 +105,17 @@ exports.getRandom3 = async (filters) => {
             return [];
         }
 
+        // Populate food information after aggregation
+        const populatedRestaurants = await Restaurant.populate(restaurants, {
+            path: 'menu.food',
+        });
+
         logger.info('Random restaurants fetched successfully', {
-            count: restaurants.length,
+            count: populatedRestaurants.length,
             districtId: filters.districtId,
         });
 
-        return restaurants;
+        return populatedRestaurants;
     } catch (error) {
         logger.error('Error fetching random restaurants', {
             error: error.message,
