@@ -40,6 +40,7 @@ exports.getAll = async (query) => {
 
         const restaurants = await Restaurant.find(filter)
             .populate('menu.food')
+            .populate('menu.food')
             .skip((page - 1) * limit)
             .limit(parseInt(limit));
         const total = await Restaurant.countDocuments(filter);
@@ -67,21 +68,14 @@ exports.getById = async (id) => {
 
         const restaurant = await Restaurant.findById(id).populate('menu food');
         if (!restaurant) {
-            logger.warn('Restaurant not found', { restaurantId: id });
+            logger.warn('Restaurant not found', { id });
             throw new AppError('Restaurant not found', 404, 'NotFound');
         }
 
-        logger.info('Restaurant fetched successfully', {
-            restaurantId: restaurant._id,
-            name: restaurant.name,
-        });
-
+        logger.info('Restaurant found', { id });
         return restaurant;
     } catch (error) {
-        logger.error('Error fetching restaurant', {
-            error: error.message,
-            restaurantId: id,
-        });
+        logger.error('Error getting restaurant by ID', { id, error: error.message });
         throw error;
     }
 };
@@ -106,12 +100,17 @@ exports.getRandom3 = async (filters) => {
             return [];
         }
 
+        // Populate food information after aggregation
+        const populatedRestaurants = await Restaurant.populate(restaurants, {
+            path: 'menu.food',
+        });
+
         logger.info('Random restaurants fetched successfully', {
-            count: restaurants.length,
+            count: populatedRestaurants.length,
             districtId: filters.districtId,
         });
 
-        return restaurants;
+        return populatedRestaurants;
     } catch (error) {
         logger.error('Error fetching random restaurants', {
             error: error.message,
