@@ -7,7 +7,7 @@ const { uploadImage } = require('../controllers/uploadController');
  * @swagger
  * /api/upload:
  *   post:
- *     summary: Upload ảnh lên Cloudinary
+ *     summary: Upload images to Cloudinary
  *     tags: [Upload]
  *     requestBody:
  *       required: true
@@ -19,22 +19,22 @@ const { uploadImage } = require('../controllers/uploadController');
  *               image:
  *                 type: string
  *                 format: binary
- *                 description: File ảnh cần upload
+ *                 description: Image file to upload
  *     responses:
  *       200:
- *         description: Upload thành công
+ *         description: Upload successful
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/UploadResponse'
  *       400:
- *         description: Lỗi do không có file hoặc file không hợp lệ
+ *         description: Error due to missing file or invalid file
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/UploadError'
  *       500:
- *         description: Lỗi server
+ *         description: Server error
  *         content:
  *           application/json:
  *             schema:
