@@ -48,6 +48,7 @@ app.use('/api/questions', require('../routes/questionRoutes'));
 app.use('/api/foodtags', require('../routes/foodTagRoutes'));
 app.use('/api/foods', require('../routes/foodRoutes'));
 app.use('/api/badges', require('../routes/badgeRoutes'));
+app.use('/api/upload', require('../routes/uploadRoutes'));
 
 // Test route
 app.get('/api/', (req, res) => {
