@@ -5,6 +5,7 @@ const nodemailer = require('nodemailer');
 const { generateAccessToken, generateRefreshToken, generateResetPasswordToken } = require('../utils/token');
 const logger = require('../utils/logger');
 const AppError = require('../utils/AppError');
+const crypto = require('crypto');
 
 exports.register = async (username, email, password) => {
     try {
@@ -139,35 +140,44 @@ exports.logout = async (refreshToken) => {
 
 exports.forgotPassword = async (email) => {
     try {
+        logger.info('Processing forgot password request', { email });
+
         const user = await User.findOne({ email });
         if (!user) {
-            logger.warn('Forgot password - User not found', { email });
-            throw new AppError('User not found', 404, 'ValidationError');
+            logger.warn('User not found for forgot password', { email });
+            throw new AppError('User not found', 404, 'NotFound');
         }
 
-        // Generate reset password token and save it to the user document
-        const resetToken = generateResetPasswordToken(user);
+        // Generate reset token
+        const resetToken = crypto.randomBytes(32).toString('hex');
+        const resetTokenExpiry = new Date(Date.now() + 3600000); // 1 hour
+
+        // Update user with reset token
         user.resetPasswordToken = resetToken;
-        user.resetPasswordExpires = Date.now() + 3600000; // 1h
+        user.resetPasswordExpires = resetTokenExpiry;
         await user.save();
 
-        const transporter = nodemailer.createTransport({
-            service: 'Gmail',
-            auth: {
-                user: process.env.GMAIL_USER,
-                pass: process.env.GMAIL_PASS,
-            },
-        });
-        const resetLink = `${process.env.FRONTEND_URL}/reset-password/${resetToken}`;
-        await transporter.sendMail({
-            from: process.env.GMAIL_USER,
-            to: email,
-            subject: 'Password Reset',
-            html: `<p>Click <a href="${resetLink}">here</a> to reset your password.</p>`,
+        // Create JWT token with user data
+        const tokenPayload = {
+            id: user._id,
+            email: user.email,
+            role: user.role,
+        };
+
+        const token = jwt.sign(tokenPayload, process.env.JWT_SECRET, {
+            expiresIn: '1h',
         });
 
-        logger.info('Forgot password - Email sent', { email });
-        return { message: 'Reset password email sent' };
+        // Send email with reset link
+        const resetUrl = `${process.env.FRONTEND_URL}/reset-password?token=${resetToken}`;
+        await sendEmail({
+            to: user.email,
+            subject: 'Password Reset Request',
+            text: `To reset your password, click the following link: ${resetUrl}\nIf you did not request this, please ignore this email.`,
+        });
+
+        logger.info('Password reset email sent', { email });
+        return { message: 'Password reset email sent', token };
     } catch (error) {
         logger.error('Error in forgot password', { error: error.message });
         throw new AppError('Error in forgot password', 500, 'ServerError');

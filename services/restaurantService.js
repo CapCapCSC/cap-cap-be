@@ -64,7 +64,8 @@ exports.getAll = async (query) => {
 exports.getById = async (id) => {
     try {
         logger.info('Getting restaurant by ID', { id });
-        const restaurant = await Restaurant.findOne({ _id: id })
+
+        const restaurant = await Restaurant.findById(id)
             .populate({
                 path: 'menu.food',
                 model: 'Food',
