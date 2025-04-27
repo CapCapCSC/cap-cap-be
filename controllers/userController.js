@@ -50,6 +50,20 @@ exports.deleteUser = async (req, res, next) => {
     }
 };
 
+exports.changeAvatar = async (req, res, next) => {
+    try {
+        logger.info('Change avatar request received', { 
+            userId: req.params.id,
+            newAvatar: req.newAvatar ? req.newAvatar : '[NO FILE]'
+        });
+        const user = await UserService.changeAvatar(req.params.id, req.newAvatar);
+        logger.info('Avatar changed successfully', { userId: user._id });
+        res.status(200).json({ message: 'Avatar changed', user });
+    } catch (error) {
+        next(error);
+    }
+}
+
 exports.addBadge = async (req, res, next) => {
     try {
         const { id } = req.params;

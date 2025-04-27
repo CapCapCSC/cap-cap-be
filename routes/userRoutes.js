@@ -67,6 +67,56 @@ router.post('/', validate(validator.createUserSchema), userController.createUser
 
 /**
  * @swagger
+ * /api/users/{id}/avatar:
+ *   put:
+ *     summary: Change user avatar
+ *     tags: [User]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: User ID
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - avatarUrl
+ *             properties:
+ *               avatarUrl:
+ *                 type: string
+ *                 description: URL of the new avatar
+ *     responses:
+ *       200:
+ *         description: Avatar updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                 user:
+ *                   $ref: '#/components/schemas/User'
+ *       400:
+ *         description: Invalid request body
+ *       401:
+ *         description: Unauthorized
+ *       404:
+ *         description: User not found
+ *       500:
+ *         description: Server error
+ */
+router.put('/:id/avatar', authMiddleware, validate(validator.changeAvatarSchema), userController.changeAvatar);
+
+/**
+ * @swagger
  * /api/users/{id}:
  *   get:
  *     summary: Get user by ID
