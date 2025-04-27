@@ -28,7 +28,7 @@ const userService = {
     getById: async (id) => {
         try {
             logger.info('Fetching user by ID', { userId: id });
-            const user = await User.findById(id).select('username vouchers badges');
+            const user = await User.findById(id).select('username email avatar vouchers badges');
             if (!user) {
                 logger.warn('User not found', { userId: id });
                 return null;

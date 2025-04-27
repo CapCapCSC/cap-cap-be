@@ -31,9 +31,9 @@ exports.updateUser = async (req, res, next) => {
     try {
         logger.info('Update user request received', {
             userId: req.params.id,
-            updateData: { ...req.body, password: req.body.password ? '[REDACTED]' : undefined },
+            updateData: { ...req.validatedData, password: req.validatedData?.password ? '[REDACTED]' : undefined }
         });
-        const user = await UserService.update(req.params.id, req.body);
+        const user = await UserService.update(req.params.id, req.validatedData);
         logger.info('User updated successfully', { userId: user._id });
         res.status(200).json({ message: 'User updated', user });
     } catch (error) {

@@ -223,7 +223,6 @@ router.put(
     '/:id',
     clearCache,
     authMiddleware,
-    adminMiddleware,
     validate(validator.updateUserSchema),
     userController.updateUser,
 );
