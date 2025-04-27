@@ -67,7 +67,7 @@ router.use(requestLogger);
  *       500:
  *         description: Server error
  */
-router.get('/', cache(CACHE_DURATION), restaurantController.getAllRestaurants);
+router.get('/', restaurantController.getAllRestaurants);
 
 /**
  * @swagger
@@ -96,7 +96,7 @@ router.get('/', cache(CACHE_DURATION), restaurantController.getAllRestaurants);
  *       500:
  *         description: Server error
  */
-router.get('/random', cache(CACHE_DURATION), restaurantController.getRandom3Restaurants);
+router.get('/random', restaurantController.getRandom3Restaurants);
 
 /**
  * @swagger
