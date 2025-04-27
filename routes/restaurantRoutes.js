@@ -123,7 +123,7 @@ router.get('/random', cache(CACHE_DURATION), restaurantController.getRandom3Rest
  *       500:
  *         description: Server error
  */
-router.get('/:id', cache(CACHE_DURATION), restaurantController.getRestaurantById);
+router.get('/:id', restaurantController.getRestaurantById);
 
 /**
  * @swagger
@@ -257,13 +257,7 @@ router.post(
  *       500:
  *         description: Server error
  */
-router.put(
-    '/:id',
-    clearCache,
-    authMiddleware,
-    adminMiddleware,
-    restaurantController.updateRestaurant,
-);
+router.put('/:id', clearCache, authMiddleware, adminMiddleware, restaurantController.updateRestaurant);
 
 /**
  * @swagger

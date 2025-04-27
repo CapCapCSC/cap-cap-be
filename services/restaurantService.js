@@ -39,6 +39,7 @@ exports.getAll = async (query) => {
         });
 
         const restaurants = await Restaurant.find(filter)
+            .populate('menu.food')
             .skip((page - 1) * limit)
             .limit(parseInt(limit));
         const total = await Restaurant.countDocuments(filter);
@@ -64,7 +65,7 @@ exports.getById = async (id) => {
     try {
         logger.info('Fetching restaurant by ID', { restaurantId: id });
 
-        const restaurant = await Restaurant.findById(id);
+        const restaurant = await Restaurant.findById(id).populate('menu food');
         if (!restaurant) {
             logger.warn('Restaurant not found', { restaurantId: id });
             throw new AppError('Restaurant not found', 404, 'NotFound');

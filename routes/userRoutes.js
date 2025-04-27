@@ -113,7 +113,13 @@ router.post('/', validate(validator.createUserSchema), userController.createUser
  *       500:
  *         description: Server error
  */
-router.put('/:id/avatar', authMiddleware, validate(validator.changeAvatarSchema), upload.single('avatar'), userController.changeAvatar);
+router.put(
+    '/:id/avatar',
+    authMiddleware,
+    validate(validator.changeAvatarSchema),
+    upload.single('avatar'),
+    userController.changeAvatar,
+);
 
 /**
  * @swagger
@@ -213,14 +219,7 @@ router.get('/:id', authMiddleware, cache(CACHE_DURATION), userController.getUser
  *       500:
  *         description: Server error
  */
-router.put(
-    '/:id',
-    clearCache,
-    authMiddleware,
-    adminMiddleware,
-    validate(validator.updateUserSchema),
-    userController.updateUser,
-);
+router.put('/:id', clearCache, authMiddleware, validate(validator.updateUserSchema), userController.updateUser);
 
 /**
  * @swagger
