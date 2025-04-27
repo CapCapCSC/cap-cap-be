@@ -82,6 +82,31 @@ const userService = {
         }
     },
 
+    changeAvatar: async (userId, avatar) => {
+        try {
+            logger.info('Changing user avatar', { userId });
+            const user = await User.findByIdAndUpdate(
+                userId,
+                { avatar },
+                { new: true },
+            ).select('_id avatar');
+
+            if (!user) {
+                logger.warn('User not found when changing avatar', { userId });
+                throw new AppError('User not found', 404, 'NotFound');
+            }
+
+            logger.info('User avatar changed successfully', { userId });
+            return user;
+        }catch (error) {
+            logger.error('Error changing user avatar', {
+                error: error.message,
+                userId,
+            });
+            throw error;
+        }
+    },
+
     addBadge: async (userId, badgeId) => {
         try {
             logger.info('Adding badge to user', { userId, badgeId });

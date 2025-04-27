@@ -98,6 +98,9 @@ const loginSchema = Joi.object({
     password: Joi.string().required(),
 });
 
+exports.changeAvatarSchema = Joi.object({
+    newAvatar: Joi.string().uri().required(),});
+
 const foodSchema = Joi.object({
     name: Joi.string().required().min(2).max(100),
     description: Joi.string().required().min(10).max(500),

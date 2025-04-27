@@ -256,6 +256,27 @@ Các quy tắc chung:
 }
 ```
 
+### `PUT /api/users/:id/avatar` Đổi avatar **[Auth]**
+
+**Request:**
+
+```json
+{
+    "newAvatar": "http://avatarlink"
+}
+```
+
+**Response:**
+```json
+{
+    "message": "Avatar changed",
+    "user": {
+        "_id": "userObjectId",
+        "avatar": "http://avatarlink" 
+    } 
+}
+```
+
 ### `POST /api/users/:id/badge` Thêm badge cho user **[Auth][Admin]**
 
 **Request:**

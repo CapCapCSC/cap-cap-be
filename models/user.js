@@ -7,6 +7,7 @@ const user = new schema(
         username: { type: String, required: true },
         email: { type: String, required: true, unique: true },
         password: { type: String, required: true },
+        avatar: { type: String, default: '' },
         badges: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Badge' }],
         vouchers: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Voucher' }],
         role: { type: String, enum: ['user', 'admin'], default: 'user' },
