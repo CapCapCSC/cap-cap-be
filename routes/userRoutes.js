@@ -87,9 +87,9 @@ router.post('/', validate(validator.createUserSchema), userController.createUser
  *           schema:
  *             type: object
  *             required:
- *               - avatarUrl
+ *               - newAvatar
  *             properties:
- *               avatarUrl:
+ *               avatar:
  *                 type: string
  *                 description: URL of the new avatar
  *     responses:

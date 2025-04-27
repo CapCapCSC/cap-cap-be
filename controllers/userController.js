@@ -56,7 +56,7 @@ exports.changeAvatar = async (req, res, next) => {
             userId: req.params.id,
             newAvatar: req.newAvatar ? req.newAvatar : '[NO FILE]'
         });
-        const user = await UserService.changeAvatar(req.params.id, req.newAvatar);
+        const user = await UserService.changeAvatar(req.params.id, req.body.newAvatar);
         logger.info('Avatar changed successfully', { userId: user._id });
         res.status(200).json({ message: 'Avatar changed', user });
     } catch (error) {

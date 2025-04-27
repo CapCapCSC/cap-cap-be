@@ -99,7 +99,7 @@ const loginSchema = Joi.object({
 });
 
 exports.changeAvatarSchema = Joi.object({
-    avatar: Joi.string().uri().required(),});
+    newAvatar: Joi.string().uri().required(),});
 
 const foodSchema = Joi.object({
     name: Joi.string().required().min(2).max(100),
