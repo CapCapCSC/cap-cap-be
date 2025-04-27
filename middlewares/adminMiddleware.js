@@ -1,8 +1,31 @@
+const logger = require('../utils/logger');
+const AppError = require('../utils/AppError');
+
 const adminMiddleware = (req, res, next) => {
-    if (req.user && req.user.role === 'admin') {
-        next();
-    } else {
-        return res.status(403).json({ error: 'Forbidden', message: 'Admin access required', status: 403 });
+    try {
+        logger.info('Checking admin access', {
+            userId: req.user?._id,
+            path: req.originalUrl,
+            method: req.method,
+        });
+
+        if (req.user && req.user.role === 'admin') {
+            logger.info('Admin access granted', {
+                userId: req.user._id,
+                path: req.originalUrl,
+                method: req.method,
+            });
+            next();
+        } else {
+            logger.warn('Admin access denied', {
+                userId: req.user?._id,
+                path: req.originalUrl,
+                method: req.method,
+            });
+            throw new AppError('Admin access required', 403, 'ForbiddenError');
+        }
+    } catch (error) {
+        next(error);
     }
 };
 

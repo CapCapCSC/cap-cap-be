@@ -58,6 +58,40 @@ CapCap is a backend system designed to manage resources for a food-related appli
     yarn dev
     ```
 
+## Data Seeding
+
+The project includes a comprehensive set of seed data for testing and development purposes. To seed the database with sample data:
+
+1. Make sure your MongoDB connection is properly configured in the `.env` file.
+
+2. Run the seeding script:
+    ```bash
+    npm run seed
+    # or
+    yarn seed
+    ```
+
+This will populate your database with:
+
+- Food items and their tags
+- Restaurants with their menus
+- Quizzes and questions
+- Badges and vouchers
+- Sample quiz results
+
+The seed data is located in the `seeds/seed-data` directory and includes:
+
+- `Food.json`: Vietnamese dishes with descriptions and ingredients
+- `FoodTag.json`: Food categories and tags
+- `Restaurant.json`: Restaurants with their menus and locations
+- `Quiz.json`: Quizzes with their configurations
+- `Question.json`: Quiz questions with answers
+- `Badge.json`: Achievement badges
+- `Voucher.json`: Discount vouchers
+- `QuizResults.json`: Sample quiz completion records
+
+Note: Running the seed script will delete all existing data in the database before inserting the new seed data.
+
 ## API Documentation
 
 Refer to the [API List](./docs/api-list.md) for detailed documentation of all available endpoints.

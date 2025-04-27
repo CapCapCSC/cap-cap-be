@@ -1,70 +1,142 @@
 const FoodService = require('../services/foodService');
+const RestaurantService = require('../services/restaurantService');
+const logger = require('../utils/logger');
+const AppError = require('../utils/AppError');
 
-exports.createFood = async (req, res) => {
+exports.createFood = async (req, res, next) => {
     try {
+        logger.info('Creating food request received', {
+            body: req.body,
+        });
+
         const food = await FoodService.create(req.body);
+        logger.info('Food created successfully', {
+            foodId: food._id,
+            name: food.name,
+        });
+
         res.status(201).json({ message: 'Food created', food });
     } catch (error) {
-        res.status(500).json({ error: 'InternalServerError', message: error.message });
+        next(error);
     }
 };
 
-exports.getAllFoods = async (req, res) => {
+exports.getAllFoods = async (req, res, next) => {
     try {
+        logger.info('Get all foods request received', {
+            query: req.query,
+        });
+
         const foods = await FoodService.getAll(req.query);
+        logger.info('Foods fetched successfully', {
+            count: foods.data.length,
+            total: foods.pagination.total,
+        });
+
         res.status(200).json(foods);
     } catch (error) {
-        res.status(500).json({ error: 'InternalServerError', message: error.message });
+        next(error);
     }
 };
 
-exports.getRandomFood = async (req, res) => {
+exports.getRandomFood = async (req, res, next) => {
     try {
-        const foods = await FoodService.getAll();
-        if (foods.length === 0) return res.status(404).json({ error: 'NotFound', message: 'No foods available' });
+        console.log('Starting getRandomFood function');
+        logger.info('Get random food request received');
 
-        const randomFood = foods[Math.floor(Math.random() * foods.length)];
+        console.log('Calling FoodService.getRandom()');
+        // Get random food using service layer
+        const randomFood = await FoodService.getRandom();
+        console.log('FoodService.getRandom() result:', randomFood);
 
-        const restaurants = await RestaurantService.getAll();
-        const relatedRestaurants = restaurants.filter((restaurant) =>
-            restaurant.menu.some((item) => item.food.toString() === randomFood._id.toString()),
-        );
+        if (!randomFood) {
+            console.log('No random food found');
+            logger.warn('No foods available for random selection');
+            throw new AppError('No foods available', 404, 'NotFound');
+        }
 
+        logger.info('Random food selected', {
+            foodId: randomFood._id,
+            name: randomFood.name,
+        });
+
+        console.log('Calling RestaurantService.getByFoodId()');
+        // Get restaurants that serve this food using service layer
+        const restaurants = await RestaurantService.getByFoodId(randomFood._id);
+        console.log('RestaurantService.getByFoodId() result:', restaurants);
+
+        logger.info('Related restaurants found', {
+            count: restaurants.length,
+        });
+
+        console.log('Sending response');
         res.status(200).json({
-            food: randomFood,
-            restaurants: relatedRestaurants,
+            status: 200,
+            data: {
+                food: randomFood,
+                restaurants,
+            },
         });
     } catch (error) {
-        res.status(500).json({ error: 'InternalServerError', message: error.message });
+        console.error('Error in getRandomFood:', error);
+        logger.error('Error in getRandomFood', {
+            error: error.message,
+            stack: error.stack,
+        });
+        next(error);
     }
 };
 
-exports.getFoodById = async (req, res) => {
+exports.getFoodById = async (req, res, next) => {
     try {
+        logger.info('Get food by ID request received', {
+            foodId: req.params.id,
+        });
+
         const food = await FoodService.getById(req.params.id);
-        if (!food) return res.status(404).json({ error: 'NotFound', message: 'Food not found' });
+        logger.info('Food fetched successfully', {
+            foodId: food._id,
+            name: food.name,
+        });
+
         res.status(200).json(food);
     } catch (error) {
-        res.status(500).json({ error: 'InternalServerError', message: error.message });
+        next(error);
     }
 };
 
-exports.updateFood = async (req, res) => {
+exports.updateFood = async (req, res, next) => {
     try {
+        logger.info('Update food request received', {
+            foodId: req.params.id,
+            updateData: req.body,
+        });
+
         const food = await FoodService.update(req.params.id, req.body);
-        if (!food) return res.status(404).json({ error: 'NotFound', message: 'Food not found' });
+        logger.info('Food updated successfully', {
+            foodId: food._id,
+            name: food.name,
+        });
+
         res.status(200).json({ message: 'Food updated', food });
     } catch (error) {
-        res.status(500).json({ error: 'InternalServerError', message: error.message });
+        next(error);
     }
 };
 
-exports.deleteFood = async (req, res) => {
+exports.deleteFood = async (req, res, next) => {
     try {
-        const success = await FoodService.delete(req.params.id);
-        if (!success) return res.status(404).json({ error: 'NotFound', message: 'Food not found' });
+        logger.info('Delete food request received', {
+            foodId: req.params.id,
+        });
+
+        await FoodService.delete(req.params.id);
+        logger.info('Food deleted successfully', {
+            foodId: req.params.id,
+        });
+
         res.status(200).json({ message: 'Food deleted' });
     } catch (error) {
-        res.status(500).json({ error: 'InternalServerError', message: error.message });
+        next(error);
     }
 };
