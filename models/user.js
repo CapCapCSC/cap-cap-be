@@ -6,7 +6,6 @@ const user = new schema(
     {
         username: { type: String, required: true },
         email: { type: String, required: true, unique: true },
-        avatar: { type: String, default: '' },
         password: { type: String, required: true },
         avatar: {
             type: String,
